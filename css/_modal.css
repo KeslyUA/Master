@@ -1,0 +1,32 @@
+.modal {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0,0,0,0.2);
+    top: 0;
+    left: 0;
+    z-index: 35;
+
+    .modal__body {
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        width: inherit;
+        height: inherit;
+
+        .ventana__interna {
+            background-color: #fff;
+            padding: 1rem;
+            box-shadow: 1px 2px 5px #000;
+            width: 50%;
+            height: 65vh;
+            display: flex;
+            justify-content: center;
+
+            iframe{
+                width: 100vw;
+            }
+        }
+    }
+}

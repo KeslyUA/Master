@@ -1,0 +1,53 @@
+.modal_mensaje{
+    position: fixed;
+    bottom: 42px;
+    padding: 20px;
+    transition: right .5s;
+    z-index: 9;
+    box-shadow: 13px 5px 6px #000;
+    right:-100%;
+    font-family: sans-serif;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.msj_error{
+    background: rgba(212, 71, 46, 1);
+
+    .span_mensaje::before{
+        content: url('../assets/error.svg');
+    }
+}
+
+.msj_correct{
+    background: rgba(154, 205, 50, 1);
+
+	.span_mensaje::before{
+        content: url('../img/ok-circle-svgrepo-com.svg');
+    }
+}
+
+.msj_info{
+    background: rgba(96, 95, 160, 1);
+
+	.span_mensaje::before{
+        content: url('../img/info.svg');
+    }
+}
+
+
+.msj_error,.msj_correct,.msj_info{
+    .span_mensaje {
+		font-size: 20px;
+        color: #fff;
+
+		&:before{
+		height: 30px;
+        width: 30px;
+        float: left;
+        margin-right: 10px;
+        display: inline;
+        margin-top: -7px;
+		}
+	}
+}
