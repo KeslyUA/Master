@@ -1,7 +1,7 @@
 import {buscarDatos} from "./matriz.js";
 import {calcularfechas,mostrarMensaje} from "./funciones.js";
 import {buscarDatosUsuarios} from "./usuarios.js";
-import {buscarProyectos,listarPadron} from "./padron.js";
+import {buscarProyectos,getTareo,listarPadron} from "./padron.js";
 
 const documento = document.getElementById("documento");
 
@@ -312,11 +312,25 @@ function datosUsuarioCabecera () {
 
 }
 
-function grabarDatosTareo(proyecto){
+async function grabarDatosTareo(proyecto){
     let formData = new FormData();
     formData.append("funcion","grabarEstadosPersonal");
     formData.append("proyecto",proyecto);
-    formData.append("datosTareo",JSON.stringify(datosTareoPersonal()));
+    let sendData = datosTareoPersonal();
+    const filterData = sendData.filter(item => item.estado !== 'A');
+    /* formData.append("datosTareo", JSON.stringify(filterData)); */
+    /* console.log(filterData); */
+
+
+    let estadosTareo = await getTareo()
+
+    let nrodocs = estadosTareo.map(item => {return item.nrodoc});
+    console.log(nrodocs);
+
+    const filterExistData = filterData.filter(item => !nrodocs.includes(item.documento))
+    console.log(filterExistData)
+
+    formData.append("datosTareo", JSON.stringify(filterExistData));
 
     fetch('../inc/grabar.inc.php',{
         method: 'POST',
@@ -324,9 +338,8 @@ function grabarDatosTareo(proyecto){
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data);
     })
-
+    /* const filtrados = datos.filter(item => item.estado !== 'A'); */
 }
 
 const obtenerDatosPadron = () => {
@@ -381,7 +394,6 @@ const datosTareoPersonal = () =>{
         }   
     }
 
-    console.log(DATOS);
 
     return DATOS;
 }

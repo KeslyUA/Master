@@ -12,6 +12,8 @@
             echo json_encode(proyectosUsuarios($pdo,$_POST['dni'])); 
         }else if ($_POST['funcion'] === "listarPadron") {
             echo json_encode(listarPadron($pdo,$_POST['costos'])); 
+        }else if ($_POST['funcion'] === "estadoUsuarioPadron") {
+            echo json_encode(estadoUsuarioPadron($pdo)); 
         }
     }
  
@@ -287,9 +289,27 @@
         return $docData;
     }
 
-    function estadoUsuarioPadron($pdo, $doc){
+    function estadoUsuarioPadron($pdo){
+        $docData = [];
         date_default_timezone_set('America/Lima');
-        $fecha = date("Y-m-d")
+        $fecha = date("Y-m-d");
+
+        $sql = "SELECT
+                tb_tareos.nrodoc,
+                tb_tareos.estado
+            FROM
+                tb_tareos 
+            WHERE
+                DATE(tb_tareos.fregsys) = ?";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute(array($fecha));
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
     }
 
 ?>
