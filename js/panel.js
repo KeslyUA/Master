@@ -11,7 +11,7 @@ const nombres = document.getElementById("nombres");
 const nacimiento = document.getElementById("nacimiento");
 const codigo = document.getElementById("codigo");
 const grupo = document.getElementById("grupo");
-const planilla = document.getElementById("planilla");
+const planilla = document.getElementById("planilla");   
 const cargo = document.getElementById("cargo");
 const nacionalidad = document.getElementById("nacionalidad");
 const procedencia = document.getElementById("procedencia");
@@ -318,16 +318,32 @@ async function grabarDatosTareo(proyecto){
     formData.append("proyecto",proyecto);
     let sendData = datosTareoPersonal();
     const filterData = sendData.filter(item => item.estado !== 'A');
+    console.log(sendData);
     /* formData.append("datosTareo", JSON.stringify(filterData)); */
     /* console.log(filterData); */
-
-
+    console.log(filterData);
     let estadosTareo = await getTareo()
 
+    /* if(estadosTareo.length <= 0){
+        estadosTareo[0].nrodoc = "00000000"
+
+    }
+ */
+    
     let nrodocs = estadosTareo.map(item => {return item.nrodoc});
     console.log(nrodocs);
-
-    const filterExistData = filterData.filter(item => !nrodocs.includes(item.documento))
+    console.log(estadosTareo);
+    const filterExistData = filterData.filter(item => !nrodocs.includes(item.documento));
+    if(filterExistData.length == 0){
+        if(!nrodocs.includes("00000000")){
+            filterExistData[0] = {
+                "documento" : "00000000",
+                "estado" : "A",
+                "ubicacion": "LIMA"
+            }
+        }
+        
+    }
     console.log(filterExistData)
 
     formData.append("datosTareo", JSON.stringify(filterExistData));
@@ -338,7 +354,45 @@ async function grabarDatosTareo(proyecto){
     })
     .then(response => response.json())
     .then(data => {
+        if(data){
+            console.log("exitoso");
+            Swal.fire({
+                icon: "success",
+                title: "Guardado Correctamente"
+              });
+        }else{
+            console.log("error");
+        }
     })
+
+    const result = estadosTareo.filter(item2 => {
+        const match = filterData.find(item1 => item1.documento === item2.nrodoc);
+        return match && match.estado !== item2.estado; // Devolver solo si el estado es diferente
+    }).map(item2 => {
+        const match = filterData.find(item1 => item1.documento === item2.nrodoc);
+        return {...item2, estado: match.estado};
+    })
+    console.log(result)
+    if(result.length > 0) {
+        formData.set("funcion","actualizarEstadoPersonal");
+        formData.append("updateDatosTareo", JSON.stringify(result));
+        fetch('../inc/grabar.inc.php',{
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data){
+                console.log("exitoso");
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente"
+                  });
+            }else{
+                console.log("error");
+            }
+        })
+    }
     /* const filtrados = datos.filter(item => item.estado !== 'A'); */
 }
 

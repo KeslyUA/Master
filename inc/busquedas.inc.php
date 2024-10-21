@@ -31,7 +31,7 @@
             $datosUbigeo = json_decode($apiUbigeo);
 
             $datosTareo = datosTareo($pdo,$doc);
-            $tareo = tareoPadron($pdo,$doc);
+            $tareo = tareoPadronNuevo($pdo,$doc);
 
             $origen = "http://sicalsepcon.net/api/ubigeoapi.php?ubigeo=$origen";
             $apiOrigen =  file_get_contents($origen);
@@ -289,12 +289,28 @@
         return $docData;
     }
 
+    function tareoPadronNuevo($pdo, $doc){
+        $docData = [];
+
+        $sql = "CALL getEstadosColaborador(?)";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute(array($doc));
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+
     function estadoUsuarioPadron($pdo){
         $docData = [];
         date_default_timezone_set('America/Lima');
         $fecha = date("Y-m-d");
 
         $sql = "SELECT
+                tb_tareos.idreg,
                 tb_tareos.nrodoc,
                 tb_tareos.estado
             FROM

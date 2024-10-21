@@ -52,6 +52,7 @@
             <?php require_once('../php/matriz.php') ?>
         </div>
     </section>
+    <script src="../js/sweetalert2@11.js"></script>
     <script src="../js/panel.js?v<?php echo $random; ?>" type="module"></script>
 </body>
 </html>

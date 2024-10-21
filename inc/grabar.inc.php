@@ -11,6 +11,8 @@
             echo json_encode(grabarUsuario($pdo,$_POST));
         else if ($_POST['funcion'] == "grabarEstadosPersonal")
             echo json_encode(grabarEstadosPersonal($pdo,$_POST));
+        else if ($_POST['funcion'] == "actualizarEstadoPersonal")
+            echo json_encode(actualizarEstadoPersonal($pdo,$_POST));
     }
 
     function grabar($pdo,$datos){
@@ -303,6 +305,37 @@
             return false;
         }
     }
-    
+    function actualizarEstadoPersonal($pdo, $datos){
+        try {
+            $tareos         = json_decode($datos['updateDatosTareo']);
+            $nreg           = count($tareos);
+            $fecha          = date("Y-m-D"); 
+
+            $fecha_actual = getdate();
+            $mes = $fecha_actual['mon'];
+            $anio = $fecha_actual['year'];
+
+            for ($i=0; $i < $nreg; $i++) { 
+                $sql = "UPDATE tb_tareos 
+                        SET fecha = ?,
+                            estado = ?
+                        WHERE idreg = ? AND nrodoc = ?";
+                
+                $statement = $pdo->prepare($sql);
+                $statement -> execute(array($fecha,
+                                            $tareos[$i]->estado,
+                                            $tareos[$i]->idreg,
+                                            $tareos[$i]->nrodoc));
+
+                /* var_dump($statement->errorInfo()); */
+            }
+
+            return array("registros"=>$nreg);
+            
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+            return false;
+        }
+    }
 
 ?>

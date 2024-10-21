@@ -40,7 +40,6 @@ export const listarPadron = (cc) => {
     let estadosTareo
     getTareo().then(data => {
         estadosTareo = data;
-        console.log(estadosTareo);
     });
     try {
         fetch('../inc/busquedas.inc.php',{
