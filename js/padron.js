@@ -90,6 +90,17 @@ export const getTareo = () => {
     
 }
 
+export const getColaboradorRegistro = () => {
+    let formData = new FormData();
+    formData.append("funcion","validarColaborador");
+
+    return fetch('../inc/busquedas.inc.php',{
+        method: 'POST',
+        body: formData
+    }).then(response => response.json())
+    .then(data => {return data})
+    
+}
 /* const getTareo = () => {
     let formData = new FormData();
     formData.append("funcion", "estadoUsuarioPadron");

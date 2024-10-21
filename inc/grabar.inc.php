@@ -295,7 +295,7 @@
                                             $tareos[$i]->estado,
                                             $tareos[$i]->ubicacion));
 
-                var_dump($statement->errorInfo());
+                /* var_dump($statement->errorInfo()); */
             }
 
             return array("registros"=>$nreg);

@@ -14,6 +14,8 @@
             echo json_encode(listarPadron($pdo,$_POST['costos'])); 
         }else if ($_POST['funcion'] === "estadoUsuarioPadron") {
             echo json_encode(estadoUsuarioPadron($pdo)); 
+        }else if ($_POST['funcion'] === "validarColaborador"){
+            echo json_encode(validarColaborador($pdo));
         }
     }
  
@@ -320,6 +322,21 @@
         
         $statement = $pdo->prepare($sql);
         $statement -> execute(array($fecha));
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+
+    function validarColaborador($pdo){
+        $docData = [];
+
+        $sql = "SELECT DISTINCT nrodoc FROM tb_tareos";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute();
 
         while($row = $statement->fetch(PDO::FETCH_ASSOC)){
             $docData[] = $row;
