@@ -314,46 +314,24 @@ function datosUsuarioCabecera () {
 
 async function grabarDatosTareo(proyecto){
     let formData = new FormData();
+    let lisTable = datosTareoPersonal(); //obtener tareos de la tabla de la vista
+    let listTareoToday = await getTareo(); //obtener tareos del dia
+    console.log("lista de la tabla")
+    console.log(lisTable)
+
+    //obtener el numero de documento de los registrados de hoy
+    const listDocsRegistro = listTareoToday.map(item => item.nrodoc);
+    // Filtrar los elementos de lista1 que no están en nrodocLista2
+    const listNoRegistrado = lisTable.filter(item => !listDocsRegistro.includes(item.documento));
+    console.log("lista de no registrados");
+    console.log(listNoRegistrado)
+
     formData.append("funcion","grabarEstadosPersonal");
     formData.append("proyecto",proyecto);
-    let sendData = datosTareoPersonal();
-    console.log(sendData);
-    const filterData = sendData.filter(item => item.estado !== 'A');
-    /* formData.append("datosTareo", JSON.stringify(filterData)); */
-    /* console.log(filterData); */
-    let estadosTareo = await getTareo()
+    formData.append("datosTareo",JSON.stringify(listNoRegistrado));
 
-    /* if(estadosTareo.length <= 0){
-        estadosTareo[0].nrodoc = "00000000"
-
-    }
- */
-    console.log(sendData);
-    let colaboradorRegistro = await getColaboradorRegistro();
-        const listaDocsRegistro = colaboradorRegistro.map(item => item.nrodoc);
-        const listaDocsTable = sendData.map(item => item.documento)
-
-        // Filtrar los elementos de lista1 que no están en nrodocLista2
-        const colaboradorNoRegistrado = sendData.filter(item => !listaDocsRegistro.includes(item.documento));
-
-    let nrodocs = estadosTareo.map(item => {return item.nrodoc});
-
-    const filterExistData = filterData.filter(item => !nrodocs.includes(item.documento));
-    if(filterExistData.length == 0){
-        
-        if(!nrodocs.includes("00000000")){
-            console.log("añadiendo dni 00000 porque no hay estados diferentes a 'A'")
-            filterExistData[0] = {
-                "documento" : "00000000",
-                "estado" : "A",
-                "ubicacion": "LIMA"
-            }
-        }
-        
-    }
-    if(colaboradorNoRegistrado.length > 0){
-        console.log(`Añadiendo ${colaboradorNoRegistrado.length} no registrodados`)
-        formData.append("datosTareo", JSON.stringify(colaboradorNoRegistrado));
+    //Agregar en la tabla los no registrados del dia de hoy
+    if(listNoRegistrado.length > 0){
         fetch('../inc/grabar.inc.php',{
             method: 'POST',
             body: formData
@@ -361,7 +339,7 @@ async function grabarDatosTareo(proyecto){
         .then(response => response.json())
         .then(data => {
             if(data){
-                console.log("exitoso");
+                console.log(`agregando ${listNoRegistrado.length} registros`);
                 Swal.fire({
                     icon: "success",
                     title: "Guardado Correctamente"
@@ -372,9 +350,114 @@ async function grabarDatosTareo(proyecto){
         })
     }
 
+    const lisTableStates = lisTable.map(item =>{
+        return {nrodoc: item.documento, estado: item.estado};
+    })
+    console.log("parseado lista de la tabla:");
+    console.log(lisTableStates)
+
+    //obtener tareos de hoy y comparar
+    
+    console.log(listTareoToday);
+    /* const filterData = lisTable.filter(item => item.estado !== 'A'); */
+
+    //Obtener listado de tareos que tienen diferente estado al ya registrado en la base de datos
+    const result = listTareoToday.filter(item2 => {
+        const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
+        return match && match.estado !== item2.estado; // Devolver solo si el estado es diferente
+    }).map(item2 => {
+        const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
+        return {...item2, estado: match.estado};
+    })
+
+    console.log(result);
+
+    //actualizar estado si encuentra estados diferentes
+    if(result.length > 0) {
+        formData.set("funcion","actualizarEstadoPersonal");
+        formData.append("updateDatosTareo", JSON.stringify(result));
+        fetch('../inc/grabar.inc.php',{
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data){
+                console.log(`actualizando ${result.length} registros`);
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente"
+                  });
+            }else{
+                console.log("error");
+            }
+        })
+    }
+}
+
+/* async function grabarDatosTareo(proyecto){
+    let formData = new FormData();
+    formData.append("funcion","grabarEstadosPersonal");
+    formData.append("proyecto",proyecto);
+    let sendData = datosTareoPersonal();
+    const filterData = sendData.filter(item => item.estado !== 'A');
+    let registrados;
+
+    let estadosTareo = await getTareo()
+    console.log(sendData);
+
+    //identificar colaboradores no registrados
+    let colaboradorRegistro = await getColaboradorRegistro();
+    const listaDocsRegistro = colaboradorRegistro.map(item => item.nrodoc);
+    const listaDocsTable = sendData.map(item => item.documento)
+
+    // Filtrar los elementos de lista1 que no están en nrodocLista2
+    const colaboradorNoRegistrado = sendData.filter(item => !listaDocsRegistro.includes(item.documento));
+
+    if(colaboradorNoRegistrado.length > 0){
+        console.log(`Añadiendo ${colaboradorNoRegistrado.length} no registrodados`)
+        formData.append("datosTareo", JSON.stringify(colaboradorNoRegistrado));
+        fetch('../inc/grabar.inc.php',{
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(async data => {
+            if(data){
+                console.log("exitoso");
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente"
+                });
+                registrados = await getTareo();
+                console.log(registrados);
+            }else{
+                console.log("error");
+            }
+        })
+    }
+    
+    // verificar que haya registros
+    
+    let nrodocs = estadosTareo.map(item => {return item.nrodoc});
+
+    const filterExistData = filterData.filter(item => !nrodocs.includes(item.documento));
+    console.log(estadosTareo);
+    console.log(filterExistData);
+    if(filterExistData.length == 0 && registrados.length == 0){
+        if(!nrodocs.includes("00000000")){
+            console.log("añadiendo dni 00000 porque no hay estados diferentes a 'A'")
+            filterExistData[0] = {
+                "documento" : "00000000",
+                "estado" : "A",
+                "ubicacion": "LIMA"
+            }
+        }
+        
+    }
 
     formData.append("datosTareo", JSON.stringify(filterExistData));
-
+    console.log(filterExistData);
     fetch('../inc/grabar.inc.php',{
         method: 'POST',
         body: formData
@@ -382,7 +465,7 @@ async function grabarDatosTareo(proyecto){
     .then(response => response.json())
     .then(data => {
         if(data){
-            console.log("Añadiendo diferentes a 'A'");
+            console.log(`Añadiendo diferentes ${filterExistData.length} a 'A'`);
             Swal.fire({
                 icon: "success",
                 title: "Guardado Correctamente"
@@ -420,8 +503,8 @@ async function grabarDatosTareo(proyecto){
             }
         })
     }
-    /* const filtrados = datos.filter(item => item.estado !== 'A'); */
-}
+    //const filtrados = datos.filter(item => item.estado !== 'A');
+} */
 
 const obtenerDatosPadron = () => {
     let fila = document.querySelector("#tablaPersonalBody").getElementsByTagName("tr"),
@@ -464,7 +547,7 @@ const datosTareoPersonal = () =>{
     for (let i = 0; i < nreg; i++) {
         let dato = {};
 
-        if ( fila[i].dataset.grabado  === "0" ) {
+        //if ( fila[i].dataset.grabado  === "0" ) {
             dato['documento']   = fila[i].cells[2].innerHTML;
             dato['ubicacion']   = fila[i].cells[4].innerHTML;
             dato['estado']      = fila[i].cells[5].children[0].value;
@@ -472,7 +555,7 @@ const datosTareoPersonal = () =>{
             DATOS.push(dato);
 
             fila[i].setAttribute("data-grabado", "1");
-        }   
+        //}   
     }
 
 

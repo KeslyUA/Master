@@ -33,7 +33,7 @@
             $datosUbigeo = json_decode($apiUbigeo);
 
             $datosTareo = datosTareo($pdo,$doc);
-            $tareo = tareoPadronNuevo($pdo,$doc);
+            $tareo = tareoPadron($pdo,$doc);
 
             $origen = "http://sicalsepcon.net/api/ubigeoapi.php?ubigeo=$origen";
             $apiOrigen =  file_get_contents($origen);
