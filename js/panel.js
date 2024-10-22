@@ -332,6 +332,11 @@ async function grabarDatosTareo(proyecto){
 
     //Agregar en la tabla los no registrados del dia de hoy
     if(listNoRegistrado.length > 0){
+        /* Swal.fire({
+            title: 'Cargando...',
+            text: 'Por favor, espere un momento.',
+        }); */
+        Swal.showLoading();
         fetch('../inc/grabar.inc.php',{
             method: 'POST',
             body: formData
@@ -342,11 +347,23 @@ async function grabarDatosTareo(proyecto){
                 console.log(`agregando ${listNoRegistrado.length} registros`);
                 Swal.fire({
                     icon: "success",
-                    title: "Guardado Correctamente"
+                    title: "Guardado Correctamente",
+                    text: "Se han guardado los registros exitosamente"
                   });
             }else{
-                console.log("error");
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Ha ocurrido un error"
+                });
             }
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Ha ocurrido un error" + error
+            });
         })
     }
 
@@ -376,6 +393,7 @@ async function grabarDatosTareo(proyecto){
     if(result.length > 0) {
         formData.set("funcion","actualizarEstadoPersonal");
         formData.append("updateDatosTareo", JSON.stringify(result));
+        Swal.showLoading();
         fetch('../inc/grabar.inc.php',{
             method: 'POST',
             body: formData
@@ -386,11 +404,23 @@ async function grabarDatosTareo(proyecto){
                 console.log(`actualizando ${result.length} registros`);
                 Swal.fire({
                     icon: "success",
-                    title: "Guardado Correctamente"
-                  });
+                    title: "Guardado Correctamente",
+                    text: "Se han guardado los registros exitosamente"
+                });
             }else{
-                console.log("error");
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Ha ocurrido un error"
+                });
             }
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Ha ocurrido un error" + error
+            });
         })
     }
 }
