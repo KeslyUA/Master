@@ -38,7 +38,7 @@ export const listarPadron = (cc) => {
 
     cuerpo.innerHTML = "";
     let estadosTareo
-    getTareo().then(data => {
+    getTareoMaxFecha().then(data => {
         estadosTareo = data;
     });
     try {
@@ -100,6 +100,15 @@ export const getColaboradorRegistro = () => {
     }).then(response => response.json())
     .then(data => {return data})
     
+}
+export const getTareoMaxFecha = () => {
+    let formData = new FormData();
+    formData.append("funcion","tareosMaxFecha");
+    return fetch('../inc/busquedas.inc.php',{
+        method: 'POST',
+        body: formData
+    }).then(response => response.json())
+    .then(data => {return data})
 }
 /* const getTareo = () => {
     let formData = new FormData();

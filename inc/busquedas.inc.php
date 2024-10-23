@@ -16,6 +16,8 @@
             echo json_encode(estadoUsuarioPadron($pdo)); 
         }else if ($_POST['funcion'] === "validarColaborador"){
             echo json_encode(validarColaborador($pdo));
+        }else if ($_POST['funcion'] === "tareosMaxFecha"){
+            echo json_encode(tareosMaxFecha($pdo));
         }
     }
  
@@ -334,6 +336,22 @@
         $docData = [];
 
         $sql = "SELECT DISTINCT nrodoc FROM tb_tareos";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute();
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+
+    function tareosMaxFecha($pdo) {
+        $docData = [];
+
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
+        $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = (SELECT DATE(MAX(fregsys)) FROM tb_tareos)";
         
         $statement = $pdo->prepare($sql);
         $statement -> execute();
