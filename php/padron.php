@@ -36,6 +36,7 @@
                     <input type="text" id="ubicacion_padron" name="ubicacion_padron">
                 </div>
             </div>
+            <h1 style="margin: 1rem 0">Fecha de Proceso: <?php echo date("Y-m-d")?></h1>
         </div>
         <div class="separator">
             <div class="titulo">
@@ -49,12 +50,14 @@
                     <thead>
                         <tr>
                             <th width="3%">...</th>
-                            <th width="30%">Nombres</th>
-                            <th width="15%">Documento</th>
+                            <th width="25%">Nombres</th>
+                            <th width="10%">Documento</th>
                             <th width="30%">Proyecto</th>
-                            <th width="15%">Ubicación</th>
+                            <th width="10%">Ubicación</th>
                             <th width="5%">Estado</th>
-                            <th width="5%">Fecha<br>Ingreso</th>
+                            <th width="4">Fecha Proceso</th>
+                            <th width="4">Fecha Ingreso</th>
+                            
                         </tr>
                     </thead>
                     <tbody id="tablaPersonalBody">

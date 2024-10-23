@@ -316,7 +316,8 @@
         $sql = "SELECT
                 tb_tareos.idreg,
                 tb_tareos.nrodoc,
-                tb_tareos.estado
+                tb_tareos.estado,
+                tb_tareos.fingreso
             FROM
                 tb_tareos 
             WHERE

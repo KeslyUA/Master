@@ -40,6 +40,7 @@ export const listarPadron = (cc) => {
     let estadosTareo
     getTareoMaxFecha().then(data => {
         estadosTareo = data;
+        console.log(data)
     });
     try {
         fetch('../inc/busquedas.inc.php',{
@@ -54,19 +55,21 @@ export const listarPadron = (cc) => {
            data.datos = data.datos.map(item => {
                 const user = estadosTareo.find(u => u.nrodoc == item.dni);
                 if(user){
-                    return {...item, estado: user.estado}
+                    return {...item, estado: user.estado, fregsys: user.fregsys, fingreso: user.fingreso}
                 }
                 return { ...item, estado: 'A' };
            })
+           console.log(data)
            data.datos.forEach(element => {
-                let row = `<tr data-grabado="0">
+                let row = `<tr>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.paterno+ ' ' + element.materno + ' ' + element.nombres}</td>
                     <td class="texto_centro">${element.dni}</td>
                     <td class="texto_centro">${element.proyecto}</td>
                     <td class="texto_centro">${element.sucursal}</td>
                     <td><input type="text" value="${element.estado}" class="texto_centro"></td>
-                    <td class="texto_centro"></td>
+                    <td class="texto_centro">${element.fregsys}</td>
+                    <td><input type="text" class="texto_centro" value="${element.fingreso != null ? element.fingreso : ''}"></td>
                 </tr>`;
 
                 cuerpo.insertRow(-1).outerHTML = row;

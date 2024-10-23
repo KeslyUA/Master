@@ -312,17 +312,18 @@
             $fecha          = date("Y-m-D"); 
 
             $fecha_actual = getdate();
+
             $mes = $fecha_actual['mon'];
             $anio = $fecha_actual['year'];
 
             for ($i=0; $i < $nreg; $i++) { 
                 $sql = "UPDATE tb_tareos 
-                        SET fecha = ?,
+                        SET fregsys = CURRENT_TIMESTAMP(),
                             estado = ?
                         WHERE idreg = ? AND nrodoc = ?";
                 
                 $statement = $pdo->prepare($sql);
-                $statement -> execute(array($fecha,
+                $statement -> execute(array(/* $fecha, */
                                             $tareos[$i]->estado,
                                             $tareos[$i]->idreg,
                                             $tareos[$i]->nrodoc));

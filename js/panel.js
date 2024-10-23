@@ -381,10 +381,10 @@ async function grabarDatosTareo(proyecto){
     //Obtener listado de tareos que tienen diferente estado al ya registrado en la base de datos
     const result = listTareoToday.filter(item2 => {
         const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
-        return match && match.estado !== item2.estado; // Devolver solo si el estado es diferente
+        return match && (match.estado !== item2.estado || match.fingreso != item2.fingreso); // Devolver solo si el estado es diferente
     }).map(item2 => {
         const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
-        return {...item2, estado: match.estado};
+        return {...item2, estado: match.estado, fingreso: match.fingreso};
     })
 
     console.log(result);
@@ -581,6 +581,7 @@ const datosTareoPersonal = () =>{
             dato['documento']   = fila[i].cells[2].innerHTML;
             dato['ubicacion']   = fila[i].cells[4].innerHTML;
             dato['estado']      = fila[i].cells[5].children[0].value;
+            dato['fingreso']    = fila[i].cells[7].children[0].value;
 
             DATOS.push(dato);
 
@@ -606,11 +607,14 @@ const actualizarPadronExcel = (archivo) =>{
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data)
             data.datos.forEach( function(valor, indice) {
                 if (fila[indice].cells[2].innerHTML == valor.documento){
-                    fila[indice].cells[3].innerHTML = valor.ubicacion;
-                    fila[indice].cells[4].children[0].value = valor.estado;
-                    fila[indice].cells[5].innerHTML = valor.ingreso;
+                    /* fila[indice].cells[4].innerHTML = valor.ubicacion; */
+                    fila[indice].cells[5].children[0].value = valor.estado;
+                    if(valor.ingreso != null){
+                        fila[indice].cells[7].querySelector('input').value = valor.ingreso;
+                    }
                 }
             });
         })
@@ -667,5 +671,23 @@ const hojaSalida = (proyecto) =>{
     } catch (error) {
          mostrarMensaje(error.message,"msj_error");
     }
+}
+
+const readExcel = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+      const data = new Uint8Array(event.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+
+      // Aquí puedes acceder a las hojas del libro
+      const firstSheetName = workbook.SheetNames[0]; // Nombre de la primera hoja
+      const worksheet = workbook.Sheets[firstSheetName];
+
+      // Convertir la hoja a JSON
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      console.log(jsonData); // Aquí están los datos en formato JSON
+}
 }
 
