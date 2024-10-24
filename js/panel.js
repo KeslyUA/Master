@@ -166,6 +166,8 @@ document.addEventListener('click',(e)=>{
             fileUpload.click();
         else if (e.target.closest('a').id == "descargarPlantilla")
             obtenerDatosPadron();
+        else if (e.target.closest('a').id == "descargarReporteTareo")
+            obtenerReportePadron();
         return false;
     }else if (e.target.matches(".select")){
         codigo_costos.value= e.target.value;
@@ -323,6 +325,9 @@ async function grabarDatosTareo(proyecto){
     const listDocsRegistro = listTareoToday.map(item => item.nrodoc);
     // Filtrar los elementos de lista1 que no están en nrodocLista2
     const listNoRegistrado = lisTable.filter(item => !listDocsRegistro.includes(item.documento));
+    listNoRegistrado.map(item => {
+        item.fingreso = item.fingreso.trim() === '' ? null : item.fingreso;
+    })
     console.log("lista de no registrados");
     console.log(listNoRegistrado)
 
@@ -381,10 +386,13 @@ async function grabarDatosTareo(proyecto){
     //Obtener listado de tareos que tienen diferente estado al ya registrado en la base de datos
     const result = listTareoToday.filter(item2 => {
         const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
-        return match && match.estado !== item2.estado; // Devolver solo si el estado es diferente
+        match.fingreso = match.fingreso.trim() === '' ? null : match.fingreso;
+        return match && (match.estado !== item2.estado || match.fingreso != item2.fingreso); // Devolver solo si el estado es diferente
     }).map(item2 => {
         const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
-        return {...item2, estado: match.estado};
+
+        /* const result = match.fingreso != null ? { ...item2, estado: match.estado, fingreso: match.fingreso } : {...item2, estado: match.estado}; */
+        return {...item2, estado: match.estado, fingreso: match.fingreso};
     })
 
     console.log(result);
@@ -569,6 +577,39 @@ const obtenerDatosPadron = () => {
     })
 }
 
+const obtenerReportePadron = () => {
+    /* let fila = document.querySelector("#tablaPersonalBody").getElementsByTagName("tr"),
+        nreg = fila.length,
+        formData = new FormData(); */
+        let formData = new FormData();
+
+    /* let DATOS = [];
+
+    for (let i = 0; i < nreg; i++) {
+        let dato = {};
+
+        dato['item']        = fila[i].cells[0].innerHTML;
+        dato['nombres']     = fila[i].cells[1].innerHTML;
+        dato['documento']   = fila[i].cells[2].innerHTML;
+        dato['ubicacion']   = fila[i].cells[3].innerHTML;
+        dato['estado']      = fila[i].cells[5].children[0].value;
+
+        DATOS.push(dato);
+    }
+ */
+    /* formData.append("padron",JSON.stringify(DATOS)); */
+    formData.append("funcion","plantillaTareoExcel");
+
+    fetch('../inc/exportar.inc.php',{
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data =>{
+       window.open("http://localhost/master/documentos/plantillas/plantillaReporteTareo.xlsx");        ;
+    })
+}
+
 const datosTareoPersonal = () =>{
     let fila = document.querySelector("#tablaPersonalBody").getElementsByTagName("tr"),
     nreg = fila.length;
@@ -586,7 +627,7 @@ const datosTareoPersonal = () =>{
 
             DATOS.push(dato);
 
-            fila[i].setAttribute("data-grabado", "1");
+            /* fila[i].setAttribute("data-grabado", "1"); */
         //}   
     }
 
@@ -604,7 +645,8 @@ const actualizarPadronExcel = (archivo) =>{
 
         fetch('../inc/importar.inc.php',{
             method: 'POST',
-            body: formData
+            body: formData,
+            cache: 'no-store'
         })
         .then(response => response.json())
         .then(data => {
@@ -613,11 +655,15 @@ const actualizarPadronExcel = (archivo) =>{
                 if (fila[indice].cells[2].innerHTML == valor.documento){
                     /* fila[indice].cells[4].innerHTML = valor.ubicacion; */
                     fila[indice].cells[5].children[0].value = valor.estado;
-                    if(valor.ingreso != null){
-                        fila[indice].cells[7].querySelector('input').value = valor.ingreso;
-                    }
+                    /* if(valor.ingreso != null){
+                        fila[indice].cells[7].children[0].value = valor.ingreso;
+                    } */
+                    fila[indice].cells[7].children[0].value = valor.ingreso != null ? valor.ingreso : ''
                 }
             });
+
+            // Limpiar el valor del input de archivo
+            fileUpload.value = "";
         })
     } catch (error) {
         console.log(error.message);

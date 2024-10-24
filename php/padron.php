@@ -18,6 +18,7 @@
                     <a href="#" id="grabarDatosPadron"><i class="fas fa-save botones"></i><p>Grabar</p></a>
                     <a href="#" id="cargarDatosPadron"><i class="fas fa-file-excel botones"></i><p>Cargar Datos</p></a>
                     <a href="#" id="descargarPlantilla"><i class="fas fa-download botones"></i><p>Descargar Plantilla</p></a>
+                    <a href="#" id="descargarReporteTareo"><i class="fas fa-download botones"></i><p>Descargar Reporte de Tareos</p></a>
                 </div>
             </div>
             <div class="cuerpo">
