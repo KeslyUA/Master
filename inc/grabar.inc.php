@@ -284,7 +284,8 @@
                             tb_tareos.anio = ?,
                             tb_tareos.fecha = ?,
                             tb_tareos.estado = ?,
-                            tb_tareos.cubicacion = ?";
+                            tb_tareos.cubicacion = ?,
+                            tb_tareos.fingreso = ?";
                 
                 $statement = $pdo->prepare($sql);
                 $statement -> execute(array($tareos[$i]->documento,
@@ -293,7 +294,8 @@
                                             $anio,
                                             $fecha,
                                             $tareos[$i]->estado,
-                                            $tareos[$i]->ubicacion));
+                                            $tareos[$i]->ubicacion,
+                                            $tareos[$i]->fingreso));
 
                 /* var_dump($statement->errorInfo()); */
             }
@@ -317,25 +319,60 @@
             $anio = $fecha_actual['year'];
 
             for ($i=0; $i < $nreg; $i++) { 
-                $sql = "UPDATE tb_tareos 
+                /* $sql = "UPDATE tb_tareos 
                         SET fregsys = CURRENT_TIMESTAMP(),
-                            estado = ?
+                            estado = ?,
+                            fingreso = ?,
                         WHERE idreg = ? AND nrodoc = ?";
                 
                 $statement = $pdo->prepare($sql);
-                $statement -> execute(array(/* $fecha, */
-                                            $tareos[$i]->estado,
+                $statement -> execute(array($tareos[$i]->estado,
+                                            $tareos[$i]->fingreso,
                                             $tareos[$i]->idreg,
-                                            $tareos[$i]->nrodoc));
+                                            $tareos[$i]->nrodoc)); */
+                                            if ($tareos[$i]->fingreso === null) {
+                                                $sql = "UPDATE tb_tareos 
+                                                        SET fregsys = CURRENT_TIMESTAMP(),
+                                                            estado = ?,
+                                                            fingreso = NULL
+                                                        WHERE idreg = ? AND nrodoc = ?";
+                                                
+                                                $params = [
+                                                    $tareos[$i]->estado,
+                                                    $tareos[$i]->idreg,
+                                                    $tareos[$i]->nrodoc
+                                                ];
+                                            } else {
+                                                $sql = "UPDATE tb_tareos 
+                                                        SET fregsys = CURRENT_TIMESTAMP(),
+                                                            estado = ?,
+                                                            fingreso = ?
+                                                        WHERE idreg = ? AND nrodoc = ?";
+                                                
+                                                $params = [
+                                                    $tareos[$i]->estado,
+                                                    $tareos[$i]->fingreso,
+                                                    $tareos[$i]->idreg,
+                                                    $tareos[$i]->nrodoc
+                                                ];
+                                            }
+                                             $statement = $pdo->prepare($sql);
+        $statement->execute($params);
 
                 /* var_dump($statement->errorInfo()); */
             }
-
-            return array("registros"=>$nreg);
+            if($statement->rowcount() > 0){
+                return ['success' => true, 'msg' => 'Guardado Exitosamente'];
+            }else{
+                return ['success' => false, 'msg' => 'Error en el guardado', 'datos'=> $tareos];
+            }
+            
+            /* return array("registros"=>$cont); */
             
         } catch (PDOException $th) {
             echo "Error: " . $th->getMessage;
-            return false;
+            return ['success' => false, 'msg' => $th->getMessage()];
+            /* return false; */
         }
     }
 

@@ -381,10 +381,10 @@ async function grabarDatosTareo(proyecto){
     //Obtener listado de tareos que tienen diferente estado al ya registrado en la base de datos
     const result = listTareoToday.filter(item2 => {
         const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
-        return match && (match.estado !== item2.estado || match.fingreso != item2.fingreso); // Devolver solo si el estado es diferente
+        return match && match.estado !== item2.estado; // Devolver solo si el estado es diferente
     }).map(item2 => {
         const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
-        return {...item2, estado: match.estado, fingreso: match.fingreso};
+        return {...item2, estado: match.estado};
     })
 
     console.log(result);
@@ -400,7 +400,8 @@ async function grabarDatosTareo(proyecto){
         })
         .then(response => response.json())
         .then(data => {
-            if(data){
+            console.log(data);
+            if(data.success){
                 console.log(`actualizando ${result.length} registros`);
                 Swal.fire({
                     icon: "success",
