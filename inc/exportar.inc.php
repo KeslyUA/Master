@@ -109,12 +109,12 @@
         $hoja = $objPHPExcel->getActiveSheet();
 
         // Sobrescribir datos en las celdas que necesites
-        $hoja->setCellValue('A1', 'Nuevo Encabezado 1');
-        $hoja->setCellValue('B1', 'Nuevo Encabezado 2');
+        $hoja->setCellValue('A3', 'Nuevo Encabezado 1');
+        /* $hoja->setCellValue('B1', 'Nuevo Encabezado 2');
         $hoja->setCellValue('C1', 'Nuevo Encabezado 3');
         $hoja->setCellValue('A2', 'Nuevo Dato 1');
         $hoja->setCellValue('B2', 'Nuevo Dato 2');
-        $hoja->setCellValue('C2', 'Nuevo Dato 3');
+        $hoja->setCellValue('C2', 'Nuevo Dato 3'); */
 
         // Puedes modificar cualquier celda dentro de la plantilla
         // Ejemplo: Modificar un rango de celdas
@@ -129,11 +129,11 @@
         $objWriter->save('../documentos/plantillas/'.$nombreArchivoModificado.'.xlsx');
 
         // Si deseas ofrecerlo para descarga
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        /* header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="'.$nombreArchivoModificado.'.xlsx'.'"');
-        header('Cache-Control: max-age=0');
-        $objWriter->save('php://output');
-        exit;
+        header('Cache-Control: max-age=0'); */
+        /* $objWriter->save('php://output'); */
+        /* exit; */
         return array("archivo"=>"/documentos/plantillas/".$nombreArchivoModificado.".xlsx");
     }
 ?>

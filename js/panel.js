@@ -573,7 +573,7 @@ const obtenerDatosPadron = () => {
     })
     .then(response => response.json())
     .then(data =>{
-       window.open("http://localhost/master/documentos/plantillas/plantillaRegistros.xlsx");        ;
+       window.open("../documentos/plantillas/plantillaRegistros.xlsx");
     })
 }
 
@@ -606,7 +606,7 @@ const obtenerReportePadron = () => {
     })
     .then(response => response.json())
     .then(data =>{
-       window.open("http://localhost/master/documentos/plantillas/plantillaReporteTareo.xlsx");        ;
+       window.open(`..${data.archivo}`);
     })
 }
 
