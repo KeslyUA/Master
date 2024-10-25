@@ -577,13 +577,20 @@ const obtenerDatosPadron = () => {
     })
 }
 
-const obtenerReportePadron = () => {
-    /* let fila = document.querySelector("#tablaPersonalBody").getElementsByTagName("tr"),
+const obtenerReportePadron = async () => {
+    Swal.fire({
+        title: "Generando el reporte",
+        html: "Se están cargando los datos del reporte, por favor, espere",
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      })
+    let fila = document.querySelector("#tablaPersonalBody").getElementsByTagName("tr"),
         nreg = fila.length,
-        formData = new FormData(); */
-        let formData = new FormData();
+        formData = new FormData();
 
-    /* let DATOS = [];
+    let DATOS = [];
 
     for (let i = 0; i < nreg; i++) {
         let dato = {};
@@ -591,16 +598,50 @@ const obtenerReportePadron = () => {
         dato['item']        = fila[i].cells[0].innerHTML;
         dato['nombres']     = fila[i].cells[1].innerHTML;
         dato['documento']   = fila[i].cells[2].innerHTML;
-        dato['ubicacion']   = fila[i].cells[3].innerHTML;
+        dato['proyecto']   = fila[i].cells[3].innerHTML;
+        dato['ubicacion']  = fila[i].cells[4].innerHTML;
         dato['estado']      = fila[i].cells[5].children[0].value;
-
+        //buscarDatosColaborador
+        formData.append("funcion","buscarDatosColaborador");
+        formData.append("dni",dato['documento']);
+        await fetch('../inc/busquedas.inc.php',{
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data =>{
+            dato['cargo'] = data.datos.find(item => item.dni == dato['documento']).cargo;
+            dato['tareos'] = data.tareo.map(item => item.estado);
+        })
+        
+        /* dato['dias'] = () => {
+            let contador = {};
+            dato['tareos'].forEach(item => {
+                if(contador[item]){
+                    contador[item]++;
+                }else {
+                    contador[item] = 1;
+                }
+            });
+            return contador;
+        }  */
+        let contador = {};
+        dato['tareos'].forEach(item => {
+            if (contador[item]) {
+                contador[item]++;
+            } else {
+                contador[item] = 1;
+            }
+        });
+            
+        dato['dias'] = contador;
         DATOS.push(dato);
     }
- */
-    /* formData.append("padron",JSON.stringify(DATOS)); */
+    console.log(DATOS);
+    formData.append("padron",JSON.stringify(DATOS));
     formData.append("funcion","plantillaTareoExcel");
 
-    fetch('../inc/exportar.inc.php',{
+    await fetch('../inc/exportar.inc.php',{
         method: 'POST',
         body: formData
     })
@@ -608,6 +649,7 @@ const obtenerReportePadron = () => {
     .then(data =>{
        window.open(`..${data.archivo}`);
     })
+    Swal.close();
 }
 
 const datosTareoPersonal = () =>{

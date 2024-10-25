@@ -7,7 +7,7 @@
         if ($_POST['funcion'] == "plantillaExcel")
             echo json_encode(plantillaExcel($_POST['padron']));
         else if($_POST['funcion'] == "plantillaTareoExcel")
-            echo json_encode(plantillaTareoExcel());
+            echo json_encode(plantillaTareoExcel($_POST['padron']));
     }
 
     function plantillaExcel($padron){
@@ -57,7 +57,7 @@
         return array("archivo"=>"/documentos/plantillas/plantillaRegistros.xlxs");
     }
 
-    function plantillaTareoExcel(){
+    function plantillaTareoExcel($padron){
         require_once("../libs/PHPExcel/PHPExcel.php");
         
         /* $objPHPExcel = new PHPExcel();
@@ -82,22 +82,6 @@
         $objPHPExcel->getActiveSheet()->setCellValue('E6','ESTADO');
         $objPHPExcel->getActiveSheet()->setCellValue('F6','FECHA INGRESO'); */
 
-        /* $fila = 7; */
-
-        /* $datos = json_decode($padron);
-        $nreg = count($datos);
-
-        for ($i=0; $i < $nreg; $i++) { 
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$fila,$datos[$i]->item);
-            $objPHPExcel->getActiveSheet()->setCellValue('B'.$fila,$datos[$i]->nombres);
-            $objPHPExcel->getActiveSheet()->setCellValue('C'.$fila,$datos[$i]->documento);
-            $objPHPExcel->getActiveSheet()->setCellValue('D'.$fila,$datos[$i]->ubicacion);
-            $objPHPExcel->getActiveSheet()->setCellValue('E'.$fila,$datos[$i]->estado);
-            //$objPHPExcel->getActiveSheet()->setCellValue('F'.$fila,$datos[$i]->ingreso);
-
-            $fila++;
-        }
- */
         /* $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel2007');
         $objWriter->save('../documentos/plantillas/plantillaReporteTareo.xlsx');
 
@@ -118,8 +102,35 @@
 
         // Puedes modificar cualquier celda dentro de la plantilla
         // Ejemplo: Modificar un rango de celdas
-        $hoja->setCellValue('A10', 'Información Actualizada');
-        $hoja->setCellValue('B10', 'Otro Dato Actualizado');
+        $fila = 7;
+
+        $datos = json_decode($padron);
+        $nreg = count($datos);
+
+        for ($i=0; $i < $nreg; $i++) { 
+            $columna = 6;
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.$fila,$datos[$i]->item);
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.$fila,$datos[$i]->nombres);
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.$fila,$datos[$i]->documento);
+            $objPHPExcel->getActiveSheet()->setCellValue('D'.$fila,$datos[$i]->proyecto);
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.$fila,$datos[$i]->ubicacion);
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.$fila,$datos[$i]->cargo);
+            foreach($datos[$i]->tareos as $tareo) {
+                $objPHPExcel->getActiveSheet()->setCellValue(PHPExcel_Cell::stringFromColumnIndex($columna).$fila, $tareo);
+                $columna++; // Incrementamos la columna para cada tareo
+            }
+            $objPHPExcel->getActiveSheet()->setCellValue('AL'.$fila,$datos[$i]->dias->A);
+    
+            /* $objPHPExcel->getActiveSheet()->setCellValue('AL'.$fila,'=CONTAR.SI(G'.$fila.':AK'.$fila.',"A")'); */
+            /* $objPHPExcel->getActiveSheet()->setCellValue('AM'.$fila,'=CONTAR.SI(G'.$fila.':AK'.fila',"D")');
+            $objPHPExcel->getActiveSheet()->setCellValue('AN'.$fila,'=CONTAR.SI(G'.$fila.':AK'.fila',"F")');
+            $objPHPExcel->getActiveSheet()->setCellValue('AO'.$fila,'=CONTAR.SI(G'.$fila.':AK'.fila',"M")');
+            $objPHPExcel->getActiveSheet()->setCellValue('AP'.$fila,'=CONTAR.SI(G'.$fila.':AK'.fila',"V")');
+            $objPHPExcel->getActiveSheet()->setCellValue('AQ'.$fila,'=CONTAR.SI(G'.$fila.':AK'.fila',"P")');
+            $objPHPExcel->getActiveSheet()->setCellValue('AR'.$fila,'=SUMA(AL'.$fila.':AQ'.$fila.')'); */
+            //=CONTAR.SI(G7:AK7,"A")
+            $fila++;
+        }
 
         // Guardar el archivo sobrescribiendo el archivo original o creando uno nuevo
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
