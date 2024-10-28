@@ -376,4 +376,31 @@
         }
     }
 
+    function grabarDatosTerceros({
+        try {
+            $sql = "INSERT INTO tb_datosterceros 
+                    SET tb_datosterceros.dni=?,
+                        tb_datosterceros.paterno=?,
+                        tb_datosterceros.materno=?,
+                        tb_datosterceros.nombres=?
+                        tb_datosterceros.nacimiento=?,
+                        tb_datosterceros.cut=?,
+                        tb_datosterceros.regimen=?,
+                        tb_datosterceros.cargo=?,
+                        tb_datosterceros.pais=?,
+                        tb_datosterceros.estado=?";
+
+            $activo = $datos['estado_user'] == "01" ? 1 : 0;
+            
+            $statement = $pdo->prepare($sql);
+            $statement -> execute(array($datos['usuario'],
+                                        SHA1($datos['clave']),
+                                        $datos['user_doc'],
+                                        $activo));
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    })
+
 ?>

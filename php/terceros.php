@@ -77,35 +77,39 @@
                 </div>
                 <div class="tres_columnas">
                     <label for="direccion">Direccion :</label>
-                    <input type="text" name="direccion" id="direccion" >
+                    <input type="text" name="direccion" id="direccion">
                 </div>
                 <div class="cuatro_columnas">
                     <label for="dpto">Dpto :</label>
-                    <input type="text" name="dpto" id="dpto" readonly>
+                    <input type="text" name="dpto" id="dpto">
                 </div>
                 <div class="cuatro_columnas">
                     <label for="prov">Prov :</label>
-                    <input type="text" name="prov" id="prov" readonly>
+                    <input type="text" name="prov" id="prov">
                 </div>
                 <div class="cuatro_columnas">
                     <label for="dist">Dist :</label>
-                    <input type="text" name="dist" id="dist" readonly>
+                    <input type="text" name="dist" id="dist">
                 </div>
                 <div class="dos_columnas">
                     <label for="fecha_ingreso">Fecha Ingreso :</label>
-                    <input type="date" name="fecha_ingreso" id="fecha_ingreso" readonly>
+                    <input type="date" name="fecha_ingreso" id="fecha_ingreso">
                 </div>
                 <div class="dos_columnas">
                     <label for="inicio_contrato">Inicio contrato :</label>
-                    <input type="date" name="inicio_contrato" id="inicio_contrato" readonly>
+                    <input type="date" name="inicio_contrato" id="inicio_contrato">
                 </div>
                 <div class="dos_columnas">
                     <label for="fin_contrato">Fin Contrato :</label>
-                    <input type="date" name="fin_contrato" id="fin_contrato" readonly>
+                    <input type="date" name="fin_contrato" id="fin_contrato">
                 </div>
                 <div class="cuatro_columnas">
                     <label for="proyecto">Proyecto :</label>
-                    <input type="text" name="proyecto" id="proyecto" readonly>
+                    <input type="text" name="proyecto" id="proyecto">
+                </div>
+                <div class="dos_columnas">
+                    <label for="proyecto">Empresa :</label>
+                    <input type="text" name="empresa" id="empresa">
                 </div>
             </div>
         </div>

@@ -59,33 +59,6 @@
 
     function plantillaTareoExcel($padron){
         require_once("../libs/PHPExcel/PHPExcel.php");
-        
-        /* $objPHPExcel = new PHPExcel();
-                $objPHPExcel->getProperties()
-                    ->setCreator("Sical")
-                    ->setLastModifiedBy("Sical")
-                    ->setTitle("Cargo Plan")
-                    ->setSubject("Template excel")
-                    ->setDescription("Cargo Plan Valorizado")
-                    ->setKeywords("Template excel");
-
-        $objPHPExcel->getActiveSheet()->setCellValue('A2','SEPCON S.A.C');
-        $objPHPExcel->getActiveSheet()->setCellValue('A3','TAREOS - CONTROL DE ASISTENCIA REPORTE POR PROYECTO ACTUAL '.date("Y-m-d")); */
-
-        /* $objPHPExcel->getActiveSheet()->setCellValue('A5','REGISTRO');
-        $objPHPExcel->getActiveSheet()->setCellValue('C5','FECHA PROCESO:');
-       
-        $objPHPExcel->getActiveSheet()->setCellValue('A6','ITEM');
-        $objPHPExcel->getActiveSheet()->setCellValue('B6','NOMBRE');
-        $objPHPExcel->getActiveSheet()->setCellValue('C6','DNI/CE');
-        $objPHPExcel->getActiveSheet()->setCellValue('D6','UBICACION');
-        $objPHPExcel->getActiveSheet()->setCellValue('E6','ESTADO');
-        $objPHPExcel->getActiveSheet()->setCellValue('F6','FECHA INGRESO'); */
-
-        /* $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel2007');
-        $objWriter->save('../documentos/plantillas/plantillaReporteTareo.xlsx');
-
-        return array("archivo"=>"/documentos/plantillas/plantillaReporteTareo.xlsx"); */
         $archivoTemplate = '../documentos/plantillas/plantillaReporteTareo.xlsx';
         $objPHPExcel = PHPExcel_IOFactory::load($archivoTemplate);
 
@@ -93,20 +66,18 @@
         $hoja = $objPHPExcel->getActiveSheet();
 
         // Sobrescribir datos en las celdas que necesites
-        $hoja->setCellValue('A3', 'Nuevo Encabezado 1');
+        
         /* $hoja->setCellValue('B1', 'Nuevo Encabezado 2');
         $hoja->setCellValue('C1', 'Nuevo Encabezado 3');
         $hoja->setCellValue('A2', 'Nuevo Dato 1');
         $hoja->setCellValue('B2', 'Nuevo Dato 2');
         $hoja->setCellValue('C2', 'Nuevo Dato 3'); */
 
-        // Puedes modificar cualquier celda dentro de la plantilla
-        // Ejemplo: Modificar un rango de celdas
         $fila = 7;
 
         $datos = json_decode($padron);
         $nreg = count($datos);
-
+        $hoja->setCellValue('A3', 'TAREOS - CONTROL DE ASISTENCIA REPORTE '.$datos[0]->proyecto.' '.date("Y-m-d"));
         for ($i=0; $i < $nreg; $i++) { 
             $columna = 6;
             $objPHPExcel->getActiveSheet()->setCellValue('A'.$fila,$datos[$i]->item);
@@ -119,16 +90,13 @@
                 $objPHPExcel->getActiveSheet()->setCellValue(PHPExcel_Cell::stringFromColumnIndex($columna).$fila, $tareo);
                 $columna++; // Incrementamos la columna para cada tareo
             }
-            $objPHPExcel->getActiveSheet()->setCellValue('AL'.$fila,$datos[$i]->dias->A);
-    
-            /* $objPHPExcel->getActiveSheet()->setCellValue('AL'.$fila,'=CONTAR.SI(G'.$fila.':AK'.$fila.',"A")'); */
-            /* $objPHPExcel->getActiveSheet()->setCellValue('AM'.$fila,'=CONTAR.SI(G'.$fila.':AK'.fila',"D")');
-            $objPHPExcel->getActiveSheet()->setCellValue('AN'.$fila,'=CONTAR.SI(G'.$fila.':AK'.fila',"F")');
-            $objPHPExcel->getActiveSheet()->setCellValue('AO'.$fila,'=CONTAR.SI(G'.$fila.':AK'.fila',"M")');
-            $objPHPExcel->getActiveSheet()->setCellValue('AP'.$fila,'=CONTAR.SI(G'.$fila.':AK'.fila',"V")');
-            $objPHPExcel->getActiveSheet()->setCellValue('AQ'.$fila,'=CONTAR.SI(G'.$fila.':AK'.fila',"P")');
-            $objPHPExcel->getActiveSheet()->setCellValue('AR'.$fila,'=SUMA(AL'.$fila.':AQ'.$fila.')'); */
-            //=CONTAR.SI(G7:AK7,"A")
+            $objPHPExcel->getActiveSheet()->setCellValue('AL' . $fila, isset($datos[$i]->dias->A) ? $datos[$i]->dias->A : 0);
+            $objPHPExcel->getActiveSheet()->setCellValue('AM' . $fila, isset($datos[$i]->dias->D) ? $datos[$i]->dias->D : 0);
+            $objPHPExcel->getActiveSheet()->setCellValue('AN' . $fila, isset($datos[$i]->dias->F) ? $datos[$i]->dias->F : 0);
+            $objPHPExcel->getActiveSheet()->setCellValue('AO' . $fila, isset($datos[$i]->dias->M) ? $datos[$i]->dias->M : 0);
+            $objPHPExcel->getActiveSheet()->setCellValue('AP' . $fila, isset($datos[$i]->dias->V) ? $datos[$i]->dias->V : 0);
+            $objPHPExcel->getActiveSheet()->setCellValue('AQ' . $fila, isset($datos[$i]->dias->P) ? $datos[$i]->dias->P : 0);
+            $objPHPExcel->getActiveSheet()->setCellValue('AR' . $fila, isset($datos[$i]->dias->total) ? $datos[$i]->dias->total : 0);
             $fila++;
         }
 
@@ -136,8 +104,8 @@
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
         $nombreArchivoModificado = 'reporte_tareos_'.date("Y-m-d"); // Puedes sobrescribir o generar uno nuevo
 
-        // Guardar el archivo en el servidor
-        $objWriter->save('../documentos/plantillas/'.$nombreArchivoModificado.'.xlsx');
+        // Guardar el archivo
+        $objWriter->save('../documentos/reportes/'.$nombreArchivoModificado.'.xlsx');
 
         // Si deseas ofrecerlo para descarga
         /* header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -145,6 +113,6 @@
         header('Cache-Control: max-age=0'); */
         /* $objWriter->save('php://output'); */
         /* exit; */
-        return array("archivo"=>"/documentos/plantillas/".$nombreArchivoModificado.".xlsx");
+        return array("archivo"=>"/documentos/reportes/".$nombreArchivoModificado.".xlsx");
     }
 ?>

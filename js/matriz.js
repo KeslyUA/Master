@@ -86,3 +86,25 @@ export const buscarDatos = (dni) =>{
 
     return true;
 }
+
+export const buscarDatosTerceros = (dni) =>{
+    let formData = new FormData();
+    
+    formData.append('funcion','buscarDatosTerceros');
+    formData.append('dni',dni);
+    try {
+        fetch('../inc/busquedas.inc.php',{
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            paterno.value           = data.apellidoPaterno;
+            materno.value           = data.apellidoMaterno;
+            nombres.value           = data.nombres;
+        })
+    }catch(error){
+        console.log(error.message);
+    }
+}

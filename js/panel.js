@@ -1,4 +1,4 @@
-import {buscarDatos} from "./matriz.js";
+import {buscarDatos, buscarDatosTerceros} from "./matriz.js";
 import {calcularfechas,mostrarMensaje} from "./funciones.js";
 import {buscarDatosUsuarios} from "./usuarios.js";
 import {buscarProyectos,getColaboradorRegistro,getTareo,listarPadron} from "./padron.js";
@@ -130,6 +130,10 @@ document.addEventListener('keypress',(e)=>{
         }
     }else if (e.target.id == 'ubicacion_padron'){
         buscar(document.getElementById(e.target.id).value); 
+    }else if (e.target.id == 'documento_tercero'){
+        if (e.keyCode === 13) {
+            buscarDatosTerceros(e.target.value);
+        }
     }
 })
 
@@ -342,7 +346,7 @@ async function grabarDatosTareo(proyecto){
             text: 'Por favor, espere un momento.',
         }); */
         Swal.showLoading();
-        fetch('../inc/grabar.inc.php',{
+        await fetch('../inc/grabar.inc.php',{
             method: 'POST',
             body: formData
         })
@@ -392,7 +396,7 @@ async function grabarDatosTareo(proyecto){
         const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
 
         /* const result = match.fingreso != null ? { ...item2, estado: match.estado, fingreso: match.fingreso } : {...item2, estado: match.estado}; */
-        return {...item2, estado: match.estado, fingreso: match.fingreso};
+        return {...item2, estado: match.estado, fingreso: match.fingreso, item: match.item};
     })
 
     console.log(result);
@@ -402,7 +406,7 @@ async function grabarDatosTareo(proyecto){
         formData.set("funcion","actualizarEstadoPersonal");
         formData.append("updateDatosTareo", JSON.stringify(result));
         Swal.showLoading();
-        fetch('../inc/grabar.inc.php',{
+        await fetch('../inc/grabar.inc.php',{
             method: 'POST',
             body: formData
         })
@@ -432,6 +436,8 @@ async function grabarDatosTareo(proyecto){
             });
         })
     }
+    /* let cc = document.getElementById("select_proyectos");
+    listarPadron(cc.value); */
 }
 
 /* async function grabarDatosTareo(proyecto){
@@ -629,7 +635,12 @@ const obtenerReportePadron = async () => {
                 contador[item] = 1;
             }
         });
-            
+        contador.total = (contador.A || 0) + 
+        (contador.D || 0) + 
+        (contador.F || 0) + 
+        (contador.M || 0) + 
+        (contador.V || 0) + 
+        (contador.P || 0);
         dato['dias'] = contador;
         DATOS.push(dato);
     }
