@@ -591,8 +591,22 @@ const obtenerReportePadron = async () => {
         formData = new FormData();
 
     let DATOS = [];
+    let datosReporte;
 
-    for (let i = 0; i < nreg; i++) {
+    formData.append("funcion","obtenerTareosProyectoColaborador");
+    formData.append("proyecto", codigo_costos.value)
+
+    await fetch('../inc/busquedas.inc.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data =>{
+        console.log(data);
+        datosReporte = data;
+    })
+
+    for (let i=0; i < nreg; i++){
         let dato = {};
 
         dato['item']        = fila[i].cells[0].innerHTML;
@@ -600,31 +614,13 @@ const obtenerReportePadron = async () => {
         dato['documento']   = fila[i].cells[2].innerHTML;
         dato['proyecto']   = fila[i].cells[3].innerHTML;
         dato['ubicacion']  = fila[i].cells[4].innerHTML;
-        dato['estado']      = fila[i].cells[5].children[0].value;
-        //buscarDatosColaborador
-        formData.append("funcion","buscarDatosColaborador");
-        formData.append("dni",dato['documento']);
-        await fetch('../inc/busquedas.inc.php',{
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data =>{
-            dato['cargo'] = data.datos.find(item => item.dni == dato['documento']).cargo;
-            dato['tareos'] = data.tareo.map(item => item.estado);
-        })
-        
-        /* dato['dias'] = () => {
-            let contador = {};
-            dato['tareos'].forEach(item => {
-                if(contador[item]){
-                    contador[item]++;
-                }else {
-                    contador[item] = 1;
-                }
-            });
-            return contador;
-        }  */
+        dato['cargo'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).cargo;
+        /* dato['tareos'] = datosReporte.tareos.filter(item => {
+            if(item.nrodoc == dato['documento']){
+                return item.estados.split(',');
+            }
+        }).map(item => item.estados.split(',')) */
+        dato['tareos'] = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.estados.split(','));
         let contador = {};
         dato['tareos'].forEach(item => {
             if (contador[item]) {
@@ -650,6 +646,56 @@ const obtenerReportePadron = async () => {
        window.open(`..${data.archivo}`);
     })
     Swal.close();
+
+    
+    
+
+    /* for (let i = 0; i < nreg; i++) {
+        let dato = {};
+
+        dato['item']        = fila[i].cells[0].innerHTML;
+        dato['nombres']     = fila[i].cells[1].innerHTML;
+        dato['documento']   = fila[i].cells[2].innerHTML;
+        dato['proyecto']   = fila[i].cells[3].innerHTML;
+        dato['ubicacion']  = fila[i].cells[4].innerHTML;
+        dato['estado']      = fila[i].cells[5].children[0].value;
+        //buscarDatosColaborador
+        formData.append("funcion","buscarDatosColaborador");
+        formData.append("dni",dato['documento']);
+        await fetch('../inc/busquedas.inc.php',{
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data =>{
+            dato['cargo'] = data.datos.find(item => item.dni == dato['documento']).cargo;
+            dato['tareos'] = data.tareo.map(item => item.estado);
+        })
+        let contador = {};
+        dato['tareos'].forEach(item => {
+            if (contador[item]) {
+                contador[item]++;
+            } else {
+                contador[item] = 1;
+            }
+        });
+            
+        dato['dias'] = contador;
+        DATOS.push(dato);
+    } 
+   console.log(DATOS);
+    formData.append("padron",JSON.stringify(DATOS));
+    formData.append("funcion","plantillaTareoExcel");
+
+    await fetch('../inc/exportar.inc.php',{
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data =>{
+       window.open(`..${data.archivo}`);
+    })
+    Swal.close();  */
 }
 
 const datosTareoPersonal = () =>{

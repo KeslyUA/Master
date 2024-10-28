@@ -18,6 +18,8 @@
             echo json_encode(validarColaborador($pdo));
         }else if ($_POST['funcion'] === "tareosMaxFecha"){
             echo json_encode(tareosMaxFecha($pdo));
+        }else if ($_POST['funcion'] === "obtenerTareosProyectoColaborador"){
+            echo json_encode(obtenerTareosProyectoColaborador($pdo,$_POST['proyecto']));
         }
     }
  
@@ -293,21 +295,6 @@
         return $docData;
     }
 
-    function tareoPadronNuevo($pdo, $doc){
-        $docData = [];
-
-        $sql = "CALL getEstadosColaborador(?)";
-        
-        $statement = $pdo->prepare($sql);
-        $statement -> execute(array($doc));
-
-        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
-            $docData[] = $row;
-        }
-
-        return $docData;
-    }
-
     function estadoUsuarioPadron($pdo){
         $docData = [];
         date_default_timezone_set('America/Lima');
@@ -362,6 +349,47 @@
         }
 
         return $docData;
+    }
+
+    function obtenerTareosProyectoColaborador($pdo,$cc){
+        try {
+            /* $url = "http://sicalsepcon.net/api/matrizworkerdataapi.php?documento=".$doc;
+            $api = file_get_contents($url);
+            $datos =  json_decode($api);
+
+            $ubicacion = $datos[0]->ubigeo;
+            $origen = $datos[0]->origen;
+        
+            $ubigeo = "http://sicalsepcon.net/api/ubigeoapi.php?ubigeo=$ubicacion";
+            $apiUbigeo =  file_get_contents($ubigeo);
+            $datosUbigeo = json_decode($apiUbigeo);
+
+            $datosTareo = datosTareo($pdo,$doc);
+            $tareo = tareoPadron($pdo,$doc);
+
+            $origen = "http://sicalsepcon.net/api/ubigeoapi.php?ubigeo=$origen";
+            $apiOrigen =  file_get_contents($origen);
+            $datosOrigen = json_decode($apiOrigen); */
+            $tareos = [];
+            $url = "http://sicalsepcon.net/api/listapadronapi.php?cc=".$cc;
+            $api = file_get_contents($url);
+            $colaboradoresProyecto =  json_decode($api);
+
+            $sql = "SELECT nrodoc, GROUP_CONCAT(estado ORDER BY estado SEPARATOR ',') AS estados FROM tb_tareos where cproyecto = ? GROUP BY nrodoc";
+        
+            $statement = $pdo->prepare($sql);
+            $statement -> execute(array($cc));
+
+            while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+                $tareos[] = $row;
+            }
+
+            return array("colaboradoresProyecto" =>$colaboradoresProyecto,"tareos"=>$tareos);
+
+        }  catch ( PDOException $e) {
+            echo "Error: " . $e->getMessage;
+            return false;
+        }
     }
 
 ?>
