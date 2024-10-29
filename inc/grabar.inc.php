@@ -376,7 +376,7 @@
         }
     }
 
-    function grabarDatosTerceros({
+    function grabarDatosTerceros($pdo, $datos){
         try {
             $sql = "INSERT INTO tb_datosterceros 
                     SET tb_datosterceros.dni=?,
@@ -385,22 +385,43 @@
                         tb_datosterceros.nombres=?
                         tb_datosterceros.nacimiento=?,
                         tb_datosterceros.cut=?,
+                        tb_datosterceros.sangre=?,
                         tb_datosterceros.regimen=?,
                         tb_datosterceros.cargo=?,
                         tb_datosterceros.pais=?,
-                        tb_datosterceros.estado=?";
+                        tb_datosterceros.ubigeo=?,
+                        tb_datosterceros.estado=?,
+                        tb_datosterceros.telefono=?,
+                        tb_datosterceros.correo=?,
+                        tb_datosterceros.direccion=?,
+                        tb_datosterceros.proyecto=?,
+                        tb_datosterceros.empresa=?";
 
-            $activo = $datos['estado_user'] == "01" ? 1 : 0;
+            /* $activo = $datos['estado_user'] == "01" ? 1 : 0; */
             
             $statement = $pdo->prepare($sql);
-            $statement -> execute(array($datos['usuario'],
-                                        SHA1($datos['clave']),
-                                        $datos['user_doc'],
-                                        $activo));
+            $statement -> execute(array($datos['documento_tercero'],
+                                        $datos['paterno'],
+                                        $datos['materno'],
+                                        $datos['nombres'],
+                                        $datos['nacimiento'],
+                                        $datos['codigo'],
+                                        $datos['grupo'],
+                                        $datos['planilla'],
+                                        $datos['cargo'],
+                                        $datos['nacionalidad'],
+                                        $datos['ubigeo'],
+                                        $datos['estado'],
+                                        $datos['telefono'],
+                                        $datos['correo'],
+                                        $datos['direccion'],
+                                        $datos['proyecto'],
+                                        $datos['empresa']
+                                    ));
 
         } catch (PDOException $th) {
             echo "Error: " . $th->getMessage;
         }
-    })
+    }
 
 ?>

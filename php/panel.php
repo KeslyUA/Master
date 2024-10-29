@@ -37,7 +37,8 @@
                 
             </div>
         </div>
-        <div class="menu">
+        <div id="menu" class="menu">
+            <a href="#" id="toggleMenu"><i class="fas fa-bars"></i></a>
            <ul id="menuList" >
                 <li class="menu_selected"><a href="matriz" id="matriz" class="opciones">Matriz Personal</a></li>
                 <li><a href="padron" id="padron" class="opciones">Listado del Padron</a></li>

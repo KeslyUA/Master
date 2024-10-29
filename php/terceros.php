@@ -12,7 +12,7 @@
             <div class="titulo">
                 <span>DATOS PERSONALES DEL TRABAJADOR (TERCEROS)</span>
                 <div class="btnOpciones">   
-                    <a href="#" id="grabarDatos"><i class="fas fa-save botones"></i></a>
+                    <a href="#" id="grabarDatosTerceros"><i class="fas fa-save botones"></i></a>
                     <a href="#" id="hojaSalida"><i class="far fa-file-pdf botones"></i></a>
                     <a href="#" id="reporteDiario"><i class="fas fa-file-excel botones"></i></a>
                     <a href="#" class="botones"><i class="fas fa-window-close botones"></i></a>
@@ -60,9 +60,13 @@
                     <input type="text" name="nacionalidad" id="nacionalidad" >
                 </div>
                 <div class="dos_columnas">
+                    <label for="ubigeo">Ubigeo :</label>
+                    <input type="text" name="ubigeo" id="ubigeo">
+                </div>
+                <!-- <div class="dos_columnas">
                     <label for="procedencia">Procedencia :</label>
                     <input type="text" name="procedencia" id="procedencia" >
-                </div>
+                </div> -->
                 <div class="dos_columnas">
                     <label for="estado">Estado :</label>
                     <input type="text" name="estado" id="estado" >

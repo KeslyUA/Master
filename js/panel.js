@@ -172,6 +172,8 @@ document.addEventListener('click',(e)=>{
             obtenerDatosPadron();
         else if (e.target.closest('a').id == "descargarReporteTareo")
             obtenerReportePadron();
+        else if (e.target.closest('a').id == "grabarDatosTerceros")
+            grabarDatosMatrizTerceros();
         return false;
     }else if (e.target.matches(".select")){
         codigo_costos.value= e.target.value;
@@ -837,3 +839,22 @@ const readExcel = (e) => {
 }
 }
 
+document.getElementById("toggleMenu").addEventListener("click",function(e){
+    e.preventDefault();/*  */
+    document.getElementById("menu").classList.toggle('active');
+})
+
+function grabarDatosMatrizTerceros(){
+    //serializar los formulario en javascript
+    /* const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
+    datos.append("funcion","grabar");
+
+    fetch('../inc/grabar.inc.php',{
+        method: 'POST',
+        body:datos
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+    }); */
+}
