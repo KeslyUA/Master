@@ -13,6 +13,8 @@
             echo json_encode(grabarEstadosPersonal($pdo,$_POST));
         else if ($_POST['funcion'] == "actualizarEstadoPersonal")
             echo json_encode(actualizarEstadoPersonal($pdo,$_POST));
+        else if ($_POST['funcion'] == "grabarDatosTerceros")
+            echo json_encode(grabarDatosTerceros($pdo,$_POST));
     }
 
     function grabar($pdo,$datos){
@@ -382,7 +384,7 @@
                     SET tb_datosterceros.dni=?,
                         tb_datosterceros.paterno=?,
                         tb_datosterceros.materno=?,
-                        tb_datosterceros.nombres=?
+                        tb_datosterceros.nombres=?,
                         tb_datosterceros.nacimiento=?,
                         tb_datosterceros.cut=?,
                         tb_datosterceros.sangre=?,
@@ -398,29 +400,37 @@
                         tb_datosterceros.empresa=?";
 
             /* $activo = $datos['estado_user'] == "01" ? 1 : 0; */
-            
-            $statement = $pdo->prepare($sql);
-            $statement -> execute(array($datos['documento_tercero'],
-                                        $datos['paterno'],
-                                        $datos['materno'],
-                                        $datos['nombres'],
-                                        $datos['nacimiento'],
-                                        $datos['codigo'],
-                                        $datos['grupo'],
-                                        $datos['planilla'],
-                                        $datos['cargo'],
-                                        $datos['nacionalidad'],
-                                        $datos['ubigeo'],
-                                        $datos['estado'],
-                                        $datos['telefono'],
-                                        $datos['correo'],
-                                        $datos['direccion'],
-                                        $datos['proyecto'],
-                                        $datos['empresa']
-                                    ));
+            $valores = [
+                $datos['documento_tercero'] ?: null, // Si es vacío, se convierte en null
+                $datos['paterno'] ?: null,
+                $datos['materno'] ?: null,
+                $datos['nombres'] ?: null,
+                $datos['nacimiento'] ?: null,
+                $datos['codigo'] ?: null,
+                $datos['grupo'] ?: null,
+                $datos['planilla'] ?: null,
+                $datos['cargo'] ?: null,
+                $datos['nacionalidad'] ?: null,
+                $datos['ubigeo'] ?: null,
+                $datos['estado'] ?: null,
+                $datos['telefono'] ?: null,
+                $datos['correo'] ?: null,
+                $datos['direccion'] ?: null,
+                $datos['proyecto'] ?: null,
+                $datos['empresa'] ?: null
+            ];
 
+            $statement = $pdo->prepare($sql);
+            $statement -> execute($valores);
+                                    
+            // Verificar si se insertaron filas
+            if ($statement->rowCount() > 0) {
+                return ['message' => "Datos insertados correctamente", 'datos'=>$datos];
+            } else {
+                return ['message' => "No se insentaron datos", 'datos'=>$datos];
+            }
         } catch (PDOException $th) {
-            echo "Error: " . $th->getMessage;
+            return ['message' => "Error: " . $th->getMessage()];
         }
     }
 

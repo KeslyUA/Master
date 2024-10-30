@@ -25,43 +25,43 @@
                 </div>
                 <div class="dos_columnas">
                     <label for="paterno">Ap.Paterno:</label>
-                    <input type="text" name="paterno" id="paterno" >
+                    <input type="text" name="paterno" id="paterno" form="data_matriz">
                 </div>
                <div class="dos_columnas">
                     <label for="materno">Ap.Materno :</label>
-                    <input type="text" name="materno" id="materno" >
+                    <input type="text" name="materno" id="materno"  form="data_matriz">
                 </div>
                 <div  class="tres_columnas">
                     <label for="nombres">Nombres :</label>
-                    <input type="text" name="nombres" id="nombres" >
+                    <input type="text" name="nombres" id="nombres"  form="data_matriz">
                 </div>
                  <div class="dos_columnas">
                     <label for="nacimiento">F.Nacimiento :</label>
-                    <input type="date" name="nacimiento" id="nacimiento" >
+                    <input type="date" name="nacimiento" id="nacimiento"  form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="codigo">Código :</label>
-                    <input type="text" name="codigo" id="codigo" >
+                    <input type="text" name="codigo" id="codigo"  form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="grupo">Grupo Sanguineo:</label>
-                    <input type="text" name="grupo" id="grupo" >
+                    <input type="text" name="grupo" id="grupo"  form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="planilla">Planilla:</label>
-                    <input type="text" name="planilla" id="planilla" >
+                    <input type="text" name="planilla" id="planilla"  form="data_matriz">
                 </div>
                 <div class="tres_columnas">
                     <label for="cargo">Cargo :</label>
-                    <input type="text" name="cargo" id="cargo" >
+                    <input type="text" name="cargo" id="cargo"  form="data_matriz">
                 </div>
                 <div class="tres_columnas">
                     <label for="nacionalidad">Nacionalidad :</label>
-                    <input type="text" name="nacionalidad" id="nacionalidad" >
+                    <input type="text" name="nacionalidad" id="nacionalidad"  form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="ubigeo">Ubigeo :</label>
-                    <input type="text" name="ubigeo" id="ubigeo">
+                    <input type="text" name="ubigeo" id="ubigeo" form="data_matriz">
                 </div>
                 <!-- <div class="dos_columnas">
                     <label for="procedencia">Procedencia :</label>
@@ -69,19 +69,19 @@
                 </div> -->
                 <div class="dos_columnas">
                     <label for="estado">Estado :</label>
-                    <input type="text" name="estado" id="estado" >
+                    <input type="text" name="estado" id="estado"  form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="telefono">Teléfono :</label>
-                    <input type="text" name="telefono" id="telefono" >
+                    <input type="text" name="telefono" id="telefono"  form="data_matriz">
                 </div>
                 <div class="tres_columnas">
                     <label for="correo">Correo Electrónico :</label>
-                    <input type="text" name="correo" id="correo" >
+                    <input type="text" name="correo" id="correo"  form="data_matriz">
                 </div>
                 <div class="tres_columnas">
                     <label for="direccion">Direccion :</label>
-                    <input type="text" name="direccion" id="direccion">
+                    <input type="text" name="direccion" id="direccion" form="data_matriz">
                 </div>
                 <div class="cuatro_columnas">
                     <label for="dpto">Dpto :</label>
@@ -97,23 +97,23 @@
                 </div>
                 <div class="dos_columnas">
                     <label for="fecha_ingreso">Fecha Ingreso :</label>
-                    <input type="date" name="fecha_ingreso" id="fecha_ingreso">
+                    <input type="date" name="fecha_ingreso" id="fecha_ingreso" form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="inicio_contrato">Inicio contrato :</label>
-                    <input type="date" name="inicio_contrato" id="inicio_contrato">
+                    <input type="date" name="inicio_contrato" id="inicio_contrato" form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="fin_contrato">Fin Contrato :</label>
-                    <input type="date" name="fin_contrato" id="fin_contrato">
+                    <input type="date" name="fin_contrato" id="fin_contrato" form="data_matriz">
                 </div>
                 <div class="cuatro_columnas">
                     <label for="proyecto">Proyecto :</label>
-                    <input type="text" name="proyecto" id="proyecto">
+                    <input type="text" name="proyecto" id="proyecto" form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="proyecto">Empresa :</label>
-                    <input type="text" name="empresa" id="empresa">
+                    <input type="text" name="empresa" id="empresa" form="data_matriz">
                 </div>
             </div>
         </div>

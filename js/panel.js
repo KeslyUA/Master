@@ -1,4 +1,4 @@
-import {buscarDatos, buscarDatosTerceros} from "./matriz.js";
+import {asd, buscarDatos, buscarDatosTerceroDB, buscarDatosTerceros} from "./matriz.js";
 import {calcularfechas,mostrarMensaje} from "./funciones.js";
 import {buscarDatosUsuarios} from "./usuarios.js";
 import {buscarProyectos,getColaboradorRegistro,getTareo,listarPadron} from "./padron.js";
@@ -100,7 +100,7 @@ document.addEventListener('focusin',(e) =>{
     }
 })
 
-document.addEventListener('keypress',(e)=>{
+document.addEventListener('keypress',async (e)=>{
     if (e.target.id == 'documento'){
         if (e.keyCode === 13) {
             buscarDatos(e.target.value);
@@ -132,7 +132,13 @@ document.addEventListener('keypress',(e)=>{
         buscar(document.getElementById(e.target.id).value); 
     }else if (e.target.id == 'documento_tercero'){
         if (e.keyCode === 13) {
-            buscarDatosTerceros(e.target.value);
+            /* buscarDatosTerceros(e.target.value); */
+            /* let datoTercero = await buscarDatosTerceroDB(e.target.value);
+            console.log(datoTercero)
+            if(!datoTercero){
+                buscarDatosTerceros(e.target.value);
+            } */
+           asd(e.target.value);
         }
     }
 })
@@ -846,8 +852,8 @@ document.getElementById("toggleMenu").addEventListener("click",function(e){
 
 function grabarDatosMatrizTerceros(){
     //serializar los formulario en javascript
-    /* const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
-    datos.append("funcion","grabar");
+    const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
+    datos.append("funcion","grabarDatosTerceros");
 
     fetch('../inc/grabar.inc.php',{
         method: 'POST',
@@ -856,5 +862,47 @@ function grabarDatosMatrizTerceros(){
     .then(response => response.json())
     .then(data => {
         console.log(data);
-    }); */
+    });
 }
+
+/* document.getElementById("ubigeo").addEventListener("blur", function() {
+    console.log("El campo ha perdido el foco");
+    getUbigeo(); // Asegúrate de que esta función esté definida
+}); */
+document.addEventListener("focusout", (e)=>{
+    if(e.target.id == 'ubigeo'){
+        getUbigeo();
+    }
+})
+function getUbigeo(){
+    let ubigeo = document.getElementById("ubigeo").value;
+    const formData = new FormData();
+    formData.append("funcion","obtenerUbigeo");
+    formData.append("ubigeo", ubigeo);
+    fetch('../inc/busquedas.inc.php',{
+        method: 'POST',
+        body:formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        document.getElementById("dist").value=data.ubigeo.dist;
+        document.getElementById("dpto").value=data.ubigeo.dpto;
+        document.getElementById("prov").value=data.ubigeo.prov;
+    });
+}
+
+function obtenerTercero(dni){
+    const formData = new FormData();
+    formData.append("funcion","obtenerTercero");
+    formData.append("dni", dni);
+    fetch('../inc/busquedas.inc.php',{
+        method: 'POST',
+        body:formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+    });
+}
+

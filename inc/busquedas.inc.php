@@ -20,8 +20,14 @@
             echo json_encode(tareosMaxFecha($pdo));
         }else if ($_POST['funcion'] === "obtenerTareosProyectoColaborador"){
             echo json_encode(obtenerTareosProyectoColaborador($pdo,$_POST['proyecto']));
-        }else if ($_POST['funcion'] === "buscarDatosTerceros"){
-            echo json_encode(buscarDatosTerceros($_POST['dni']));
+        }else if ($_POST['funcion'] === "buscarDatosTercero"){
+            echo json_encode(buscarDatosTercero($_POST['dni']));
+        }else if ($_POST['funcion'] === "obtenerUbigeo"){
+            echo json_encode(obtenerUbigeo($_POST['ubigeo']));
+        }else if ($_POST['funcion'] === "obtenerTercero"){
+            echo json_encode(obtenerTercero($pdo, $_POST['dni']));
+        }else if ($_POST['funcion'] === "asd"){
+            echo json_encode(asd($pdo, $_POST['dni']));
         }
     }
  
@@ -377,7 +383,7 @@
         }
     }
 
-    function buscarDatosTerceros($dni){
+    function buscarDatosTercero($dni){
         // Datos
         $token = 'apis-token-11131.mkrQOQ0l78omH5r8C6plkKF7CpZ2ZFpx';
         // Iniciar llamada a API
@@ -407,5 +413,34 @@
         return $persona;
 
     }
+    function obtenerUbigeo($ubicacion){
+        $ubigeo = "http://sicalsepcon.net/api/ubigeoapi.php?ubigeo=$ubicacion";
+            $apiUbigeo =  file_get_contents($ubigeo);
+            $datosUbigeo = json_decode($apiUbigeo);
+        return ['ubigeo' => $datosUbigeo];
+    }
+
+    function obtenerTercero($pdo,$dni){
+        $sql = "SELECT * FROM tb_datosterceros where dni=?";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute(array($dni));
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+    function asd ($pdo,$dni){
+        $tercero = obtenerTercero($pdo, $dni);
+        if ($tercero){
+            $ubicacion = obtenerUbigeo($tercero['ubigeo']);
+            $datosTareo = datosTareo($pdo, $dni);
+            $tareo = tareoPadron($pdo,$dni);
+            return ['exist' => true, 'datos'=>$tercero, 'ubigeo'=> $ubicacion['ubigeo'], 'datosTareo' => $datosTareo, 'tareo'=>$tareo];
+        } else {
+            $terceroApi = buscarDatosTercero($dni);
+            return ['exist' => false, 'datos'=>$terceroApi];
+        }
+    }
+
 
 ?>
