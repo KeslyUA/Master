@@ -46,6 +46,7 @@
                 <li><a href="#" class="opciones">Fases</a></li>
                 <li><a href="#" class="opciones">Configuraciones</a></li>
                 <li><a href="terceros" id="terceros" class="opciones">Matriz Personal (Terceros)</a></li>
+                <li><a href="padronterceros" id="padronterceros" class="opciones">Lista del Padron (Terceros)</a></li>
                 <li><a href="usuarios" id="usuarios" class="opciones">Permisos de Usuarios</a></li>
            </ul>
         </div>

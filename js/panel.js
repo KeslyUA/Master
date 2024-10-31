@@ -190,8 +190,10 @@ document.addEventListener('click',(e)=>{
 })
 
 document.addEventListener('change',(e)=>{
-    if (e.target.matches(".select")){
+    if (e.target.matches(".select") && e.target.id === "select_proyectos"){
         listarPadron(e.target.value);
+    }if (e.target.matches(".select") && e.target.id === "select_proyectos_terceros"){
+        console.log("listando terceros")
     }if (e.target.matches(".archivo")){
         actualizarPadronExcel(fileUpload.files[0])
     }
