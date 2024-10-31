@@ -131,10 +131,10 @@ export const getTareoMaxFecha = () => {
 }; */
 
 
-export const listarPadronTerceros = (cc) => {
+export const listarPadronTerceros = (cc, selectedText) => {
     let formData = new FormData();
-    formData.append("funcion","listarPadron");
-    formData.append("costos",cc);
+    formData.append("funcion","listarPadronTerceros");
+    formData.append("proyecto",cc);
 
     const cuerpo = document.getElementById("tablaPersonalBody");
     let fila = 1;
@@ -168,7 +168,7 @@ export const listarPadronTerceros = (cc) => {
                     <td>${fila++}</td>
                     <td class="padding20left">${element.paterno+ ' ' + element.materno + ' ' + element.nombres}</td>
                     <td class="texto_centro">${element.dni}</td>
-                    <td class="texto_centro">${element.proyecto}</td>
+                    <td class="texto_centro">${element.proyecto} ${selectedText}</td>
                     <td class="texto_centro">${element.sucursal}</td>
                     <td><input type="text" value="${element.estado}" class="texto_centro"></td>
                     <td class="texto_centro">${element.fregsys != null ? element.fregsys : ''}</td>

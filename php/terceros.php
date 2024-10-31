@@ -109,10 +109,13 @@
                 </div>
                 <div class="cuatro_columnas">
                     <label for="proyecto">Proyecto :</label>
-                    <input type="text" name="proyecto" id="proyecto" form="data_matriz">
+                    <!-- <input type="text" name="proyecto" id="proyecto" form="data_matriz"> -->
+                    <select name="proyecto" id="proyecto" form="data_matriz" class="select">
+                        <option value="-1">Seleccionar</option>
+                    </select>
                 </div>
                 <div class="dos_columnas">
-                    <label for="proyecto">Empresa :</label>
+                    <label for="empresa">Empresa :</label>
                     <input type="text" name="empresa" id="empresa" form="data_matriz">
                 </div>
             </div>

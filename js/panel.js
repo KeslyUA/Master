@@ -1,7 +1,7 @@
-import {asd, buscarDatos, buscarDatosTerceroDB, buscarDatosTerceros} from "./matriz.js";
+import {asd, buscarDatos, buscarDatosTerceroDB, buscarDatosTerceros, listarProyectos} from "./matriz.js";
 import {calcularfechas,mostrarMensaje} from "./funciones.js";
 import {buscarDatosUsuarios} from "./usuarios.js";
-import {buscarProyectos,getColaboradorRegistro,getTareo,listarPadron} from "./padron.js";
+import {buscarProyectos,getColaboradorRegistro,getTareo,listarPadron, listarPadronTerceros} from "./padron.js";
 
 const documento = document.getElementById("documento");
 
@@ -26,6 +26,10 @@ const fecha_ingreso = document.getElementById("fecha_ingreso");
 const inicio_contrato = document.getElementById("inicio_contrato");
 const fin_contrato = document.getElementById("fin_contrato");
 const proyecto = document.getElementById("proyecto");
+
+const ubigeo = document.getElementById("ubigeo");
+const empresa = document.getElementById("empresa");
+const documento_tercero = document.getElementById("documento_tercero");
 
 const encargado = document.getElementById("encargado");
 const condicion = document.getElementById("encargado");
@@ -95,8 +99,10 @@ const select = document.getElementById("select_proyectos");
 document.addEventListener('DOMContentLoaded', datosUsuarioCabecera);
 
 document.addEventListener('focusin',(e) =>{
-    if (e.target.matches(".select")){
+    if (e.target.matches(".select") && (e.target.id === "select_proyectos" || e.target.id === "select_proyectos_terceros")){
         buscarProyectos(e.target);
+    }else if (e.target.matches(".select") && e.target.id === "proyecto"){
+        listarProyectos(e.target);
     }
 })
 
@@ -154,8 +160,15 @@ document.addEventListener('click',(e)=>{
         e.target.closest('li').classList.add('menu_selected');
     
         //////PARA CARGAR LA PAGINA EXTERNA//////
-        LoadElement(e.target.id+'.php');
-
+        LoadElement(e.target.id + '.php');
+        console.log(e.target.id)
+        if (e.target.id == "terceros") {
+            console.log("hola");
+            setTimeout(() => {
+                console.log(document.getElementById("proyecto"));
+                listarProyectos(document.getElementById("proyecto"));
+            }, 100); // Ajusta el tiempo según sea necesario
+        }
         return false;
     }else if (e.target.matches(".botones")){
         e.preventDefault();
@@ -193,7 +206,9 @@ document.addEventListener('change',(e)=>{
     if (e.target.matches(".select") && e.target.id === "select_proyectos"){
         listarPadron(e.target.value);
     }if (e.target.matches(".select") && e.target.id === "select_proyectos_terceros"){
-        console.log("listando terceros")
+        let selectedText = e.target.options[e.target.selectedIndex].text;
+        listarPadronTerceros(e.target.value, selectedText);
+        console.log(selectedText)
     }if (e.target.matches(".archivo")){
         actualizarPadronExcel(fileUpload.files[0])
     }
@@ -907,4 +922,5 @@ function obtenerTercero(dni){
         console.log(data);
     });
 }
+
 

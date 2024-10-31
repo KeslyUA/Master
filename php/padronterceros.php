@@ -23,7 +23,7 @@
             </div>
             <div class="cuerpo">
                 <div class="cuatro_columnas contenedor_proyectos">
-                    <label for="select_proyectos">Proyecto :</label>
+                    <label for="select_proyectos_terceros">Proyecto :</label>
                     <select name="select_proyectos_terceros" id="select_proyectos_terceros" class="select">
                         <option value="-1">Seleccionar</option>
                     </select>

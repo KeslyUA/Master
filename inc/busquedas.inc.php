@@ -28,6 +28,10 @@
             echo json_encode(obtenerTercero($pdo, $_POST['dni']));
         }else if ($_POST['funcion'] === "asd"){
             echo json_encode(asd($pdo, $_POST['dni']));
+        }else if ($_POST['funcion'] === "obtenerProyectos"){
+            echo json_encode(obtenerProyectos($pdo));
+        }else if ($_POST['funcion'] === "listarPadronTerceros"){
+            echo json_encode(listarPadronTerceros($pdo, $_POST['proyecto']));
         }
     }
  
@@ -442,5 +446,40 @@
         }
     }
 
+    function obtenerProyectos($pdo){{
+        $docData = [];
 
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
+        $sql = "SELECT DISTINCT
+                CONCAT(TRIM(ccodproy),'00') AS ccodproy, 
+                CONCAT(CONCAT(TRIM(ccodproy),'00'),' ', TRIM(cdesproy), COALESCE(CONCAT(' / ',TRIM(cabrevia)),'')) AS cdesproy 
+                FROM ibis.tb_proyectos
+                WHERE ccodproy NOT LIKE '%.%'
+                GROUP BY ccodproy";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute();
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }}
+
+    function listarPadronTerceros($pdo, $cc){
+        $docData = [];
+
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
+        $sql = "SELECT * FROM tb_datosterceros WHERE proyecto = ?";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute(array($cc));
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return array("datos" => $docData);
+    }
 ?>

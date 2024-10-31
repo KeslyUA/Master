@@ -100,6 +100,8 @@ export const buscarDatosTerceros = (dni) =>{
         .then(response => response.json())
         .then(data => {
             console.log(data);
+            console.log(document.getElementById("data_matriz"));
+            document.getElementById("data_matriz")[0].reset();
             paterno.value           = data.apellidoPaterno;
             materno.value           = data.apellidoMaterno;
             nombres.value           = data.nombres;
@@ -156,6 +158,8 @@ export const asd = (dni) =>{
             telefono.value          = data.datos['telefono'];
             proyecto.value          = data.datos['proyecto'];
             proyecto_actual.value   = data.datos['proyecto'];
+            ubigeo.value            = data.datos['ubigeo'];
+            empresa.value           = data.datos['empresa'];
 
             dpto.value          = data.ubigeo['dpto'];
             prov.value          = data.ubigeo['prov'];
@@ -183,7 +187,7 @@ export const asd = (dni) =>{
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
             }else{
-                document.getElementById("data_matriz")[0].reset;
+                document.getElementById("data_matriz")[0].reset();
             }
             let valor,index = 1,activos = 0,descanso = 0,medico = 0,color_fondo;
 
@@ -203,9 +207,14 @@ export const asd = (dni) =>{
             document.getElementById('activo').value = activos;
         }
         else {
+            document.getElementById("data_matriz").reset();
+            documento_tercero.value = data.datos.numeroDocumento;
             paterno.value           = data.datos.apellidoPaterno;
             materno.value           = data.datos.apellidoMaterno;
             nombres.value           = data.datos.nombres;
+            dpto.value              = '';
+            prov.value              = '';
+            dist.value              = '';
         }
     });
 }
@@ -295,3 +304,29 @@ export const asd = (dni) =>{
 
     return true;
 } */
+
+    
+export const listarProyectos = (select) =>{
+    const formData = new FormData();
+        formData.append("funcion","obtenerProyectos");
+        select.innerHTML = `<option value='-1'>Seleccionar</option>`;
+
+        try {
+            fetch('../inc/busquedas.inc.php',{
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+               data.forEach(element => {
+                    let option = document.createElement("option");
+                    option.value = element.ccodproy;
+                    option.innerHTML = element.cdesproy;
+    
+                    select.appendChild(option);
+               })
+            })
+        } catch (error) {
+            console.log(error.message);
+        }
+}
