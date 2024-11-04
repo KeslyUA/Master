@@ -1,4 +1,4 @@
-import {asd, buscarDatos, buscarDatosTerceroDB, buscarDatosTerceros, listarProyectos} from "./matriz.js";
+import {buscarDatosColaboradorTercero, buscarDatos, buscarDatosTerceroDB, buscarDatosTerceros, listarProyectos} from "./matriz.js";
 import {calcularfechas,mostrarMensaje} from "./funciones.js";
 import {buscarDatosUsuarios} from "./usuarios.js";
 import {buscarProyectos,getColaboradorRegistro,getTareo,listarPadron, listarPadronTerceros} from "./padron.js";
@@ -30,6 +30,7 @@ const proyecto = document.getElementById("proyecto");
 const ubigeo = document.getElementById("ubigeo");
 const empresa = document.getElementById("empresa");
 const documento_tercero = document.getElementById("documento_tercero");
+const sucursal = document.getElementById("sucursal");
 
 const encargado = document.getElementById("encargado");
 const condicion = document.getElementById("encargado");
@@ -144,7 +145,7 @@ document.addEventListener('keypress',async (e)=>{
             if(!datoTercero){
                 buscarDatosTerceros(e.target.value);
             } */
-           asd(e.target.value);
+            buscarDatosColaboradorTercero(e.target.value);
         }
     }
 })
@@ -768,7 +769,7 @@ const generarReportePadron = async () => {
     /* colaboradores += dataReporte.colaboradoresProyectoTerceros; */
     colaboradores.forEach((item,index) => {
         let dato = {};
-        dato['item']        = index;
+        dato['item']        = index+1;
         dato['nombres']     = `${item.paterno} ${item.materno} ${item.nombres}`;
         dato['documento']   = item.dni;
         dato['proyecto']   = item.proyecto;

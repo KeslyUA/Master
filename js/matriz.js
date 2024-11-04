@@ -130,9 +130,9 @@ export const buscarDatosTerceroDB = (dni) =>{
         console.log(error.message);
     }
 }
-export const asd = (dni) =>{
+export const buscarDatosColaboradorTercero = (dni) =>{
     const formData = new FormData();
-    formData.append("funcion","asd");
+    formData.append("funcion","buscarDatosColaboradorTercero");
     formData.append("dni", dni);
     fetch('../inc/busquedas.inc.php',{
         method: 'POST',
@@ -160,15 +160,17 @@ export const asd = (dni) =>{
             proyecto_actual.value   = data.datos['proyecto'];
             ubigeo.value            = data.datos['ubigeo'];
             empresa.value           = data.datos['empresa'];
+            sucursal.value          = data.datos['sucursal'];
 
             dpto.value          = data.ubigeo['dpto'];
             prov.value          = data.ubigeo['prov'];
             dist.value          = data.ubigeo['dist'];
 
             if (data.datosTareo.length > 0) {
+                /* document.getElementById("data_matriz")[1].reset(); */
                 encargado.value = data.datosTareo[0]['cencargado'];
                 condicion.value = data.datosTareo[0]['ncondicion'];
-                personal.value = data.datosTareo[0]['npersonal'];;
+                personal.value = data.datosTareo[0]['npersonal'];
                 especialidad.value = data.datosTareo[0]['cespecialidad'];
                 manoobra.value = data.datosTareo[0]['nmanoobra'];
                 proyecto_actual.value = data.datosTareo[0]['cproyecto'];
@@ -187,7 +189,27 @@ export const asd = (dni) =>{
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
             }else{
-                document.getElementById("data_matriz")[0].reset();
+                
+                encargado.value = '';
+                condicion.value = '';
+                personal.value = '';
+                especialidad.value = '';
+                manoobra.value = '';
+                proyecto_actual.value = '';
+                fase_actual.value = '';
+                ubicacion.value = '';
+                regimen_trabajo.value = '';
+                ingreso_obra.value = '';
+                salida_obra.value = '';
+                retorno_programado.value = '';
+                dias_goce.value = '';
+                dias_libre.value = '';
+                dias_campo.value = '';
+                dias_reales.value = '';
+                observaciones.value = '';
+                motivo_descanso.value = '';
+                //fecha_cese.value = data.datosTareo[0]['fcese'];
+                motivo_cese.value = '';
             }
             let valor,index = 1,activos = 0,descanso = 0,medico = 0,color_fondo;
 

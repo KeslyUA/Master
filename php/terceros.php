@@ -85,15 +85,15 @@
                 </div>
                 <div class="cuatro_columnas">
                     <label for="dpto">Dpto :</label>
-                    <input type="text" name="dpto" id="dpto">
+                    <input type="text" name="dpto" id="dpto" disabled>
                 </div>
                 <div class="cuatro_columnas">
                     <label for="prov">Prov :</label>
-                    <input type="text" name="prov" id="prov">
+                    <input type="text" name="prov" id="prov" disabled>
                 </div>
                 <div class="cuatro_columnas">
                     <label for="dist">Dist :</label>
-                    <input type="text" name="dist" id="dist">
+                    <input type="text" name="dist" id="dist" disabled>
                 </div>
                 <div class="dos_columnas">
                     <label for="fecha_ingreso">Fecha Ingreso :</label>
@@ -113,6 +113,10 @@
                     <select name="proyecto" id="proyecto" form="data_matriz" class="select">
                         <option value="-1">Seleccionar</option>
                     </select>
+                </div>
+                <div class="dos_columnas">
+                    <label for="sucursal">Sucursal :</label>
+                    <input type="text" name="sucursal" id="sucursal" form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="empresa">Empresa :</label>

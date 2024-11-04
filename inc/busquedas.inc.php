@@ -26,8 +26,8 @@
             echo json_encode(obtenerUbigeo($_POST['ubigeo']));
         }else if ($_POST['funcion'] === "obtenerTercero"){
             echo json_encode(obtenerTercero($pdo, $_POST['dni']));
-        }else if ($_POST['funcion'] === "asd"){
-            echo json_encode(asd($pdo, $_POST['dni']));
+        }else if ($_POST['funcion'] === "buscarDatosColaboradorTercero"){
+            echo json_encode(buscarDatosColaboradorTercero($pdo, $_POST['dni']));
         }else if ($_POST['funcion'] === "obtenerProyectos"){
             echo json_encode(obtenerProyectos($pdo));
         }else if ($_POST['funcion'] === "listarPadronTerceros"){
@@ -435,7 +435,7 @@
         return $result;
     }
 
-    function asd ($pdo,$dni){
+    function buscarDatosColaboradorTercero ($pdo,$dni){
         $tercero = obtenerTercero($pdo, $dni);
         if ($tercero){
             $ubicacion = obtenerUbigeo($tercero['ubigeo']);
