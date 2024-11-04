@@ -131,7 +131,7 @@ export const getTareoMaxFecha = () => {
 }; */
 
 
-export const listarPadronTerceros = (cc, selectedText) => {
+export const listarPadronTerceros = async (cc, selectedText) => {
     let formData = new FormData();
     formData.append("funcion","listarPadronTerceros");
     formData.append("proyecto",cc);
@@ -141,7 +141,7 @@ export const listarPadronTerceros = (cc, selectedText) => {
 
     cuerpo.innerHTML = "";
     let estadosTareo
-    getTareoMaxFecha().then(data => {
+    await getTareoMaxFecha().then(data => {
         estadosTareo = data;
         /* console.log(data) */
     });

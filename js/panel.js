@@ -190,7 +190,8 @@ document.addEventListener('click',(e)=>{
         else if (e.target.closest('a').id == "descargarPlantilla")
             obtenerDatosPadron();
         else if (e.target.closest('a').id == "descargarReporteTareo")
-            obtenerReportePadron();
+            //obtenerReportePadron();
+            generarReportePadron();
         else if (e.target.closest('a').id == "grabarDatosTerceros")
             grabarDatosMatrizTerceros();
         return false;
@@ -415,8 +416,11 @@ async function grabarDatosTareo(proyecto){
     //Obtener listado de tareos que tienen diferente estado al ya registrado en la base de datos
     const result = listTareoToday.filter(item2 => {
         const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
-        match.fingreso = match.fingreso.trim() === '' ? null : match.fingreso;
-        return match && (match.estado !== item2.estado || match.fingreso != item2.fingreso); // Devolver solo si el estado es diferente
+        if(match != undefined){
+            match.fingreso = match.fingreso.trim() === '' ? null : match.fingreso;
+            return match && (match.estado !== item2.estado || match.fingreso != item2.fingreso); // Devolver solo si el estado es diferente
+        }
+        
     }).map(item2 => {
         const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
 
@@ -732,6 +736,75 @@ const obtenerReportePadron = async () => {
        window.open(`..${data.archivo}`);
     })
     Swal.close();  */
+}
+
+const generarReportePadron = async () => {
+    Swal.fire({
+        title: "Generando el reporte",
+        html: "Se están cargando los datos del reporte, por favor, espere",
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      })
+    let formData = new FormData();
+    formData.append("funcion","obtenerTareosProyectoColaborador");
+    formData.append("proyecto", codigo_costos.value)
+
+    let dataReporte;
+    let datos = [];
+
+    await fetch('../inc/busquedas.inc.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data =>{
+        console.log(data);
+        dataReporte = data;
+    })
+
+    let colaboradores = [...dataReporte.colaboradoresProyecto, ...dataReporte.colaboradoresProyectoTerceros];
+    /* colaboradores += dataReporte.colaboradoresProyectoTerceros; */
+    colaboradores.forEach((item,index) => {
+        let dato = {};
+        dato['item']        = index;
+        dato['nombres']     = `${item.paterno} ${item.materno} ${item.nombres}`;
+        dato['documento']   = item.dni;
+        dato['proyecto']   = item.proyecto;
+        dato['ubicacion']  = item.sucursal;
+        dato['cargo'] = item.cargo;
+        dato['tareos'] = dataReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.estados.split(','));
+        let contador = {};
+        dato['tareos'].forEach(item => {
+            if (contador[item]) {
+                contador[item]++;
+            } else {
+                contador[item] = 1;
+            }
+        });
+        contador.total = (contador.A || 0) + 
+        (contador.D || 0) + 
+        (contador.F || 0) + 
+        (contador.M || 0) + 
+        (contador.V || 0) + 
+        (contador.P || 0);
+        dato['dias'] = contador;
+        datos.push(dato);
+    })
+    console.log(datos);
+    formData.append("padron",JSON.stringify(datos));
+    formData.append("funcion","plantillaTareoExcel");
+
+    await fetch('../inc/exportar.inc.php',{
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data =>{
+       window.open(`..${data.archivo}`);
+    })
+    Swal.close();
 }
 
 const datosTareoPersonal = () =>{

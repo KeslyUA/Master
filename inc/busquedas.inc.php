@@ -370,6 +370,8 @@
             $api = file_get_contents($url);
             $colaboradoresProyecto =  json_decode($api);
 
+            $colaboradoresProyectoTerceros = listarPadronTerceros($pdo, $cc);
+
             $sql = "SELECT nrodoc, GROUP_CONCAT(estado ORDER BY estado SEPARATOR ',') AS estados FROM tb_tareos where cproyecto = ? GROUP BY nrodoc";
         
             $statement = $pdo->prepare($sql);
@@ -379,7 +381,7 @@
                 $tareos[] = $row;
             }
 
-            return array("colaboradoresProyecto" =>$colaboradoresProyecto,"tareos"=>$tareos);
+            return array("colaboradoresProyecto" =>$colaboradoresProyecto,"colaboradoresProyectoTerceros" => $colaboradoresProyectoTerceros['datos'] ,"tareos"=>$tareos);
 
         }  catch ( PDOException $e) {
             echo "Error: " . $e->getMessage;
