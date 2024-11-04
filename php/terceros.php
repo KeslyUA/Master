@@ -12,11 +12,11 @@
             <div class="titulo">
                 <span>DATOS PERSONALES DEL TRABAJADOR (TERCEROS)</span>
                 <div class="btnOpciones">   
-                    <a href="#" id="grabarDatosTerceros"><i class="fas fa-save botones"></i></a>
-                    <a href="#" id="hojaSalida"><i class="far fa-file-pdf botones"></i></a>
-                    <a href="#" id="reporteDiario"><i class="fas fa-file-excel botones"></i></a>
-                    <a href="#" class="botones"><i class="fas fa-window-close botones"></i></a>
-                </div>
+                    <a href="#" id="grabarDatosTerceros"><i class="fas fa-save botones"></i><p>Grabar</p></a>
+                    <a href="#" id="hojaSalida"><i class="far fa-file-pdf botones"></i><p>Hoja Salida</p></a>
+                    <a href="#" id="reporteDiario"><i class="fas fa-file-excel botones"></i><p>Reporte Diario</p></a>
+<!--                     <a href="#" class="botones"><i class="fas fa-window-close botones"></i><p>Botones</p></a>
+ -->                </div>
             </div>
             <div class="cuerpo">
                 <div class="dos_columnas">
