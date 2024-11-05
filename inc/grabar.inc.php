@@ -15,6 +15,8 @@
             echo json_encode(actualizarEstadoPersonal($pdo,$_POST));
         else if ($_POST['funcion'] == "grabarDatosTerceros")
             echo json_encode(grabarDatosTerceros($pdo,$_POST));
+        else if ($_POST['funcion'] == "actualizarAccesoProyecto")
+            echo json_encode(actualizarAccesoProyecto($pdo, $_POST['idreg']));
     }
 
     function grabar($pdo,$datos){
@@ -387,6 +389,7 @@
                         tb_datosterceros.nombres=?,
                         tb_datosterceros.nacimiento=?,
                         tb_datosterceros.cut=?,
+                        tb_datosterceros.sucursal=?,
                         tb_datosterceros.sangre=?,
                         tb_datosterceros.regimen=?,
                         tb_datosterceros.cargo=?,
@@ -407,6 +410,7 @@
                 $datos['nombres'] ?: null,
                 $datos['nacimiento'] ?: null,
                 $datos['codigo'] ?: null,
+                $datos['sucursal'] ?: null,
                 $datos['grupo'] ?: null,
                 $datos['planilla'] ?: null,
                 $datos['cargo'] ?: null,
@@ -425,12 +429,34 @@
                                     
             // Verificar si se insertaron filas
             if ($statement->rowCount() > 0) {
-                return ['message' => "Datos insertados correctamente", 'datos'=>$datos];
+                return ['success'=> true, 'message' => "Datos insertados correctamente", 'datos'=>$datos];
             } else {
-                return ['message' => "No se insentaron datos", 'datos'=>$datos];
+                return ['success'=> false, 'message' => "No se insentaron datos", 'datos'=>$datos];
             }
         } catch (PDOException $th) {
             return ['message' => "Error: " . $th->getMessage()];
+        }
+    }
+
+    function actualizarAccesoProyecto($pdo,$idreg){
+        try {
+            $sql = "UPDATE tm_userproyectos
+                    SET tm_userproyectos.nflgactivo = 0
+                    WHERE idreg = ?";
+            
+            $statement = $pdo->prepare($sql);
+            $statement -> execute(array($idreg));
+
+            if ($statement->rowCount() > 0) {
+                return ['success'=> true];
+            } else {
+                return ['success'=> false];
+            } 
+                            
+        } catch (PDOException $th) {
+            /* echo "Error: " . $th->getMessage; */
+            return ['success'=> false, 'message' => "Error: " . $th->getMessage()];
+            /* return false; */
         }
     }
 

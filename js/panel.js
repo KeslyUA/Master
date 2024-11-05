@@ -201,6 +201,11 @@ document.addEventListener('click',(e)=>{
     }else if (e.target.matches(".modal__body")){
         vistaPreliminarHojaSalida.setAttribute('src',"");
         modalHojaSalida.style.display = 'none';
+    }else if (e.target.matches(".item_click_remove")){
+        if(e.target.closest('a').id == "deleteProyecto"){
+            deleteProyectoUsuario(e.target.closest('a'));
+        }
+        
     }
 })
 
@@ -265,10 +270,20 @@ function grabarDatosUsuario(){
         .then(response => response.json())
         .then(data => {
             console.log(data);
+            Swal.fire({
+                icon: "success",
+                title: "Guardado Correctamente",
+                text: "Se han guardado los registros exitosamente"
+              });
         });
 
     } catch (error) {
-        mostrarMensaje(error.message,"msj_error");
+        /* mostrarMensaje(error.message,"msj_error"); */
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Ha ocurrido un error"
+        });
     }   
 }
 
@@ -953,6 +968,19 @@ function grabarDatosMatrizTerceros(){
     .then(response => response.json())
     .then(data => {
         console.log(data);
+        if(data.success){
+            Swal.fire({
+                icon: "success",
+                title: "Guardado Correctamente",
+                text: "Se han guardado los registros exitosamente"
+            });
+        }else{
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Ha ocurrido un error"
+            });
+        }
     });
 }
 
@@ -997,4 +1025,31 @@ function obtenerTercero(dni){
     });
 }
 
-
+function deleteProyectoUsuario(e){
+    let id = e.getAttribute('id-reg');
+    console.log(`eliminando id: ${id}`)
+    let formData = new FormData()
+    formData.append("funcion", "actualizarAccesoProyecto");
+    formData.append("idreg", id)
+    fetch('../inc/grabar.inc.php',{
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success){
+            Swal.fire({
+                icon: "success",
+                title: "Guardado Correctamente",
+                text: "Se han guardado los registros exitosamente"
+              });
+        }else{
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Ha ocurrido un error"
+            });
+        }
+        
+    })
+}

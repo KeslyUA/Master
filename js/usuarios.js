@@ -32,7 +32,7 @@ export const buscarDatosUsuarios = (dni) =>{
                                 <td>${fila++}</td>
                                 <td>${element.ccodigo}</td>
                                 <td>${element.cdescripcion}</td>
-                                <td><a href="${element.idreg}" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
+                                <td><a href="#" id-reg="${element.idreg}" id="deleteProyecto" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt item_click_remove"></i></a></td>
                             </tr>`;
 
                     cuerpo.insertRow(-1).outerHTML = row;
