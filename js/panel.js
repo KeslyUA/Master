@@ -247,6 +247,11 @@ function grabarDatosMatriz(){
      .then(response => response.json())
      .then(data => {
          console.log(data);
+         Swal.fire({
+            icon: "success",
+            title: "Guardado Correctamente",
+            text: "Se han guardado los registros exitosamente"
+          });
      });
  
 }
