@@ -36,8 +36,13 @@
                     <label for="ubicacion_padron">Filtro:</label>
                     <input type="text" id="ubicacion_padron" name="ubicacion_padron">
                 </div>
+                <div class="cuatro_columnas">
+                    <label for="select_proyectos" >Fecha de Proceso :</label>
+                    <input type="date" name="fecha_proceso" id="fecha_proceso" value="<?php echo date('Y-m-d') ?>">
+                </div>
             </div>
-            <h1 style="margin: 1rem 0">Fecha de Proceso: <?php echo date("Y-m-d")?></h1>
+            <h1 style="margin: 1rem 0" id="fecha_text">Fecha de Proceso: <?php echo date("Y-m-d")?></h1>
+           
         </div>
         <div class="separator">
             <div class="titulo">

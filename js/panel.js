@@ -1,7 +1,7 @@
 import {buscarDatosColaboradorTercero, buscarDatos, buscarDatosTerceroDB, buscarDatosTerceros, listarProyectos} from "./matriz.js";
 import {calcularfechas,mostrarMensaje} from "./funciones.js";
 import {buscarDatosUsuarios} from "./usuarios.js";
-import {buscarProyectos,getColaboradorRegistro,getTareo,listarPadron, listarPadronTerceros} from "./padron.js";
+import {buscarProyectos,getColaboradorRegistro,getTareo,getTareosByFecha,listarPadron, listarPadronByFecha, listarPadronTerceros} from "./padron.js";
 
 const documento = document.getElementById("documento");
 
@@ -217,8 +217,12 @@ document.addEventListener('change',(e)=>{
         listarPadronTerceros(e.target.value, selectedText);
         console.log(selectedText)
     }if (e.target.matches(".archivo")){
-        actualizarPadronExcel(fileUpload.files[0])
-    }
+        actualizarPadronExcel(fileUpload.files[0]);
+    }if (e.target.id == "fecha_proceso"){
+        console.log(e.target.value);
+        /* getTareosByFecha(codigo_costos.value, e.target.value); */
+        listarPadronByFecha(codigo_costos.value, e.target.value);
+        document.getElementById("fecha_text").textContent = 'Fecha seleccionada: ' + e.target.value;}
 })
 
 function reporteMatriz(){
@@ -252,6 +256,7 @@ function grabarDatosMatriz(){
             title: "Guardado Correctamente",
             text: "Se han guardado los registros exitosamente"
           });
+        document.getElementById("existe").value = 1
      });
  
 }

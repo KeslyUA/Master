@@ -38,7 +38,60 @@ export const listarPadron = (cc) => {
 
     cuerpo.innerHTML = "";
     let estadosTareo
-    getTareoMaxFecha().then(data => {
+    getTareoMaxFecha(cc).then(data => {
+        estadosTareo = data;
+        console.log(data)
+    });
+    try {
+        fetch('../inc/busquedas.inc.php',{
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            /* data.datos.map(d => {
+
+            }) */
+           data.datos = data.datos.map(item => {
+                const user = estadosTareo.find(u => u.nrodoc == item.dni);
+                if(user){
+                    return {...item, estado: user.estado, fregsys: user.fregsys, fingreso: user.fingreso}
+                }
+                return { ...item, estado: 'A' };
+           })
+           console.log(data)
+           data.datos.forEach(element => {
+                let row = `<tr>
+                    <td>${fila++}</td>
+                    <td class="padding20left">${element.paterno+ ' ' + element.materno + ' ' + element.nombres}</td>
+                    <td class="texto_centro">${element.dni}</td>
+                    <td class="texto_centro">${element.proyecto}</td>
+                    <td class="texto_centro">${element.sucursal}</td>
+                    <td><input type="text" value="${element.estado}" class="texto_centro"></td>
+                    <td class="texto_centro">${element.fregsys != null ? element.fregsys : ''}</td>
+                    <td><input type="text" class="texto_centro" value="${element.fingreso != null ? element.fingreso : ''}"></td>
+                </tr>`;
+
+                cuerpo.insertRow(-1).outerHTML = row;
+           })
+           /* console.log(estadosTareo) */
+        })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+export const listarPadronByFecha = (cc, fecha) => {
+    let formData = new FormData();
+    formData.append("funcion","listarPadron");
+    formData.append("costos",cc);
+
+    const cuerpo = document.getElementById("tablaPersonalBody");
+    let fila = 1;
+
+    cuerpo.innerHTML = "";
+    let estadosTareo
+    getTareosByFecha(cc,fecha).then(data => {
         estadosTareo = data;
         /* console.log(data) */
     });
@@ -104,9 +157,10 @@ export const getColaboradorRegistro = () => {
     .then(data => {return data})
     
 }
-export const getTareoMaxFecha = () => {
+export const getTareoMaxFecha = (cc) => {
     let formData = new FormData();
     formData.append("funcion","tareosMaxFecha");
+    formData.append("proyecto",cc)
     return fetch('../inc/busquedas.inc.php',{
         method: 'POST',
         body: formData
@@ -182,4 +236,16 @@ export const listarPadronTerceros = async (cc, selectedText) => {
     } catch (error) {
         console.log(error.message);
     }
+}
+
+export const getTareosByFecha = (cc, fecha) => {
+    let formData = new FormData();
+    formData.append("funcion","getTareosByFecha");
+    formData.append("fecha",fecha);
+    formData.append("proyecto",cc)
+    return fetch('../inc/busquedas.inc.php',{
+        method: 'POST',
+        body: formData
+    }).then(response => response.json())
+    .then(data => {console.log(data); return data})
 }

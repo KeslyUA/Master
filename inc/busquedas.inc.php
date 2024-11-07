@@ -17,7 +17,7 @@
         }else if ($_POST['funcion'] === "validarColaborador"){
             echo json_encode(validarColaborador($pdo));
         }else if ($_POST['funcion'] === "tareosMaxFecha"){
-            echo json_encode(tareosMaxFecha($pdo));
+            echo json_encode(tareosMaxFecha($pdo, $_POST['proyecto']));
         }else if ($_POST['funcion'] === "obtenerTareosProyectoColaborador"){
             echo json_encode(obtenerTareosProyectoColaborador($pdo,$_POST['proyecto']));
         }else if ($_POST['funcion'] === "buscarDatosTercero"){
@@ -32,6 +32,8 @@
             echo json_encode(obtenerProyectos($pdo));
         }else if ($_POST['funcion'] === "listarPadronTerceros"){
             echo json_encode(listarPadronTerceros($pdo, $_POST['proyecto']));
+        }else if ($_POST['funcion'] === "getTareosByFecha"){
+            echo json_encode(getTareosByFecha($pdo, $_POST));
         }
     }
  
@@ -347,14 +349,30 @@
         return $docData;
     }
 
-    function tareosMaxFecha($pdo) {
+    function tareosMaxFecha($pdo, $proyecto) {
         $docData = [];
 
         /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
-        $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = (SELECT DATE(MAX(fregsys)) FROM tb_tareos)";
+        $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = (SELECT DATE(MAX(fregsys)) FROM tb_tareos WHERE cproyecto = ?)";
         
         $statement = $pdo->prepare($sql);
-        $statement -> execute();
+        $statement -> execute(array($proyecto));
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+
+    function getTareosByFecha($pdo, $datos) {
+        $docData = [];
+
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
+        $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = ? AND cproyecto = ?" ;
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute(array($datos['fecha'], $datos['proyecto']));
 
         while($row = $statement->fetch(PDO::FETCH_ASSOC)){
             $docData[] = $row;

@@ -19,6 +19,8 @@
  -->                </div>
             </div>
             <div class="cuerpo">
+                <input type="hidden" name="existe" id="existeTercero" form="data_matriz">
+                <input type="hidden" name="existeTerceroTareoData" id="existeTerceroTareoData" form="data_matriz">
                 <div class="dos_columnas">
                     <label for="documento_tercero">D.Identidad :</label>
                     <input type="text" name="documento_tercero" id="documento_tercero" form="data_matriz">

@@ -58,8 +58,31 @@ export const buscarDatos = (dni) =>{
                 motivo_descanso.value = data.datosTareo[0]['cdescanso'];
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
+                document.getElementById("existe").value = 1;
             }else{
-                document.getElementById("data_matriz")[0].reset;
+                /* document.getElementById("data_matriz")[0].reset; */
+                encargado.value = '';
+                condicion.value = -1;
+                personal.value = -1;
+                especialidad.value = '';
+                manoobra.value = -1;
+                proyecto_actual.value = '';
+                fase_actual.value = '';
+                ubicacion.value = '';
+                regimen_trabajo.value = '';
+                ingreso_obra.value = null;
+                salida_obra.value = null;
+                retorno_programado.value = null;
+                dias_goce.value = '';
+                dias_libre.value = '';
+                dias_campo.value = '';
+                dias_reales.value = '';
+                observaciones.value = '';
+                motivo_descanso.value = '';
+                motivo_cese.value = '';
+                fecha_cese.value = null;
+
+                document.getElementById("existe").value = 0;
             }
 
             let valor,index = 1,activos = 0,descanso = 0,medico = 0,color_fondo;
@@ -165,6 +188,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
             dpto.value          = data.ubigeo['dpto'];
             prov.value          = data.ubigeo['prov'];
             dist.value          = data.ubigeo['dist'];
+            document.getElementById("existeTercero").value = 1;
 
             if (data.datosTareo.length > 0) {
                 /* document.getElementById("data_matriz")[1].reset(); */
@@ -188,6 +212,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 motivo_descanso.value = data.datosTareo[0]['cdescanso'];
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
+                document.getElementById("existeTerceroTareoData").value = 1;
             }else{
                 
                 encargado.value = '';
@@ -210,6 +235,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 motivo_descanso.value = '';
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = '';
+                document.getElementById("existeTerceroTareoData").value = 0;
             }
             let valor,index = 1,activos = 0,descanso = 0,medico = 0,color_fondo;
 
@@ -237,6 +263,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
             dpto.value              = '';
             prov.value              = '';
             dist.value              = '';
+            document.getElementById("existeTercero").value = 0;
         }
     });
 }
