@@ -407,7 +407,7 @@
                                             $tareos[$i]->nrodoc)); */
                                             if ($tareos[$i]->fingreso === null) {
                                                 $sql = "UPDATE tb_tareos 
-                                                        SET fregsys = CURRENT_TIMESTAMP(),
+                                                        SET fmodificacion = CURRENT_TIMESTAMP(),
                                                             estado = ?,
                                                             fingreso = NULL
                                                         WHERE idreg = ? AND nrodoc = ?";
@@ -419,7 +419,7 @@
                                                 ];
                                             } else {
                                                 $sql = "UPDATE tb_tareos 
-                                                        SET fregsys = CURRENT_TIMESTAMP(),
+                                                        SET fmodificacion = CURRENT_TIMESTAMP(),
                                                             estado = ?,
                                                             fingreso = ?
                                                         WHERE idreg = ? AND nrodoc = ?";

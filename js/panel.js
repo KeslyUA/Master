@@ -1,7 +1,7 @@
 import {buscarDatosColaboradorTercero, buscarDatos, buscarDatosTerceroDB, buscarDatosTerceros, listarProyectos} from "./matriz.js";
 import {calcularfechas,mostrarMensaje} from "./funciones.js";
 import {buscarDatosUsuarios} from "./usuarios.js";
-import {buscarProyectos,getColaboradorRegistro,getTareo,getTareosByFecha,listarPadron, listarPadronByFecha, listarPadronTerceros} from "./padron.js";
+import {buscarProyectos,getColaboradorRegistro,getTareo,getTareosByFecha,listarPadron, listarPadronByFecha, listarPadronTerceros, listarPadronTercerosByFecha} from "./padron.js";
 
 const documento = document.getElementById("documento");
 
@@ -221,8 +221,16 @@ document.addEventListener('change',(e)=>{
     }if (e.target.id == "fecha_proceso"){
         console.log(e.target.value);
         /* getTareosByFecha(codigo_costos.value, e.target.value); */
-        listarPadronByFecha(codigo_costos.value, e.target.value);
-        document.getElementById("fecha_text").textContent = 'Fecha seleccionada: ' + e.target.value;}
+        if(e.target.getAttribute("esTercero") == 1){
+            let selectProy = document.getElementById("select_proyectos_terceros");
+            console.log(selectProy);
+            let selectedText = selectProy.options[selectProy.selectedIndex].text;
+            listarPadronTercerosByFecha(codigo_costos.value,selectedText, e.target.value)
+        }else {
+            listarPadronByFecha(codigo_costos.value, e.target.value);
+            document.getElementById("fecha_text").textContent = 'Fecha de Proceso: ' + e.target.value;}
+        }
+        
 })
 
 function reporteMatriz(){
@@ -371,32 +379,65 @@ function datosUsuarioCabecera () {
 }
 
 async function grabarDatosTareo(proyecto){
+    const fecha = new Date();
+    const fechaFormateada = fecha.toLocaleDateString('en-CA');
+    console.log(fechaFormateada);
+    const fechaProceso = document.getElementById("fecha_proceso").value;
+
+    
     let formData = new FormData();
     let lisTable = datosTareoPersonal(); //obtener tareos de la tabla de la vista
     let listTareoToday = await getTareo(); //obtener tareos del dia
-    console.log("lista de la tabla")
-    console.log(lisTable)
 
-    //obtener el numero de documento de los registrados de hoy
-    const listDocsRegistro = listTareoToday.map(item => item.nrodoc);
-    // Filtrar los elementos de lista1 que no están en nrodocLista2
-    const listNoRegistrado = lisTable.filter(item => !listDocsRegistro.includes(item.documento));
-    listNoRegistrado.map(item => {
-        item.fingreso = item.fingreso.trim() === '' ? null : item.fingreso;
-    })
-    console.log("lista de no registrados");
-    console.log(listNoRegistrado)
+    if(fechaFormateada == fechaProceso){
+        console.log("lista de la tabla")
+        console.log(lisTable)
 
-    formData.append("funcion","grabarEstadosPersonal");
-    formData.append("proyecto",proyecto);
-    formData.append("datosTareo",JSON.stringify(listNoRegistrado));
+        const listNoRegistrado = getDocumentosNoRegistrados(listTareoToday, lisTable);
 
-    //Agregar en la tabla los no registrados del dia de hoy
-    if(listNoRegistrado.length > 0){
-        /* Swal.fire({
-            title: 'Cargando...',
-            text: 'Por favor, espere un momento.',
-        }); */
+        console.log("lista de no registrados");
+        console.log(listNoRegistrado)
+        //Agregar en la tabla los no registrados del dia de hoy
+        if(listNoRegistrado.length > 0){
+            grabarNoRegistrados(listNoRegistrado);
+        }
+
+        const listStatesChanged = obtenerEstadosCambiados(lisTable, listTareoToday);
+        console.log(listStatesChanged);
+
+        //actualizar estado si encuentra estados diferentes
+        if(listStatesChanged.length > 0) {
+            actualizarDatosTareo(listStatesChanged)
+        }
+        /* let cc = document.getElementById("select_proyectos");
+        listarPadron(cc.value); */
+    }else{
+        console.log(false)
+        let tareosByFecha = await getTareosByFecha(proyecto, fechaProceso);
+        console.log(tareosByFecha)
+        const listStatesChanged = obtenerEstadosCambiados(lisTable, tareosByFecha);
+        console.log(listStatesChanged);
+        if(listStatesChanged.length > 0){
+            actualizarDatosTareo(listStatesChanged);
+        }
+    }
+    
+    function getDocumentosNoRegistrados(listaDeTareosDeHoy, listaTabla){
+        const documentosRegistrados = listaDeTareosDeHoy.map(item => item.nrodoc);
+        
+        // Filtrar los elementos de lista1 que no están en nrodocLista2
+        const documentosNoRegistrados = listaTabla.filter(item => !documentosRegistrados.includes(item.documento));
+        console.log(documentosNoRegistrados)
+        documentosNoRegistrados.map(item => {
+            item.fingreso = item.fingreso.trim() === '' ? null : item.fingreso;
+        })
+        return documentosNoRegistrados;
+    }
+
+    async function grabarNoRegistrados(NoRegistrados) {
+        formData.append("funcion","grabarEstadosPersonal");
+        formData.append("proyecto",proyecto);
+        formData.append("datosTareo",JSON.stringify(NoRegistrados));
         Swal.showLoading();
         await fetch('../inc/grabar.inc.php',{
             method: 'POST',
@@ -405,7 +446,7 @@ async function grabarDatosTareo(proyecto){
         .then(response => response.json())
         .then(data => {
             if(data){
-                console.log(`agregando ${listNoRegistrado.length} registros`);
+                console.log(`agregando ${NoRegistrados.length} registros`);
                 Swal.fire({
                     icon: "success",
                     title: "Guardado Correctamente",
@@ -426,40 +467,11 @@ async function grabarDatosTareo(proyecto){
                 text: "Ha ocurrido un error" + error
             });
         })
-    }
-
-    const lisTableStates = lisTable.map(item =>{
-        return {nrodoc: item.documento, estado: item.estado};
-    })
-    console.log("parseado lista de la tabla:");
-    console.log(lisTableStates)
-
-    //obtener tareos de hoy y comparar
-    
-    console.log(listTareoToday);
-    /* const filterData = lisTable.filter(item => item.estado !== 'A'); */
-
-    //Obtener listado de tareos que tienen diferente estado al ya registrado en la base de datos
-    const result = listTareoToday.filter(item2 => {
-        const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
-        if(match != undefined){
-            match.fingreso = match.fingreso.trim() === '' ? null : match.fingreso;
-            return match && (match.estado !== item2.estado || match.fingreso != item2.fingreso); // Devolver solo si el estado es diferente
-        }
         
-    }).map(item2 => {
-        const match = lisTable.find(item1 => item1.documento === item2.nrodoc);
-
-        /* const result = match.fingreso != null ? { ...item2, estado: match.estado, fingreso: match.fingreso } : {...item2, estado: match.estado}; */
-        return {...item2, estado: match.estado, fingreso: match.fingreso, item: match.item};
-    })
-
-    console.log(result);
-
-    //actualizar estado si encuentra estados diferentes
-    if(result.length > 0) {
+    }
+    async function actualizarDatosTareo(datosActualizar){
         formData.set("funcion","actualizarEstadoPersonal");
-        formData.append("updateDatosTareo", JSON.stringify(result));
+        formData.append("updateDatosTareo", JSON.stringify(datosActualizar));
         Swal.showLoading();
         await fetch('../inc/grabar.inc.php',{
             method: 'POST',
@@ -469,7 +481,7 @@ async function grabarDatosTareo(proyecto){
         .then(data => {
             console.log(data);
             if(data.success){
-                console.log(`actualizando ${result.length} registros`);
+                console.log(`actualizando ${datosActualizar.length} registros`);
                 Swal.fire({
                     icon: "success",
                     title: "Guardado Correctamente",
@@ -491,8 +503,35 @@ async function grabarDatosTareo(proyecto){
             });
         })
     }
-    /* let cc = document.getElementById("select_proyectos");
-    listarPadron(cc.value); */
+
+    function obtenerEstadosCambiados(listaTabla, tareosDeHoy){
+        const lisTableStates = listaTabla.map(item =>{
+            return {nrodoc: item.documento, estado: item.estado};
+        })
+        console.log("parseado lista de la tabla:");
+        console.log(lisTableStates)
+    
+        //obtener tareos de hoy y comparar
+        
+        console.log(tareosDeHoy);
+        /* const filterData = lisTable.filter(item => item.estado !== 'A'); */
+    
+        //Obtener listado de tareos que tienen diferente estado al ya registrado en la base de datos
+        const result = tareosDeHoy.filter(item2 => {
+            const match = listaTabla.find(item1 => item1.documento === item2.nrodoc);
+            if(match != undefined){
+                match.fingreso = match.fingreso.trim() === '' ? null : match.fingreso;
+                return match && (match.estado !== item2.estado || match.fingreso != item2.fingreso); // Devolver solo si el estado es diferente
+            }
+            
+        }).map(item2 => {
+            const match = listaTabla.find(item1 => item1.documento === item2.nrodoc);
+    
+            /* const result = match.fingreso != null ? { ...item2, estado: match.estado, fingreso: match.fingreso } : {...item2, estado: match.estado}; */
+            return {...item2, estado: match.estado, fingreso: match.fingreso, item: match.item};
+        })
+        return result;
+    }
 }
 
 /* async function grabarDatosTareo(proyecto){
