@@ -1,3 +1,4 @@
+<?php date_default_timezone_set('America/Lima');?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -51,7 +52,7 @@
                 </div>
             </div>
             <div class="cuerpo_tabla">
-                <table id="tablaPersonal">
+                <table id="tablaPersonal" tercero="1">
                     <thead>
                         <tr>
                             <th width="3%">...</th>

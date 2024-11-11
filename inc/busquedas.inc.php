@@ -17,7 +17,7 @@
         }else if ($_POST['funcion'] === "validarColaborador"){
             echo json_encode(validarColaborador($pdo));
         }else if ($_POST['funcion'] === "tareosMaxFecha"){
-            echo json_encode(tareosMaxFecha($pdo, $_POST['proyecto']));
+            echo json_encode(tareosMaxFecha($pdo, $_POST['proyecto'], $_POST['tercero']));
         }else if ($_POST['funcion'] === "obtenerTareosProyectoColaborador"){
             echo json_encode(obtenerTareosProyectoColaborador($pdo,$_POST['proyecto']));
         }else if ($_POST['funcion'] === "buscarDatosTercero"){
@@ -349,14 +349,19 @@
         return $docData;
     }
 
-    function tareosMaxFecha($pdo, $proyecto) {
+    function tareosMaxFecha($pdo, $proyecto, $tercero) {
         $docData = [];
 
+        if($tercero == 1){
+            $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = (SELECT DATE(MAX(fregsys)) FROM tb_tareos WHERE cproyecto = ? and nrodoc in (select distinct dni from tb_datosterceros)) and cproyecto  = ? and nrodoc in (select distinct dni from tb_datosterceros)";
+        }else {
+            $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = (SELECT DATE(MAX(fregsys)) FROM tb_tareos WHERE cproyecto = ? and nrodoc not in (select distinct dni from tb_datosterceros)) and cproyecto  = ? and nrodoc not in (select distinct dni from tb_datosterceros)";
+        }
         /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
-        $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = (SELECT DATE(MAX(fregsys)) FROM tb_tareos WHERE cproyecto = ?)";
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = (SELECT DATE(MAX(fregsys)) FROM tb_tareos WHERE cproyecto = ?)"; */
         
         $statement = $pdo->prepare($sql);
-        $statement -> execute(array($proyecto));
+        $statement -> execute(array($proyecto, $proyecto));
 
         while($row = $statement->fetch(PDO::FETCH_ASSOC)){
             $docData[] = $row;

@@ -32,6 +32,7 @@ export const listarPadron = (cc) => {
     let formData = new FormData();
     formData.append("funcion","listarPadron");
     formData.append("costos",cc);
+    formData.append("tercero", document.getElementById("tablaPersonal").getAttribute("tercero"))
 
     const cuerpo = document.getElementById("tablaPersonalBody");
     let fila = 1;
@@ -160,6 +161,7 @@ export const getColaboradorRegistro = () => {
 export const getTareoMaxFecha = (cc) => {
     let formData = new FormData();
     formData.append("funcion","tareosMaxFecha");
+    formData.append("tercero", document.getElementById("tablaPersonal").getAttribute("tercero"))
     formData.append("proyecto",cc)
     return fetch('../inc/busquedas.inc.php',{
         method: 'POST',
@@ -189,6 +191,7 @@ export const listarPadronTerceros = async (cc, selectedText) => {
     let formData = new FormData();
     formData.append("funcion","listarPadronTerceros");
     formData.append("proyecto",cc);
+    formData.append("tercero", document.getElementById("tablaPersonal").getAttribute("tercero"))
 
     const cuerpo = document.getElementById("tablaPersonalBody");
     let fila = 1;
