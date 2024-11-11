@@ -19,7 +19,7 @@
  -->                </div>
             </div>
             <div class="cuerpo">
-                <input type="hidden" name="existe" id="existeTercero" form="data_matriz">
+                <input type="hidden" name="existeTercero" id="existeTercero" form="data_matriz">
                 <input type="hidden" name="existeTerceroTareoData" id="existeTerceroTareoData" form="data_matriz">
                 <div class="dos_columnas">
                     <label for="documento_tercero">D.Identidad :</label>
@@ -61,10 +61,10 @@
                     <label for="nacionalidad">Nacionalidad :</label>
                     <input type="text" name="nacionalidad" id="nacionalidad"  form="data_matriz">
                 </div>
-                <div class="dos_columnas">
+                <!-- <div class="dos_columnas">
                     <label for="ubigeo">Ubigeo :</label>
                     <input type="text" name="ubigeo" id="ubigeo" form="data_matriz">
-                </div>
+                </div> -->
                 <!-- <div class="dos_columnas">
                     <label for="procedencia">Procedencia :</label>
                     <input type="text" name="procedencia" id="procedencia" >
@@ -87,15 +87,15 @@
                 </div>
                 <div class="cuatro_columnas">
                     <label for="dpto">Dpto :</label>
-                    <input type="text" name="dpto" id="dpto" disabled>
+                    <input type="text" name="dpto" id="dpto">
                 </div>
                 <div class="cuatro_columnas">
                     <label for="prov">Prov :</label>
-                    <input type="text" name="prov" id="prov" disabled>
+                    <input type="text" name="prov" id="prov">
                 </div>
                 <div class="cuatro_columnas">
                     <label for="dist">Dist :</label>
-                    <input type="text" name="dist" id="dist" disabled>
+                    <input type="text" name="dist" id="dist">
                 </div>
                 <div class="dos_columnas">
                     <label for="fecha_ingreso">Fecha Ingreso :</label>

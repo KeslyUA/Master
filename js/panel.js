@@ -97,6 +97,11 @@ const p31 = document.getElementById("p31");
 const user_doc = document.getElementById("user_doc");
 const select = document.getElementById("select_proyectos");
 
+let username = localStorage.getItem("username");
+if(!(username == "admin" || username == "adminrrhh")){
+    document.getElementById("usuarios").style.display = 'none';
+}
+
 document.addEventListener('DOMContentLoaded', datosUsuarioCabecera);
 
 document.addEventListener('focusin',(e) =>{
