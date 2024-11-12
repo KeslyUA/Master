@@ -210,7 +210,27 @@
                     <label for="motivo_descanso">Motivo de descanso :</label>
                     <input type="text" name="motivo_descanso" id="motivo_descanso" form="data_matriz">
                 </div>
-                
+                <div class="dos_columnas">
+                    <label for="regimen">Regimen :</label>
+                    <select name="regimen" id="regimen" form="data_matriz">
+                        <option value="-1">Seleccionar</option>
+                        <option value="12">Civil</option>
+                        <option value="13">Comun</option>
+                    </select>
+                </div>
+                <div class="dos_columnas">
+                    <label for="especificacion_contrato">Especificacion Contrato :</label>
+                    <select name="especificacion_contrato" id="especificacion_contrato" form="data_matriz">
+                        <option value="-1">Seleccionar</option>
+                        <option value="14">Facilidades</option>
+                        <option value="15">Soporte</option>
+                        <option value="16">Civil</option>
+                        <option value="17">Mecanica</option>
+                        <option value="18">E&I</option>
+                        <option value="19">Directo</option>
+                        <option value="19">Indirecto</option>
+                    </select>
+                </div>
             </div>
         </div>
         

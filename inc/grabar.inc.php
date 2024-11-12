@@ -59,10 +59,14 @@
                                                   tb_datostareo.cobservaciones = ?,
                                                   tb_datostareo.cdescanso = ?,
                                                   tb_datostareo.fcese = ?,
-                                                  tb_datostareo.cmotivocese = ?";
+                                                  tb_datostareo.cmotivocese = ?,
+                                                  tb_datostareo.nregimen = ?,
+                                                  tb_datostareo.nespecificacion = ?";
             
             $statement = $pdo->prepare($sql);
-            $statement -> execute(array($datos['documento'],
+            $nddoc = isset($datos['documento']) ? $datos['documento'] : (isset($datos['documento_tercero']) ? $datos['documento_tercero'] : null);
+
+            $statement -> execute(array($nddoc,
                                         $datos['encargado'],
                                         $datos['condicion'],
                                         $datos['personal'],
@@ -81,7 +85,9 @@
                                         $datos['observaciones'],
                                         $datos['motivo_descanso'],
                                         $datos['fecha_cese'],
-                                        $datos['motivo_cese']));
+                                        $datos['motivo_cese'],
+                                        $datos['regimen'],
+                                        $datos['especificacion_contrato']));
 
             $results = $statement ->fetchAll();
             $rowaffect = $statement->rowCount($sql);
@@ -120,10 +126,16 @@
                                                   tb_datostareo.cobservaciones = ?,
                                                   tb_datostareo.cdescanso = ?,
                                                   tb_datostareo.fcese = ?,
-                                                  tb_datostareo.cmotivocese = ?
+                                                  tb_datostareo.cmotivocese = ?,
+                                                  tb_datostareo.nregimen = ?,
+                                                  tb_datostareo.nespecificacion = ?
                         WHERE tb_datostareo.nddoc = ?";
             
             $statement = $pdo->prepare($sql);
+
+            $nddoc = isset($datos['documento']) ? $datos['documento'] : (isset($datos['documento_tercero']) ? $datos['documento_tercero'] : null);
+
+            
             $statement -> execute(array($datos['encargado'],
                                         $datos['condicion'],
                                         $datos['personal'],
@@ -143,7 +155,10 @@
                                         $datos['motivo_descanso'],
                                         $datos['fecha_cese'],
                                         $datos['motivo_cese'],
-                                        $datos['documento']));
+                                        $datos['regimen'],
+                                        $datos['especificacion_contrato'],
+                                        $nddoc
+                                       ));
 
             $results = $statement ->fetchAll();
             $rowaffect = $statement->rowCount($sql);
@@ -497,13 +512,15 @@
             $statement -> execute($valores);
                                     
             // Verificar si se insertaron filas
-            if ($statement->rowCount() > 0) {
+            /* if ($statement->rowCount() > 0) {
                 return ['success'=> true, 'message' => "Datos insertados correctamente", 'datos'=>$datos];
             } else {
                 return ['success'=> false, 'message' => "No se insentaron datos", 'datos'=>$datos];
-            }
+            } */
+           return true;
         } catch (PDOException $th) {
-            return ['message' => "Error: " . $th->getMessage()];
+            /* return ['message' => "Error: " . $th->getMessage()]; */
+            return false;
         }
     }
     function actualizarDatosTerceros($pdo, $datos){
@@ -519,7 +536,6 @@
                         tb_datosterceros.regimen=?,
                         tb_datosterceros.cargo=?,
                         tb_datosterceros.pais=?,
-                        tb_datosterceros.ubigeo=?,
                         tb_datosterceros.estado=?,
                         tb_datosterceros.telefono=?,
                         tb_datosterceros.correo=?,
@@ -530,7 +546,6 @@
 
             /* $activo = $datos['estado_user'] == "01" ? 1 : 0; */
             $valores = [
-                $datos['documento_tercero'] ?: null, // Si es vacío, se convierte en null
                 $datos['paterno'] ?: null,
                 $datos['materno'] ?: null,
                 $datos['nombres'] ?: null,
@@ -541,41 +556,50 @@
                 $datos['planilla'] ?: null,
                 $datos['cargo'] ?: null,
                 $datos['nacionalidad'] ?: null,
-                $datos['ubigeo'] ?: null,
                 $datos['estado'] ?: null,
                 $datos['telefono'] ?: null,
                 $datos['correo'] ?: null,
                 $datos['direccion'] ?: null,
                 $datos['proyecto'] ?: null,
-                $datos['empresa'] ?: null
+                $datos['empresa'] ?: null,
+                $datos['documento_tercero']
             ];
 
             $statement = $pdo->prepare($sql);
             $statement -> execute($valores);
                                     
             // Verificar si se insertaron filas
-            if ($statement->rowCount() > 0) {
+            /* if ($statement->rowCount() > 0) {
                 return ['success'=> true, 'message' => "Datos actualizados correctamente", 'datos'=>$datos];
             } else {
                 return ['success'=> false, 'message' => "No se actualizaron datos", 'datos'=>$datos];
-            }
+            } */
+           return true;
         } catch (PDOException $th) {
-            return ['message' => "Error: " . $th->getMessage()];
+            /* return ['message' => "Error: " . $th->getMessage()]; */
+            return false;
         }
     }
     function grabarTerceros($pdo, $datos){
-        if($datos['existe'] == 1){
-            $result = grabarDatosTerceros($pdo, $datos);
-        }else {
-            $result = actualizarDatosTerceros($pdo, $datos);
+        if ($datos['existeTercero'] == 0) {
+            $dataTercero = grabarDatosTerceros($pdo, $datos);
+            $mensajeTercero = "Datos de tercero guardados correctamente";
+        } else {
+            $dataTercero = actualizarDatosTerceros($pdo, $datos);
+            $mensajeTercero = "Datos de tercero actualizados correctamente";
         }
-
-        if($datos['existeTerceroTareoData' == 1]){
-            grabarDatosTareo($pdo, $datos);
-        }else {
-            actualizarDatosTareo($pdo, $datos);
+    
+        if ($datos['existeTerceroTareoData'] == 0) {
+            $datoTareo = grabarDatosTareo($pdo, $datos);
+            $mensajeTareo = "Datos de tareo guardados correctamente";
+        } else {
+            $datoTareo = actualizarDatosTareo($pdo, $datos);
+            $mensajeTareo = "Datos de tareo actualizados correctamente";
         }
-        return $result;
+    
+        return ['success' => true, 'message' => "$mensajeTercero. $mensajeTareo"];
+        /* return $result; */
+        
     }
     function actualizarAccesoProyecto($pdo,$idreg){
         try {

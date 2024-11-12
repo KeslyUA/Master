@@ -90,6 +90,8 @@
                             tb_datostareo.cdescanso,
                             tb_datostareo.fcese,
                             tb_datostareo.cmotivocese,
+                            tb_datostareo.nregimen,
+                            tb_datostareo.nespecificacion,
                             tb_datostareo.fregsys 
                         FROM
                             tb_datostareo 

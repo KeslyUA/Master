@@ -58,6 +58,8 @@ export const buscarDatos = (dni) =>{
                 motivo_descanso.value = data.datosTareo[0]['cdescanso'];
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
+                regimen.value = data.datosTareo[0]['nregimen'];
+                especificacion_contrato.value = data.datosTareo[0]['nespecificacion']
                 document.getElementById("existe").value = 1;
             }else{
                 /* document.getElementById("data_matriz")[0].reset; */
@@ -81,6 +83,8 @@ export const buscarDatos = (dni) =>{
                 motivo_descanso.value = '';
                 motivo_cese.value = '';
                 fecha_cese.value = null;
+                regimen.value = -1;
+                especificacion_contrato.value = -1;
 
                 document.getElementById("existe").value = 0;
             }
@@ -215,11 +219,11 @@ export const buscarDatosColaboradorTercero = (dni) =>{
             }else{
                 
                 encargado.value = '';
-                condicion.value = '';
-                personal.value = '';
+                condicion.value = -1;
+                personal.value = -1;
                 especialidad.value = '';
-                manoobra.value = '';
-                proyecto_actual.value = '';
+                manoobra.value = -1;
+                proyecto_actual.value = -1;
                 fase_actual.value = '';
                 ubicacion.value = '';
                 regimen_trabajo.value = '';
@@ -232,6 +236,8 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 dias_reales.value = '';
                 observaciones.value = '';
                 motivo_descanso.value = '';
+                regimen.value = -1;
+                especificacion_contrato.value = -1;
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = '';
                 document.getElementById("existeTerceroTareoData").value = 0;
@@ -252,10 +258,10 @@ export const buscarDatosColaboradorTercero = (dni) =>{
             })
 
             document.getElementById('activo').value = activos;
-            document.getElementById("existeTercero").value = "1";
+            document.getElementById('existeTercero').value = 1;
         }
         else {
-            /* document.getElementById("data_matriz").reset(); */
+            document.getElementById("data_matriz").reset();
             documento_tercero.value = data.datos.numeroDocumento;
             paterno.value           = data.datos.apellidoPaterno;
             materno.value           = data.datos.apellidoMaterno;

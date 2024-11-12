@@ -97,6 +97,9 @@ const p31 = document.getElementById("p31");
 const user_doc = document.getElementById("user_doc");
 const select = document.getElementById("select_proyectos");
 
+const regimen = document.getElementById("regimen");
+const especificacion_contrato = document.getElementById("especificacion_contrato");
+
 let username = localStorage.getItem("username");
 if(!(username == "admin" || username == "adminrrhh")){
     document.getElementById("usuarios").style.display = 'none';
@@ -140,8 +143,8 @@ document.addEventListener('keypress',async (e)=>{
         if (e.keyCode === 13) {
             buscarDatosUsuarios(e.target.value);
         }
-    }else if (e.target.id == 'ubicacion_padron'){
-        buscar(document.getElementById(e.target.id).value); 
+    /* }else if (e.target.id == 'ubicacion_padron'){
+        buscar(document.getElementById(e.target.id).value);  */
     }else if (e.target.id == 'documento_tercero'){
         if (e.keyCode === 13) {
             /* buscarDatosTerceros(e.target.value); */
@@ -1013,7 +1016,7 @@ document.getElementById("toggleMenu").addEventListener("click",function(e){
 function grabarDatosMatrizTerceros(){
     //serializar los formulario en javascript
     const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
-    datos.append("funcion","grabarDatosTerceros");
+    datos.append("funcion","grabarTerceros");
 
     fetch('../inc/grabar.inc.php',{
         method: 'POST',
