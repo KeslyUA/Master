@@ -39,7 +39,7 @@
                 </div>
                 <div class="cuatro_columnas">
                     <label for="select_proyectos" >Fecha de Proceso :</label>
-                    <input type="date" name="fecha_proceso" id="fecha_proceso" value="<?php echo date('Y-m-d') ?>">
+                    <input type="date" name="fecha_proceso" id="fecha_proceso" value="<?php echo date('Y-m-d') ?>" min="<?php echo date('Y-m-d', strtotime('-7 days')) ?>">
                 </div>
             </div>
             <h1 style="margin: 1rem 0" id="fecha_text">Fecha de Proceso: <?php echo date("Y-m-d")?></h1>

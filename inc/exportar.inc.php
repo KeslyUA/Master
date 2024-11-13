@@ -2,12 +2,14 @@
      date_default_timezone_set('America/Lima');
 
     require_once("connect.inc.php");
+    ini_set('memory_limit', '1024M'); // Incrementa a 1 GB o el valor que necesites
+
 
     if (isset($_POST['funcion'])){
         if ($_POST['funcion'] == "plantillaExcel")
             echo json_encode(plantillaExcel($_POST['padron']));
         else if($_POST['funcion'] == "plantillaTareoExcel")
-            echo json_encode(plantillaTareoExcel($_POST['padron']));
+            echo json_encode(newPlantillaTareoExcel($_POST['padron']));
     }
 
     function plantillaExcel($padron){
@@ -115,4 +117,59 @@
         /* exit; */
         return array("archivo"=>"/documentos/reportes/".$nombreArchivoModificado.".xlsx");
     }
+
+    function newPlantillaTareoExcel($padron) {
+        require_once("../libs/PHPExcel/PHPExcel.php");
+        $archivoTemplate = '../documentos/plantillas/newPlantillaReporteTareo.xlsx';
+        $objPHPExcel = PHPExcel_IOFactory::load($archivoTemplate);
+    
+        // Acceder a la hoja activa o seleccionar una específica
+        $hoja = $objPHPExcel->getActiveSheet();
+    
+        $fila = 10;
+    
+        $datos = json_decode($padron);
+        $nreg = count($datos);
+        $hoja->setCellValue('A3', 'TAREOS - CONTROL DE ASISTENCIA REPORTE ' . $datos[0]->proyecto . ' ' . date("Y-m-d"));
+    
+        for ($i = 0; $i < $nreg; $i++) {
+            // Insertar una nueva fila en la posición actual
+            $hoja->insertNewRowBefore($fila, 1);
+            $hoja->getStyle("A$fila:E$fila")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_NONE);
+
+    
+            $columna = 14;
+            $hoja->setCellValue('A' . $fila, $datos[$i]->item);
+            $hoja->setCellValue('E' . $fila, $datos[$i]->nombres);
+            $hoja->setCellValue('D' . $fila, $datos[$i]->documento);
+            $hoja->setCellValue('M' . $fila, $datos[$i]->proyecto);
+            $hoja->setCellValue('N' . $fila, $datos[$i]->ubicacion);
+            $hoja->setCellValue('K' . $fila, $datos[$i]->cargo);
+    
+            foreach ($datos[$i]->tareos as $tareo) {
+                $hoja->setCellValue(PHPExcel_Cell::stringFromColumnIndex($columna) . $fila, $tareo);
+                $columna++;
+            }
+    
+            $hoja->setCellValue('AT' . $fila, isset($datos[$i]->dias->A) ? $datos[$i]->dias->A : 0);
+            $hoja->setCellValue('AU' . $fila, isset($datos[$i]->dias->D) ? $datos[$i]->dias->D : 0);
+            $hoja->setCellValue('AV' . $fila, isset($datos[$i]->dias->F) ? $datos[$i]->dias->F : 0);
+            $hoja->setCellValue('AW' . $fila, isset($datos[$i]->dias->M) ? $datos[$i]->dias->M : 0);
+            $hoja->setCellValue('AX' . $fila, isset($datos[$i]->dias->V) ? $datos[$i]->dias->V : 0);
+            $hoja->setCellValue('AY' . $fila, isset($datos[$i]->dias->P) ? $datos[$i]->dias->P : 0);
+            $hoja->setCellValue('AZ' . $fila, isset($datos[$i]->dias->total) ? $datos[$i]->dias->total : 0);
+    
+            $fila++;
+        }
+    
+        // Guardar el archivo sobrescribiendo el archivo original o creando uno nuevo
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $nombreArchivoModificado = 'reporte_tareos_' . date("Y-m-d");
+    
+        // Guardar el archivo
+        $objWriter->save('../documentos/reportes/' . $nombreArchivoModificado . '.xlsx');
+    
+        return array("archivo" => "/documentos/reportes/" . $nombreArchivoModificado . ".xlsx");
+    }
+    
 ?>
