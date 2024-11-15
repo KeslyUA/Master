@@ -189,9 +189,9 @@ export const buscarDatosColaboradorTercero = (dni) =>{
             empresa.value           = data.datos['empresa'];
             sucursal.value          = data.datos['sucursal'];
 
-            dpto.value          = data.ubigeo['dpto'];
-            prov.value          = data.ubigeo['prov'];
-            dist.value          = data.ubigeo['dist'];
+            dpto.value          = data.datos['departamento'];
+            prov.value          = data.datos['provincia'];
+            dist.value          = data.datos['distrito'];
 
             if (data.datosTareo.length > 0) {
                 /* document.getElementById("data_matriz")[1].reset(); */

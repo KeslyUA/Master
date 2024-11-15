@@ -863,6 +863,8 @@ const generarReportePadron = async () => {
         (contador.V || 0) + 
         (contador.P || 0);
         dato['dias'] = contador;
+        dato['regimen'] = dataReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.regimen;
+        dato['manoObra'] = dataReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.mano_obra;
         datos.push(dato);
     })
     console.log(datos);

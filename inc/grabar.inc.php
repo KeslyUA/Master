@@ -484,6 +484,9 @@
                         tb_datosterceros.telefono=?,
                         tb_datosterceros.correo=?,
                         tb_datosterceros.direccion=?,
+                        tb_datosterceros.departamento=?,
+                        tb_datosterceros.provincia=?,
+                        tb_datosterceros.distrito=?,
                         tb_datosterceros.proyecto=?,
                         tb_datosterceros.empresa=?";
 
@@ -504,6 +507,9 @@
                 $datos['telefono'] ?: null,
                 $datos['correo'] ?: null,
                 $datos['direccion'] ?: null,
+                $datos['dpto']?:null,
+                $datos['prov']?:null,
+                $datos['dist']?:null,
                 $datos['proyecto'] ?: null,
                 $datos['empresa'] ?: null
             ];
@@ -540,6 +546,9 @@
                         tb_datosterceros.telefono=?,
                         tb_datosterceros.correo=?,
                         tb_datosterceros.direccion=?,
+                        tb_datosterceros.departamento=?,
+                        tb_datosterceros.provincia=?,
+                        tb_datosterceros.distrito=?,
                         tb_datosterceros.proyecto=?,
                         tb_datosterceros.empresa=?
                     WHERE tb_datosterceros.dni=?";
@@ -560,6 +569,9 @@
                 $datos['telefono'] ?: null,
                 $datos['correo'] ?: null,
                 $datos['direccion'] ?: null,
+                $datos['dpto']?:null,
+                $datos['prov']?:null,
+                $datos['dist']?:null,
                 $datos['proyecto'] ?: null,
                 $datos['empresa'] ?: null,
                 $datos['documento_tercero']

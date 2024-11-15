@@ -158,6 +158,9 @@
             $hoja->setCellValue('AX' . $fila, isset($datos[$i]->dias->V) ? $datos[$i]->dias->V : 0);
             $hoja->setCellValue('AY' . $fila, isset($datos[$i]->dias->P) ? $datos[$i]->dias->P : 0);
             $hoja->setCellValue('AZ' . $fila, isset($datos[$i]->dias->total) ? $datos[$i]->dias->total : 0);
+
+            $hoja->setCellValue('BA' . $fila, isset($datos[$i]->regimen) ? $datos[$i]->regimen : '');
+            $hoja->setCellValue('BB' . $fila, isset($datos[$i]->manoObra) ? $datos[$i]->manoObra : '');
     
             $fila++;
         }

@@ -388,6 +388,10 @@
         return $docData;
     }
 
+    function obtenerTodosDatosTareo($pdo){
+        
+    }
+
     function obtenerTareosProyectoColaborador($pdo,$cc){
         try {
             $tareos = [];
@@ -406,7 +410,15 @@
                 $tareos[] = $row;
             }
 
-            return array("colaboradoresProyecto" =>$colaboradoresProyecto,"colaboradoresProyectoTerceros" => $colaboradoresProyectoTerceros['datos'] ,"tareos"=>$tareos);
+            $datosT = [];
+            $sqlData = "SELECT nddoc, regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t INNER JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03 INNER JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01";
+            $dataStatement = $pdo->prepare($sqlData);
+            $dataStatement -> execute();
+            while($rowData = $dataStatement->fetch(PDO::FETCH_ASSOC)){
+                $datosT[] = $rowData;
+            }
+
+            return array("colaboradoresProyecto" =>$colaboradoresProyecto,"colaboradoresProyectoTerceros" => $colaboradoresProyectoTerceros['datos'] ,"tareos"=>$tareos,"datosTareo" => $datosT);
 
         }  catch ( PDOException $e) {
             echo "Error: " . $e->getMessage;
@@ -463,10 +475,11 @@
     function buscarDatosColaboradorTercero ($pdo,$dni){
         $tercero = obtenerTercero($pdo, $dni);
         if ($tercero){
-            $ubicacion = obtenerUbigeo($tercero['ubigeo']);
+            /* $ubicacion = obtenerUbigeo($tercero['ubigeo']); */
+            $ubicacion = [];
             $datosTareo = datosTareo($pdo, $dni);
             $tareo = tareoPadron($pdo,$dni);
-            return ['exist' => true, 'datos'=>$tercero, 'ubigeo'=> $ubicacion['ubigeo'], 'datosTareo' => $datosTareo, 'tareo'=>$tareo];
+            return ['exist' => true, 'datos'=>$tercero, 'datosTareo' => $datosTareo, 'tareo'=>$tareo];
         } else {
             $terceroApi = buscarDatosTercero($dni);
             return ['exist' => false, 'datos'=>$terceroApi];

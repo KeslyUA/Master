@@ -87,15 +87,15 @@
                 </div>
                 <div class="cuatro_columnas">
                     <label for="dpto">Dpto :</label>
-                    <input type="text" name="dpto" id="dpto">
+                    <input type="text" name="dpto" id="dpto" form="data_matriz">
                 </div>
                 <div class="cuatro_columnas">
                     <label for="prov">Prov :</label>
-                    <input type="text" name="prov" id="prov">
+                    <input type="text" name="prov" id="prov" form="data_matriz">
                 </div>
                 <div class="cuatro_columnas">
                     <label for="dist">Dist :</label>
-                    <input type="text" name="dist" id="dist">
+                    <input type="text" name="dist" id="dist" form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="fecha_ingreso">Fecha Ingreso :</label>
