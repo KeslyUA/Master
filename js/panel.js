@@ -143,8 +143,8 @@ document.addEventListener('keypress',async (e)=>{
         if (e.keyCode === 13) {
             buscarDatosUsuarios(e.target.value);
         }
-    /* }else if (e.target.id == 'ubicacion_padron'){
-        buscar(document.getElementById(e.target.id).value);  */
+    }else if (e.target.id == 'ubicacion_padron'){
+        buscar(document.getElementById(e.target.id).value); 
     }else if (e.target.id == 'documento_tercero'){
         if (e.keyCode === 13) {
             /* buscarDatosTerceros(e.target.value); */
