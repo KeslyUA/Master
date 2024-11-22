@@ -193,6 +193,8 @@ export const buscarDatosColaboradorTercero = (dni) =>{
             prov.value          = data.datos['provincia'];
             dist.value          = data.datos['distrito'];
 
+            
+
             if (data.datosTareo.length > 0) {
                 /* document.getElementById("data_matriz")[1].reset(); */
                 encargado.value = data.datosTareo[0]['cencargado'];
@@ -215,6 +217,8 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 motivo_descanso.value = data.datosTareo[0]['cdescanso'];
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
+                regimen.value       = data.datosTareo[0]['nregimen'];
+                especificacion_contrato.value = data.datosTareo[0]['nespecificacion'];
                 document.getElementById("existeTerceroTareoData").value = "1";
             }else{
                 

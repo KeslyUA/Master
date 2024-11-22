@@ -236,9 +236,41 @@ document.addEventListener('change',(e)=>{
             listarPadronTercerosByFecha(codigo_costos.value,selectedText, e.target.value)
         }else {
             listarPadronByFecha(codigo_costos.value, e.target.value);
-            document.getElementById("fecha_text").textContent = 'Fecha de Proceso: ' + e.target.value;}
+            document.getElementById("fecha_text").textContent = 'Fecha de Proceso: ' + e.target.value;
+        }    
+    }
+    if (e.target.id == "ingreso_obra" || e.target.id == "salida_obra") {
+        const inicio = new Date(document.getElementById("ingreso_obra").value);
+        const fin = new Date(document.getElementById("salida_obra").value);
+
+        const diferenciaEnMilisegundos = fin - inicio;
+
+        const diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
+
+        document.getElementById("dias_campo").value = diferenciaEnDias;
+
+        const partes = document.getElementById("regimen_trabajo").value.split('/');
+        const numerador = parseInt(partes[0].trim());
+        const denominador = parseInt(partes[1].trim());
+
+        // Verificar que ambos sean números y el denominador no sea cero
+        if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
+        const resultado = numerador / denominador;
+        console.log(resultado);
+        document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value/resultado);
         }
-        
+
+        const retorno = new Date(document.getElementById("salida_obra").value);
+
+        retorno.setDate(retorno.getDate()+parseInt(document.getElementById("dias_goce").value)+1)
+
+        const anio = retorno.getFullYear();
+        const mes = (retorno.getMonth() + 1).toString().padStart(2, '0'); // Mes con dos dígitos
+        const dia = retorno.getDate().toString().padStart(2, '0'); // Día con dos dígitos
+
+        document.getElementById("retorno_programado").value = `${anio}-${mes}-${dia}`;
+    }
+
 })
 
 function reporteMatriz(){
