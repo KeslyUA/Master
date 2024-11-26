@@ -42,8 +42,8 @@
            <ul id="menuList" >
                 <li class="menu_selected"><a href="matriz" id="matriz" class="opciones">Matriz Personal</a></li>
                 <li><a href="padron" id="padron" class="opciones">Listado del Padron</a></li>
-                <li><a href="encargados" class="opciones">Encargados</a></li>
-                <li><a href="#" class="opciones">Fases</a></li>
+                <li><a href="encargados"  id="encargados" class="opciones">Encargados</a></li>
+                <li><a href="fases" id="fases" class="opciones">Fases</a></li>
                 <li><a href="#" class="opciones">Configuraciones</a></li>
                 <li><a href="terceros" id="terceros" class="opciones">Matriz Personal (Terceros)</a></li>
                 <li><a href="padronterceros" id="padronterceros" class="opciones">Lista del Padron (Terceros)</a></li>

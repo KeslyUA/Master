@@ -105,6 +105,7 @@ if(!(username == "admin" || username == "adminrrhh")){
     document.getElementById("usuarios").style.display = 'none';
 }
 
+    listarProyectos(document.getElementById("proyecto_actual"));
 document.addEventListener('DOMContentLoaded', datosUsuarioCabecera);
 
 document.addEventListener('focusin',(e) =>{
@@ -176,7 +177,12 @@ document.addEventListener('click',(e)=>{
             setTimeout(() => {
                 console.log(document.getElementById("proyecto"));
                 listarProyectos(document.getElementById("proyecto"));
+                listarProyectos(document.getElementById("proyecto_actual"));
             }, 100); // Ajusta el tiempo según sea necesario
+        }else if(e.target.id == "matriz") {
+            setTimeout(() => {
+                listarProyectos(document.getElementById("proyecto_actual"));
+            }, 100);
         }
         return false;
     }else if (e.target.matches(".botones")){
@@ -192,6 +198,10 @@ document.addEventListener('click',(e)=>{
             grabarDatosUsuario();
         else if (e.target.closest('a').id == "agregaProyectosUsuario")
             agregaProyectosUsuario();
+        else if (e.target.closest('a').id == "agregaProyectosFases")
+            agregaProyectoFase();
+        else if (e.target.closest('a').id == "agregaFases")
+            agregaFase();
         else if (e.target.closest('a').id == "grabarDatosPadron")
             grabarDatosTareo(codigo_costos.value);
         else if (e.target.closest('a').id == "cargarDatosPadron")
@@ -214,6 +224,13 @@ document.addEventListener('click',(e)=>{
             deleteProyectoUsuario(e.target.closest('a'));
         }
         
+    }else if (e.target.matches(".tablinks")){
+        if(e.target.closest('button')){
+            const ref_id = e.target.getAttribute("ref-id")
+            console.log(e)
+            console.log(ref_id)
+            openCity(e, ref_id)
+        }
     }
 })
 
@@ -249,7 +266,7 @@ document.addEventListener('change',(e)=>{
 
         document.getElementById("dias_campo").value = diferenciaEnDias;
 
-        const partes = document.getElementById("regimen_trabajo").value.split('/');
+        const partes = document.getElementById("regimen_trabajo").value.split(/[/xX]/);
         const numerador = parseInt(partes[0].trim());
         const denominador = parseInt(partes[1].trim());
 
@@ -270,7 +287,31 @@ document.addEventListener('change',(e)=>{
 
         document.getElementById("retorno_programado").value = `${anio}-${mes}-${dia}`;
     }
+    if(e.target.id == "regimen_trabajo") {
+        console.log(e.target.value)
+        const partes = e.target.value.split(/[/xX]/)
+        const numerador = parseInt(partes[0].trim());
+        const denominador = parseInt(partes[1].trim());
 
+        // Verificar que ambos sean números y el denominador no sea cero
+        if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
+        const resultado = numerador / denominador;
+        console.log(resultado);
+        document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value/resultado);
+        }
+    }
+    if(e.target.id == "dias_campo"){
+        const partes = document.getElementById("regimen_trabajo").value.split(/[/xX]/);
+        const numerador = parseInt(partes[0].trim());
+        const denominador = parseInt(partes[1].trim());
+
+        // Verificar que ambos sean números y el denominador no sea cero
+        if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
+        const resultado = numerador / denominador;
+        console.log(resultado);
+        document.getElementById("dias_goce").value = parseInt(e.target.value/resultado);
+        }
+    }
 })
 
 function reporteMatriz(){
@@ -354,6 +395,50 @@ function agregaProyectosUsuario(){
                 <td>${fila++}</td>
                 <td><input type="number"></td>
                 <td><input type="value"></td>
+                <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
+            </tr>`;
+    
+    cuerpo.insertRow(-1).outerHTML = row;
+}
+
+function agregaProyectoFase() {
+    const cuerpo = document.getElementById("tablaProyectosFasesBody");
+    
+    let fila = document.querySelector("#tablaProyectosFasesBody").getElementsByTagName("tr").length+1;
+
+    let row = `<tr data-grabado="0">
+                <td>${fila++}</td>
+                <td>
+                    <select name="proyecto" id="proyectoFase" style="width: 100%">
+                        <option value="-1">Seleccionar</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="select" style="width: 100%">
+                        <option value="value1">Value 1</option>
+                        <option value="value2" selected>Value 2</option>
+                        <option value="value3">Value 3</option>
+                    </select>
+                </td>
+                <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
+            </tr>`;
+    
+    cuerpo.insertRow(-1).outerHTML = row;
+}
+
+function agregaFase() {
+    const cuerpo = document.getElementById("tablaFasesBody");
+    
+    let fila = document.querySelector("#tablaFasesBody").getElementsByTagName("tr").length+1;
+
+    let row = `<tr data-grabado="0">
+                <td>${fila++}</td>
+                <td>
+                    <input type="text">
+                </td>
+                <td>
+                    <input type="text">
+                </td>
                 <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
     
@@ -1144,3 +1229,17 @@ function deleteProyectoUsuario(e){
         
     })
 }
+
+function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.target.className += " active";
+  }

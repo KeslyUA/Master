@@ -151,7 +151,10 @@
                 </div>
                 <div class="seis_columnas">
                     <label for="proyecto_actual">Proyecto Actual :</label>
-                    <input type="text" name="proyecto_actual" id="proyecto_actual" form="data_matriz">
+                    <!-- <input type="text" name="proyecto_actual" id="proyecto_actual" form="data_matriz"> -->
+                    <select name="proyecto_actual" id="proyecto_actual" form="data_matriz" class="select">
+                        <option value="-1">Seleccionar</option>
+                    </select>
                 </div>
                 <div class="seis_columnas">
                     <label for="fase_actual">Fase Actual :</label>
@@ -199,7 +202,14 @@
                 </div>
                 <div class="dos_columnas">
                     <label for="motivo_cese">Motivo Cese :</label>
-                    <input type="text" name="motivo_cese" id="motivo_cese" form="data_matriz">
+                    <select name="motivo_cese" id="motivo_cese" form="data_matriz">
+                        <option value="-1">Seleccionar</option>
+                        <option value="29">Renuncia Voluntario</option>
+                        <option value="30">Termino de Obra</option>
+                        <option value="31">Termino de Contrato</option>
+                        <option value="32">Termino de Fase</option>
+                        <option value="33">Abandono de  Trabajo</option>
+                    </select>
                 </div>
 
                 <div class="ocho_columnas">
@@ -208,7 +218,17 @@
                 </div>
                 <div class="cuatro_columnas">
                     <label for="motivo_descanso">Motivo de descanso :</label>
-                    <input type="text" name="motivo_descanso" id="motivo_descanso" form="data_matriz">
+                    <select name="motivo_descanso" id="motivo_descanso" form="data_matriz">
+                        <option value="-1">Seleccionar</option>
+                        <option value="21">Ingreso</option>
+                        <option value="22">Permiso</option>
+                        <option value="23">Descanso Medico</option>
+                        <option value="24">Bajada Programada</option>
+                        <option value="25">Cese</option>
+                        <option value="26">Amonestacion</option>
+                        <option value="27">Vacaciones</option>
+                        <option value="28">Otros</option>
+                    </select>
                 </div>
                 <div class="dos_columnas">
                     <label for="regimen">Regimen :</label>

@@ -167,7 +167,10 @@
                 </div>
                 <div class="seis_columnas">
                     <label for="proyecto_actual">Proyecto Actual :</label>
-                    <input type="text" name="proyecto_actual" id="proyecto_actual" form="data_matriz">
+                    <!-- <input type="text" name="proyecto_actual" id="proyecto_actual" form="data_matriz"> -->
+                    <select name="proyecto_actual" id="proyecto_actual" form="data_matriz" class="select">
+                        <option value="-1">Seleccionar</option>
+                    </select>
                 </div>
                 <div class="seis_columnas">
                     <label for="fase_actual">Fase Actual :</label>

@@ -13,7 +13,7 @@ export const buscarDatos = (dni) =>{
         })
         .then(response => response.json())
         .then(data => {
-
+            console.log(data)
             paterno.value           = data.datos[0]['paterno'];
             materno.value           = data.datos[0]['materno'];
             nombres.value           = data.datos[0]['nombres'];
@@ -29,7 +29,7 @@ export const buscarDatos = (dni) =>{
             nacionalidad.value      = data.datos[0]['pais'];
             telefono.value          = data.datos[0]['telefono'];
             proyecto.value          = data.datos[0]['proyecto'];
-            proyecto_actual.value   = data.datos[0]['proyecto'];
+            proyecto_actual.value   = data.datos[0]['proyecto'].split(" ")[0];
 
             dpto.value          = data.ubigeo['dpto'];
             prov.value          = data.ubigeo['prov'];
@@ -68,7 +68,7 @@ export const buscarDatos = (dni) =>{
                 personal.value = -1;
                 especialidad.value = '';
                 manoobra.value = -1;
-                proyecto_actual.value = '';
+                /* proyecto_actual.value = ''; */
                 fase_actual.value = '';
                 ubicacion.value = '';
                 regimen_trabajo.value = '';
@@ -80,8 +80,8 @@ export const buscarDatos = (dni) =>{
                 dias_campo.value = '';
                 dias_reales.value = '';
                 observaciones.value = '';
-                motivo_descanso.value = '';
-                motivo_cese.value = '';
+                motivo_descanso.value = -1;
+                motivo_cese.value = -1;
                 fecha_cese.value = null;
                 regimen.value = -1;
                 especificacion_contrato.value = -1;
@@ -99,7 +99,7 @@ export const buscarDatos = (dni) =>{
                     color_fondo = "#92CDDC"
                 }
 
-                valor = "p"+index++;
+                valor = "p"+element.dia;
                 document.getElementById(valor).value = element.estado;
                 document.getElementById(valor).style.backgroundColor = color_fondo;
             })
@@ -227,7 +227,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 personal.value = -1;
                 especialidad.value = '';
                 manoobra.value = -1;
-                proyecto_actual.value = -1;
+                /* proyecto_actual.value = -1; */
                 fase_actual.value = '';
                 ubicacion.value = '';
                 regimen_trabajo.value = '';
@@ -256,7 +256,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                     color_fondo = "#92CDDC"
                 }
 
-                valor = "p"+index++;
+                valor = "p"+element.dia;
                 document.getElementById(valor).value = element.estado;
                 document.getElementById(valor).style.backgroundColor = color_fondo;
             })

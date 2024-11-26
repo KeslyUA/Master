@@ -289,20 +289,25 @@
     }
 
     function tareoPadron($pdo,$doc){
+
+        $mes = date("n");
         $docData = [];
 
         $sql = "SELECT
                 tb_tareos.nrodoc,
                 tb_tareos.estado,
+                DAY(tb_tareos.fregsys) AS dia,
                 tb_tareos.mes,
                 tb_tareos.anio 
             FROM
                 tb_tareos 
             WHERE
-                tb_tareos.nrodoc = ?";
+                tb_tareos.nrodoc = ?
+            AND 
+                tb_tareos.mes = ?";
         
         $statement = $pdo->prepare($sql);
-        $statement -> execute(array($doc));
+        $statement -> execute(array($doc, $mes));
 
         while($row = $statement->fetch(PDO::FETCH_ASSOC)){
             $docData[] = $row;
