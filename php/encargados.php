@@ -17,9 +17,9 @@
         <input type="hidden" name="function" id="function" >
         <div class="separator">
             <div class="titulo">
-                <span>FASES</span>
+                <span>ENCARGADOS</span>
                 <div class="btnOpciones">
-                    <a href="#" id="grabarDatosFases">
+                    <a href="#" id="grabarDatosEncargados">
                         <i class="fas fa-save botones"></i>
                         <p>Grabar</p>
                     </a>
@@ -42,34 +42,36 @@
         </div>
         <div class="separator">
             <div class="tab">  
-                <button class="tablinks" ref-id="FasesTabContent">Fases</button>
-                <button class="tablinks" ref-id="ProyectoFasesTabContent">Proyectos y Fases</button>    
+                <button class="tablinks" ref-id="EncargadosTabContent">Encargados</button>
+                <button class="tablinks" ref-id="EncargadosProyectoTabContent">Encargados por Proyecto</button>    
             </div>
             <div>
-                <div id="FasesTabContent" class="tabcontent">
+                <div id="EncargadosTabContent" class="tabcontent">
                     <div class="separator">
                         <div class="titulo">
-                            <span>LISTA DE FASES</span>
+                            <span>LISTA DE ENCARGADOS</span>
                             <div class="btnOpciones">
-                                <a href="#" id="agregaFases">
+                                <a href="#" id="agregaEncargados">
                                     <i class="far fa-calendar-plus botones"></i>
-                                    <p>Agregar<br>Fases</p>
+                                    <p>Agregar<br>Encargados</p>
                                 </a>
                             </div>
                         </div>
 
 
                         <div class="cuerpo_tabla">
-                            <table id="tablaFases">
+                            <table id="tablaEncargados">
                                 <thead>
                                     <tr>
                                         <th width="15%">Item</th>
-                                        <th width="15%">Nombre</th>
-                                        <th width="60%">Descripcion</th>
+                                        <th width="30%">N° Documento</th>
+                                        <th width="15%">Nombres</th>
+                                        <th width="20%">Apellido Paterno</th>
+                                        <th width="20%">Apellido Materno</th>
                                         <th width="10%">...</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tablaFasesBody">
+                                <tbody id="tablaEncargadosBody">
 
                                 </tbody>
                             </table>
@@ -77,40 +79,35 @@
                     </div>
                 </div>
 
-                <div id="ProyectoFasesTabContent" class="tabcontent">
+                <div id="EncargadosProyectoTabContent" class="tabcontent">
                 <div class="separator">
                         <div class="titulo">
-                            <span>LISTA DE PROYECTOS Y FASES</span>
+                            <span>LISTA DE ENCARGADOS POR PROYECTO</span>
                             <div class="btnOpciones">
-                                <a href="#" id="agregaProyectosFases">
+                                <a href="#" id="agregaEncargadosProyecto">
                                     <i class="far fa-calendar-plus botones"></i>
-                                    <p>Asignar<br>Fases</p>
+                                    <p>Asignar<br>Encargados</p>
                                 </a>
                             </div>
                         </div>
 
 
                         <div class="cuerpo_tabla">
-                            <table id="tablaProyectosFases">
+                            <table id="tablaEncargadosProyecto">
                                 <thead>
                                     <tr>
                                         <th width="15%">Item</th>
                                         <th width="15%">Proyecto</th>
-                                        <th width="60%">Fase</th>
+                                        <th width="60%">Encargado</th>
                                         <th width="10%">...</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tablaProyectosFasesBody">
+                                <tbody id="tablaEncargadosProyectoBody">
 
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                </div>
-
-                <div id="Tokyo" class="tabcontent">
-                    <h3>Tokyo</h3>
-                    <p>Tokyo is the capital of Japan.</p>
                 </div>
             </div>
         </div>

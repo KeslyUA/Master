@@ -19,6 +19,12 @@
             echo json_encode(actualizarAccesoProyecto($pdo, $_POST['idreg']));
         else if ($_POST['funcion'] == "grabarTerceros")
             echo json_encode(grabarTerceros($pdo, $_POST));
+        else if ($_POST['funcion'] == "grabarFase")
+            echo json_encode(grabarFase($pdo, $_POST));
+        else if ($_POST['funcion'] == "grabarProyectoFase")
+            echo json_encode(grabarProyectoFase($pdo, $_POST));
+        else if ($_POST['funcion'] == "grabarEncargado")
+            echo json_encode(grabarEncargado($pdo, $_POST));
     }
 
     function grabar($pdo,$datos){
@@ -617,7 +623,7 @@
         /* return $result; */
         
     }
-    function actualizarAccesoProyecto($pdo,$idreg){
+    function actualizarAccesoProyecto($pdo,$idreg): array{
         try {
             $sql = "UPDATE tm_userproyectos
                     SET tm_userproyectos.nflgactivo = 0
@@ -636,6 +642,100 @@
             /* echo "Error: " . $th->getMessage; */
             return ['success'=> false, 'message' => "Error: " . $th->getMessage()];
             /* return false; */
+        }
+    }
+
+    function grabarFase($pdo, $datos){
+        try {
+            $fases = json_decode($datos['fases']);
+            $nreg = count($fases);
+
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $sql = "INSERT INTO tb_fases
+                            SET tb_fases.cnombre = ?,
+                                tb_fases.cdescripcion = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($fases[$i]->nombre,
+                                                $fases[$i]->descripcion));
+
+                    //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+            }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function grabarProyectoFase($pdo, $datos){
+        try {
+            $fases = json_decode($datos['proyectoFases']);
+            $nreg = count($fases);
+
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $sql = "INSERT INTO tb_proyectofases
+                            SET tb_proyectofases.ccodigoproyecto = ?,
+                                tb_proyectofases.idfase = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($fases[$i]->proyecto,
+                                                $fases[$i]->fase));
+
+                    //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+            }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function grabarEncargado($pdo, $datos){
+        try {
+            $encargados = json_decode($datos['encargados']);
+            $nreg = count($encargados);
+
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $sql = "INSERT INTO tb_encargados
+                            SET tb_encargados.cnumdoc = ?,
+                                tb_encargados.cnombres = ?,
+                                tb_encargados.capellidopat = ?,
+                                tb_encargados.capellidomat = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($encargados[$i]->numdoc,
+                                                $encargados[$i]->nombres,
+                                                $encargados[$i]->paterno,
+                                                $encargados[$i]->materno));
+
+                    //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+            }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
         }
     }
 

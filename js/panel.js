@@ -2,6 +2,8 @@ import {buscarDatosColaboradorTercero, buscarDatos, buscarDatosTerceroDB, buscar
 import {calcularfechas,mostrarMensaje} from "./funciones.js";
 import {buscarDatosUsuarios} from "./usuarios.js";
 import {buscarProyectos,getColaboradorRegistro,getTareo,getTareosByFecha,listarPadron, listarPadronByFecha, listarPadronTerceros, listarPadronTercerosByFecha} from "./padron.js";
+import { listarFases, listarFasesTable, listarProyectosFasesTable } from "./fases.js";
+import { listarEncargados, listarEncargadosProyectoTable, listarEncargadosTable } from "./encargados.js";
 
 const documento = document.getElementById("documento");
 
@@ -100,6 +102,8 @@ const select = document.getElementById("select_proyectos");
 const regimen = document.getElementById("regimen");
 const especificacion_contrato = document.getElementById("especificacion_contrato");
 
+listarEncargados(encargado);
+
 let username = localStorage.getItem("username");
 if(!(username == "admin" || username == "adminrrhh")){
     document.getElementById("usuarios").style.display = 'none';
@@ -178,10 +182,12 @@ document.addEventListener('click',(e)=>{
                 console.log(document.getElementById("proyecto"));
                 listarProyectos(document.getElementById("proyecto"));
                 listarProyectos(document.getElementById("proyecto_actual"));
+                listarEncargados(document.getElementById("encargado"));
             }, 100); // Ajusta el tiempo según sea necesario
         }else if(e.target.id == "matriz") {
             setTimeout(() => {
                 listarProyectos(document.getElementById("proyecto_actual"));
+                listarEncargados(document.getElementById("encargado"));
             }, 100);
         }
         return false;
@@ -202,6 +208,10 @@ document.addEventListener('click',(e)=>{
             agregaProyectoFase();
         else if (e.target.closest('a').id == "agregaFases")
             agregaFase();
+        else if (e.target.closest('a').id == "agregaEncargados")
+            agregaEncargado();
+        else if (e.target.closest('a').id == "agregaEncargadosProyecto")
+            agregaEncargadoProyectos();
         else if (e.target.closest('a').id == "grabarDatosPadron")
             grabarDatosTareo(codigo_costos.value);
         else if (e.target.closest('a').id == "cargarDatosPadron")
@@ -213,6 +223,10 @@ document.addEventListener('click',(e)=>{
             generarReportePadron();
         else if (e.target.closest('a').id == "grabarDatosTerceros")
             grabarDatosMatrizTerceros();
+        else if (e.target.closest('a').id == "grabarDatosFases")
+            grabarDatosFaseOrProyectoFase();
+        else if (e.target.closest('a').id == "grabarDatosEncargados")
+            grabarDatosEncargados();
         return false;
     }else if (e.target.matches(".select")){
         codigo_costos.value= e.target.value;
@@ -230,6 +244,15 @@ document.addEventListener('click',(e)=>{
             console.log(e)
             console.log(ref_id)
             openCity(e, ref_id)
+            if(ref_id == "FasesTabContent"){
+                listarFasesTable();
+            }else if (ref_id == "ProyectoFasesTabContent"){
+                listarProyectosFasesTable();
+            }else if (ref_id == "EncargadosTabContent"){
+                listarEncargadosTable();
+            }else if (ref_id == "EncargadosProyectoTabContent"){
+                listarEncargadosProyectoTable();
+            }
         }
     }
 })
@@ -241,7 +264,12 @@ document.addEventListener('change',(e)=>{
         let selectedText = e.target.options[e.target.selectedIndex].text;
         listarPadronTerceros(e.target.value, selectedText);
         console.log(selectedText)
-    }if (e.target.matches(".archivo")){
+    } if (e.target.matches(".select") && e.target.id === "select_proyectoFase"){
+
+    }if (e.target.matches(".select") && e.target.id === "select_fase"){
+
+    }
+    if (e.target.matches(".archivo")){
         actualizarPadronExcel(fileUpload.files[0]);
     }if (e.target.id == "fecha_proceso"){
         console.log(e.target.value);
@@ -386,6 +414,110 @@ function grabarDatosUsuario(){
     }   
 }
 
+function grabarDatosFase(){
+    try {
+        //serializar los formulario en javascript
+        const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
+        datos.append("funcion","grabarFase");
+        datos.append("fases",JSON.stringify(datosFases()))
+
+        fetch('../inc/grabar.inc.php',{
+            method: 'POST',
+            body:datos
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            Swal.fire({
+                icon: "success",
+                title: "Guardado Correctamente",
+                text: "Se han guardado los registros exitosamente"
+              });
+        });
+
+    } catch (error) {
+        /* mostrarMensaje(error.message,"msj_error"); */
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Ha ocurrido un error"
+        });
+    }   
+}
+
+
+function grabarDatosProyectoFase(){
+    try {
+        //serializar los formulario en javascript
+        const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
+        datos.append("funcion","grabarProyectoFase");
+        datos.append("proyectoFases",JSON.stringify(datosProyectoFases()))
+
+        fetch('../inc/grabar.inc.php',{
+            method: 'POST',
+            body:datos
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            Swal.fire({
+                icon: "success",
+                title: "Guardado Correctamente",
+                text: "Se han guardado los registros exitosamente"
+              });
+        });
+
+    } catch (error) {
+        /* mostrarMensaje(error.message,"msj_error"); */
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Ha ocurrido un error"
+        });
+    }   
+}
+
+function grabarDatosFaseOrProyectoFase() {
+    const funcion = document.getElementById("function").value;
+    console.log(funcion)
+    if(funcion == "grabarFase"){
+        grabarDatosFase();
+    }else if (funcion == "grabarProyectoFase"){
+        grabarDatosProyectoFase();
+    }
+}
+
+function grabarDatosEncargados() {
+    try {
+        //serializar los formulario en javascript
+        const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
+        datos.append("funcion","grabarEncargado");
+        datos.append("encargados",JSON.stringify(datosEncargados()))
+
+        fetch('../inc/grabar.inc.php',{
+            method: 'POST',
+            body:datos
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            Swal.fire({
+                icon: "success",
+                title: "Guardado Correctamente",
+                text: "Se han guardado los registros exitosamente"
+              });
+        });
+
+    } catch (error) {
+        /* mostrarMensaje(error.message,"msj_error"); */
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Ha ocurrido un error"+error.message
+        });
+    }   
+}
+
 function agregaProyectosUsuario(){
     const cuerpo = document.getElementById("tablaProyectosBody");
     
@@ -409,21 +541,25 @@ function agregaProyectoFase() {
     let row = `<tr data-grabado="0">
                 <td>${fila++}</td>
                 <td>
-                    <select name="proyecto" id="proyectoFase" style="width: 100%">
+                    <select name="select_proyectoFase" class="select_proyectoFase" data-id="proyecto-${fila}" style="width: 100%">
                         <option value="-1">Seleccionar</option>
                     </select>
                 </td>
                 <td>
-                    <select name="select" style="width: 100%">
-                        <option value="value1">Value 1</option>
-                        <option value="value2" selected>Value 2</option>
-                        <option value="value3">Value 3</option>
+                    <select name="select_fase" class="select_fase" data-id="fase-${fila}" style="width: 100%">
+                        <option value="-1">Seleccionar 1</option>
                     </select>
                 </td>
                 <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
     
     cuerpo.insertRow(-1).outerHTML = row;
+    const selectNuevoProyecto = document.querySelector(`.select_proyectoFase[data-id="proyecto-${fila}"]`);
+    const selectNuevoFase = document.querySelector(`.select_fase[data-id="fase-${fila}"]`);
+
+    // Llenar el select de proyecto y fase para la nueva fila
+    listarProyectos(selectNuevoProyecto);  // Asume que listarProyectos llena el select con datos de la base de datos
+    listarFases(selectNuevoFase);  // Asume que listarFases llena el select con datos de la base de datos
 }
 
 function agregaFase() {
@@ -443,6 +579,60 @@ function agregaFase() {
             </tr>`;
     
     cuerpo.insertRow(-1).outerHTML = row;
+}
+
+function agregaEncargado() {
+    const cuerpo = document.getElementById("tablaEncargadosBody");
+    
+    let fila = document.querySelector("#tablaEncargadosBody").getElementsByTagName("tr").length+1;
+
+    let row = `<tr data-grabado="0">
+                <td>${fila++}</td>
+                <td>
+                    <input type="text">
+                </td>
+                <td>
+                    <input type="text">
+                </td>
+                <td>
+                    <input type="text">
+                </td>
+                <td>
+                    <input type="text">
+                </td>
+                <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
+            </tr>`;
+    
+    cuerpo.insertRow(-1).outerHTML = row;
+}
+
+function agregaEncargadoProyectos() {
+    const cuerpo = document.getElementById("tablaEncargadosProyectoBody");
+    
+    let fila = document.querySelector("#tablaEncargadosProyectoBody").getElementsByTagName("tr").length+1;
+
+    let row = `<tr data-grabado="0">
+                <td>${fila++}</td>
+                <td>
+                    <select name="select_proyectoFase" class="select_proyectoFase" data-id="proyecto-${fila}" style="width: 100%">
+                        <option value="-1">Seleccionar</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="select_encargado" class="select_encargado" data-id="encargado-${fila}" style="width: 100%">
+                        <option value="-1">Seleccionar 1</option>
+                    </select>
+                </td>
+                <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
+            </tr>`;
+    
+    cuerpo.insertRow(-1).outerHTML = row;
+    const selectNuevoProyecto = document.querySelector(`.select_proyectoFase[data-id="proyecto-${fila}"]`);
+    const selectNuevoFase = document.querySelector(`.select_encargado[data-id="encargado-${fila}"]`);
+
+    // Llenar el select de proyecto y fase para la nueva fila
+    listarProyectos(selectNuevoProyecto);  // Asume que listarProyectos llena el select con datos de la base de datos
+    listarEncargados(selectNuevoFase);  // Asume que listarFases llena el select con datos de la base de datos
 }
 
 function LoadElement(page) {
@@ -478,6 +668,79 @@ const datosProyectos = () => {
 
     return DATOS;
 }
+
+const datosFases = () => {
+    let fila = document.querySelector("#tablaFasesBody").getElementsByTagName("tr"),
+        nreg = fila.length;
+
+    let DATOS = [];
+
+    for (let i = 0; i < nreg; i++) {
+        let dato = {};
+
+        if ( fila[i].dataset.grabado  === "0" ) {
+            dato['item']        = fila[i].cells[0].innerHTML;
+            dato['nombre']      = fila[i].cells[1].children[0].value;
+            dato['descripcion'] = fila[i].cells[2].children[0].value;
+
+            DATOS.push(dato);
+
+            fila[i].setAttribute("data-grabado", "1");
+        }   
+    }
+
+    return DATOS;
+}
+
+const datosProyectoFases = () => {
+    let fila = document.querySelector("#tablaProyectosFasesBody").getElementsByTagName("tr"),
+        nreg = fila.length;
+
+    let DATOS = [];
+
+    for (let i = 0; i < nreg; i++) {
+        let dato = {};
+
+        if ( fila[i].dataset.grabado  === "0" ) {
+            dato['item']        = fila[i].cells[0].innerHTML;
+            dato['proyecto']      = fila[i].cells[1].children[0].value;
+            dato['fase'] = fila[i].cells[2].children[0].value;
+
+            DATOS.push(dato);
+
+            fila[i].setAttribute("data-grabado", "1");
+        }   
+    }
+
+    return DATOS;
+}
+
+
+const datosEncargados = () => {
+    let fila = document.querySelector("#tablaEncargadosBody").getElementsByTagName("tr"),
+        nreg = fila.length;
+
+    let DATOS = [];
+
+    for (let i = 0; i < nreg; i++) {
+        let dato = {};
+
+        if ( fila[i].dataset.grabado  === "0" ) {
+            dato['item']        = fila[i].cells[0].innerHTML;
+            dato['numdoc']      = fila[i].cells[1].children[0].value;
+            dato['nombres'] = fila[i].cells[2].children[0].value;
+            dato['paterno'] = fila[i].cells[3].children[0].value;
+            dato['materno'] = fila[i].cells[4].children[0].value;
+
+            DATOS.push(dato);
+
+            fila[i].setAttribute("data-grabado", "1");
+        }   
+    }
+
+    return DATOS;
+}
+
 
 function datosUsuarioCabecera () {
     let nro_doc = localStorage.getItem("documento"),
@@ -1231,6 +1494,7 @@ function deleteProyectoUsuario(e){
 }
 
 function openCity(evt, cityName) {
+    console.log(cityName)
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
@@ -1242,4 +1506,9 @@ function openCity(evt, cityName) {
     }
     document.getElementById(cityName).style.display = "block";
     evt.target.className += " active";
+    if(cityName == "FasesTabContent"){
+        document.getElementById("function").value = "grabarFase"
+    }else if(cityName == "ProyectoFasesTabContent"){
+        document.getElementById("function").value = "grabarProyectoFase"
+    }
   }

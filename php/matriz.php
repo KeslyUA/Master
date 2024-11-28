@@ -117,7 +117,10 @@
             <div class="cuerpo">
                 <div class="tres_columnas">
                     <label for="encargado">Encargado :</label>
-                    <input type="text" name="encargado" id="encargado" form="data_matriz">
+                    <!-- <input type="text" name="encargado" id="encargado" form="data_matriz"> -->
+                    <select name="encargado" id="encargado" form="data_matriz">
+                        <option value="-1">Seleccionar</option>
+                    </select>
                 </div>
                 <div class="dos_columnas">
                     <label for="condicion">Condicion :</label>
@@ -158,7 +161,10 @@
                 </div>
                 <div class="seis_columnas">
                     <label for="fase_actual">Fase Actual :</label>
-                    <input type="text" name="fase_actual" id="fase_actual" form="data_matriz">
+                    <!-- <input type="text" name="fase_actual" id="fase_actual" form="data_matriz"> -->
+                    <select name="fase_actual" id="fase_actual" form="data_matriz" class="select">
+                        <option value="-1">Seleccionar</option>
+                    </select>
                 </div>
                 <div class="cuatro_columnas">
                     <label for="ubicacion">Ubicacion :</label>

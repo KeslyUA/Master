@@ -34,6 +34,14 @@
             echo json_encode(listarPadronTerceros($pdo, $_POST['proyecto']));
         }else if ($_POST['funcion'] === "getTareosByFecha"){
             echo json_encode(getTareosByFecha($pdo, $_POST));
+        }else if ($_POST['funcion'] === "obtenerFases"){
+            echo json_encode(obtenerFases($pdo));
+        }else if ($_POST['funcion'] === "obtenerProyectosFases"){
+            echo json_encode(obtenerProyectosFases($pdo));
+        }else if ($_POST['funcion'] === "obtenerEncargados"){
+            echo json_encode(obtenerEncargados($pdo));
+        }else if ($_POST['funcion'] === "obtenerEncargadosProyecto"){
+            echo json_encode(obtenerEncargadosProyecto($pdo));
         }
     }
  
@@ -511,6 +519,88 @@
 
         return $docData;
     }}
+
+    function obtenerFases($pdo) {
+        $docData = [];
+
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
+        $sql = "SELECT idfase, cnombre, cdescripcion FROM tb_fases WHERE nflgactivo = 1";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute();
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+
+    function obtenerProyectosFases($pdo) {
+        $docData = [];
+
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
+        $sql = "SELECT 
+                    tp.idproyectofase AS idProyectoFase, 
+                    tp.ccodigoproyecto AS codigoProyecto, 
+                    tf.idfase AS idFase, 
+                    tf.cnombre AS nombreFase 
+                FROM tb_proyectofases tp 
+                INNER JOIN tb_fases tf 
+                ON tf.idfase = tp.idfase
+                WHERE tp.nflgactivo = 1";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute();
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+
+    function obtenerEncargados($pdo) {
+        $docData = [];
+
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
+        $sql = "SELECT te.idencargado, te.cnumdoc, te.cnombres, te. capellidopat, te.capellidomat 
+        FROM tb_encargados te WHERE te.nflgactivo=1";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute();
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+
+    function obtenerEncargadosProyecto($pdo){
+        $docData = [];
+
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
+        $sql = "SELECT 
+                    tep.idencargadoproyecto, 
+                    tep.ccodigoproyecto,
+                    CONCAT(te.cnombres, ' ', te.capellidopat, ' ', te.capellidomat) AS nombreCompleto
+                FROM 
+                    tb_encargadoproyectos tep
+                INNER JOIN 
+                    tb_encargados te
+                ON te.idencargado = tep.idencargado
+                WHERE tep.nflgactivo = 1";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute();
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
 
     function listarPadronTerceros($pdo, $cc){
         $docData = [];
