@@ -23,6 +23,34 @@ export const listarFases = (select) =>{
         }
 }
 
+export const listarFasesByProyecto = (select, cc) => {
+    const formData = new FormData();
+        formData.append("funcion","obtenerProyectosFases");
+        select.innerHTML = `<option value='-1'>Seleccionar</option>`;
+
+        try {
+            fetch('../inc/busquedas.inc.php',{
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                console.log(cc)
+                const dataByProyecto = data.filter(item => item.codigoProyecto == cc)
+                dataByProyecto.forEach(element => {
+                    let option = document.createElement("option");
+                    option.value = element.idFase;
+                    option.innerHTML = element.nombreFase;
+    
+                    select.appendChild(option);
+               })
+            })
+        } catch (error) {
+            console.log(error.message);
+        }
+}
+
 export const listarFasesTable = () => {
     let formData = new FormData();
     formData.append("funcion","obtenerFases");

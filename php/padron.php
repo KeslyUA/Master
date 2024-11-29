@@ -29,10 +29,10 @@
                         <option value="-1">Seleccionar</option>
                     </select>
                 </div>
-                <div class="cuatro_columnas">
+                <!-- <div class="cuatro_columnas">
                     <label for="ubicacion_usuario">Ubicacion:</label>
                     <input type="text" id="ubicacion_usuario" name="ubicacion_usuario">
-                </div>
+                </div> -->
                 <div class="cuatro_columnas">
                     <label for="ubicacion_padron">Filtro:</label>
                     <input type="text" id="ubicacion_padron" name="ubicacion_padron">

@@ -219,8 +219,8 @@ document.addEventListener('click',(e)=>{
         else if (e.target.closest('a').id == "descargarPlantilla")
             obtenerDatosPadron();
         else if (e.target.closest('a').id == "descargarReporteTareo")
-            //obtenerReportePadron();
-            generarReportePadron();
+            obtenerReportePadron();
+            /* generarReportePadron(); */
         else if (e.target.closest('a').id == "grabarDatosTerceros")
             grabarDatosMatrizTerceros();
         else if (e.target.closest('a').id == "grabarDatosFases")
@@ -1041,7 +1041,8 @@ const obtenerDatosPadron = () => {
     let DATOS = [];
 
     for (let i = 0; i < nreg; i++) {
-        let dato = {};
+        if(window.getComputedStyle(fila[i]).display !== 'none'){
+            let dato = {};
 
         dato['item']        = fila[i].cells[0].innerHTML;
         dato['nombres']     = fila[i].cells[1].innerHTML;
@@ -1050,6 +1051,8 @@ const obtenerDatosPadron = () => {
         dato['estado']      = fila[i].cells[5].children[0].value;
 
         DATOS.push(dato);
+        }
+        
     }
 
     formData.append("padron",JSON.stringify(DATOS));
@@ -1095,7 +1098,8 @@ const obtenerReportePadron = async () => {
     })
 
     for (let i=0; i < nreg; i++){
-        let dato = {};
+        if(window.getComputedStyle(fila[i]).display !== 'none'){
+            let dato = {};
 
         dato['item']        = fila[i].cells[0].innerHTML;
         dato['nombres']     = fila[i].cells[1].innerHTML;
@@ -1125,6 +1129,8 @@ const obtenerReportePadron = async () => {
         (contador.P || 0);
         dato['dias'] = contador;
         DATOS.push(dato);
+        }
+        
     }
     console.log(DATOS);
     formData.append("padron",JSON.stringify(DATOS));
@@ -1218,6 +1224,7 @@ const generarReportePadron = async () => {
     })
 
     let colaboradores = [...dataReporte.colaboradoresProyecto, ...dataReporte.colaboradoresProyectoTerceros];
+    
     /* colaboradores += dataReporte.colaboradoresProyectoTerceros; */
     colaboradores.forEach((item,index) => {
         let dato = {};
@@ -1304,13 +1311,15 @@ const actualizarPadronExcel = (archivo) =>{
         .then(data => {
             console.log(data)
             data.datos.forEach( function(valor, indice) {
-                if (fila[indice].cells[2].innerHTML == valor.documento){
+                const filaIndex = [...fila].findIndex(f => f.cells[2].innerHTML == valor.documento)
+                console.log('filaIndex', [...fila])
+                if (fila[filaIndex].cells[2].innerHTML == valor.documento){
                     /* fila[indice].cells[4].innerHTML = valor.ubicacion; */
-                    fila[indice].cells[5].children[0].value = valor.estado;
+                    fila[filaIndex].cells[5].children[0].value = valor.estado;
                     /* if(valor.ingreso != null){
                         fila[indice].cells[7].children[0].value = valor.ingreso;
                     } */
-                    fila[indice].cells[7].children[0].value = valor.ingreso != null ? valor.ingreso : ''
+                    fila[filaIndex].cells[7].children[0].value = valor.ingreso != null ? valor.ingreso : ''
                 }
             });
 
