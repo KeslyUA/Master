@@ -25,6 +25,9 @@
             echo json_encode(grabarProyectoFase($pdo, $_POST));
         else if ($_POST['funcion'] == "grabarEncargado")
             echo json_encode(grabarEncargado($pdo, $_POST));
+        else if ($_POST['funcion'] == "grabarEncargadoProyecto") {
+            echo json_encode(grabarEncargadoProyecto($pdo, $_POST));
+        }
     }
 
     function grabar($pdo,$datos){
@@ -723,6 +726,36 @@
                                                 $encargados[$i]->nombres,
                                                 $encargados[$i]->paterno,
                                                 $encargados[$i]->materno));
+
+                    //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+            }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function grabarEncargadoProyecto($pdo, $datos){
+        try {
+            $encargados = json_decode($datos['encargadosProyecto']);
+            $nreg = count($encargados);
+
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $sql = "INSERT INTO tb_encargadoproyectos
+                            SET tb_encargadoproyectos.ccodigoproyecto = ?,
+                                tb_encargadoproyectos.idencargado = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($encargados[$i]->proyecto,
+                                                $encargados[$i]->encargado));
 
                     //var_dump($statement->errorInfo());
 

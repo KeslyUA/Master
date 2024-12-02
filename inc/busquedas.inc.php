@@ -19,7 +19,7 @@
         }else if ($_POST['funcion'] === "tareosMaxFecha"){
             echo json_encode(tareosMaxFecha($pdo, $_POST['proyecto'], $_POST['tercero']));
         }else if ($_POST['funcion'] === "obtenerTareosProyectoColaborador"){
-            echo json_encode(obtenerTareosProyectoColaborador($pdo,$_POST['proyecto']));
+            echo json_encode(obtenerTareosProyectoColaborador($pdo,$_POST));
         }else if ($_POST['funcion'] === "buscarDatosTercero"){
             echo json_encode(buscarDatosTercero($_POST['dni']));
         }else if ($_POST['funcion'] === "obtenerUbigeo"){
@@ -405,8 +405,11 @@
         
     }
 
-    function obtenerTareosProyectoColaborador($pdo,$cc){
+    function obtenerTareosProyectoColaborador($pdo,$datos){
         try {
+            $cc = $datos['proyecto'];
+            $fechaProceso = new DateTime($datos['fechaProceso']);
+            $mes = $fechaProceso->format('m');
             $tareos = [];
             $url = "http://sicalsepcon.net/api/listapadronapi.php?cc=".$cc;
             $api = file_get_contents($url);
@@ -414,10 +417,15 @@
 
             $colaboradoresProyectoTerceros = listarPadronTerceros($pdo, $cc);
 
-            $sql = "SELECT nrodoc, GROUP_CONCAT(estado ORDER BY estado SEPARATOR ',') AS estados FROM tb_tareos where cproyecto = ? GROUP BY nrodoc";
+            /* $sql = "SELECT nrodoc, GROUP_CONCAT(estado ORDER BY estado SEPARATOR ',') AS estados FROM tb_tareos where cproyecto = ? GROUP BY nrodoc"; */
+            $sql = "SELECT nrodoc, 
+                    GROUP_CONCAT(estado ORDER BY fregsys SEPARATOR ',') AS estados,
+                    group_concat(day(fregsys) order by fregsys separator ',') as dias 
+                    FROM tb_tareos where cproyecto = ? and month(fregsys) = ?
+                    GROUP BY nrodoc";
         
             $statement = $pdo->prepare($sql);
-            $statement -> execute(array($cc));
+            $statement -> execute(array($cc, $mes));
 
             while($row = $statement->fetch(PDO::FETCH_ASSOC)){
                 $tareos[] = $row;

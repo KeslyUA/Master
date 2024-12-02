@@ -2,7 +2,7 @@ import {buscarDatosColaboradorTercero, buscarDatos, buscarDatosTerceroDB, buscar
 import {calcularfechas,mostrarMensaje} from "./funciones.js";
 import {buscarDatosUsuarios} from "./usuarios.js";
 import {buscarProyectos,getColaboradorRegistro,getTareo,getTareosByFecha,listarPadron, listarPadronByFecha, listarPadronTerceros, listarPadronTercerosByFecha} from "./padron.js";
-import { listarFases, listarFasesTable, listarProyectosFasesTable } from "./fases.js";
+import { listarFases, listarFasesByProyecto, listarFasesTable, listarProyectosFasesTable } from "./fases.js";
 import { listarEncargados, listarEncargadosProyectoTable, listarEncargadosTable } from "./encargados.js";
 
 const documento = document.getElementById("documento");
@@ -226,7 +226,7 @@ document.addEventListener('click',(e)=>{
         else if (e.target.closest('a').id == "grabarDatosFases")
             grabarDatosFaseOrProyectoFase();
         else if (e.target.closest('a').id == "grabarDatosEncargados")
-            grabarDatosEncargados();
+            grabarDatosEncargadoOrEncargadoProyectos();
         return false;
     }else if (e.target.matches(".select")){
         codigo_costos.value= e.target.value;
@@ -265,9 +265,11 @@ document.addEventListener('change',(e)=>{
         listarPadronTerceros(e.target.value, selectedText);
         console.log(selectedText)
     } if (e.target.matches(".select") && e.target.id === "select_proyectoFase"){
-
+        
     }if (e.target.matches(".select") && e.target.id === "select_fase"){
-
+    }
+    if(e.target.matches(".select") && e.target.id === "proyecto_actual"){
+        listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
     }
     if (e.target.matches(".archivo")){
         actualizarPadronExcel(fileUpload.files[0]);
@@ -518,6 +520,47 @@ function grabarDatosEncargados() {
     }   
 }
 
+function grabarDatosEncargadoProyectos(){
+    try {
+        //serializar los formulario en javascript
+        const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
+        datos.append("funcion","grabarEncargadoProyecto");
+        datos.append("encargadosProyecto",JSON.stringify(datosEncargadoProyectos()))
+
+        fetch('../inc/grabar.inc.php',{
+            method: 'POST',
+            body:datos
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            Swal.fire({
+                icon: "success",
+                title: "Guardado Correctamente",
+                text: "Se han guardado los registros exitosamente"
+              });
+        });
+
+    } catch (error) {
+        /* mostrarMensaje(error.message,"msj_error"); */
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Ha ocurrido un error"+error.message
+        });
+    } 
+}
+
+function grabarDatosEncargadoOrEncargadoProyectos() {
+    const funcion = document.getElementById("function").value;
+    console.log(funcion)
+    if(funcion == "grabarEncargado"){
+        grabarDatosEncargados();
+    }else if (funcion == "grabarEncargadoProyecto"){
+        grabarDatosEncargadoProyectos();
+    }
+}
+
 function agregaProyectosUsuario(){
     const cuerpo = document.getElementById("tablaProyectosBody");
     
@@ -741,6 +784,28 @@ const datosEncargados = () => {
     return DATOS;
 }
 
+const datosEncargadoProyectos = () => {
+    let fila = document.querySelector("#tablaEncargadosProyectoBody").getElementsByTagName("tr"),
+        nreg = fila.length;
+
+    let DATOS = [];
+
+    for (let i = 0; i < nreg; i++) {
+        let dato = {};
+
+        if ( fila[i].dataset.grabado  === "0" ) {
+            dato['item']        = fila[i].cells[0].innerHTML;
+            dato['proyecto']      = fila[i].cells[1].children[0].value;
+            dato['encargado'] = fila[i].cells[2].children[0].value;
+
+            DATOS.push(dato);
+
+            fila[i].setAttribute("data-grabado", "1");
+        }   
+    }
+
+    return DATOS;
+}
 
 function datosUsuarioCabecera () {
     let nro_doc = localStorage.getItem("documento"),
@@ -1086,6 +1151,7 @@ const obtenerReportePadron = async () => {
 
     formData.append("funcion","obtenerTareosProyectoColaborador");
     formData.append("proyecto", codigo_costos.value)
+    formData.append("fechaProceso", document.getElementById("fecha_proceso").value)
 
     await fetch('../inc/busquedas.inc.php', {
         method: 'POST',
@@ -1113,6 +1179,29 @@ const obtenerReportePadron = async () => {
             }
         }).map(item => item.estados.split(',')) */
         dato['tareos'] = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.estados.split(','));
+        //dato['numDias'] = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.dias.split(','));
+
+        /* let diasTareo = {}
+        dato['numDias'].forEach((item, index) => {
+            diasTareo[item] = dato['tareos'][index];
+        })
+        dato['estadosDia'] = diasTareo;
+ */
+        let tareosDatos = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']);
+
+        // Crear las listas de 'tareos' y 'numDias' de una vez
+        let diasTareo = {};
+        tareosDatos.forEach(item => {
+            let dias = item.dias.split(',');
+            let estados = item.estados.split(',');
+
+            dias.forEach((dia, index) => {
+                diasTareo[dia] = estados[index];
+            });
+        });
+
+        // Asignar la estructura de 'estadosDia'
+        dato['estadosDia'] = diasTareo;
         let contador = {};
         dato['tareos'].forEach(item => {
             if (contador[item]) {
@@ -1128,6 +1217,7 @@ const obtenerReportePadron = async () => {
         (contador.V || 0) + 
         (contador.P || 0);
         dato['dias'] = contador;
+        dato['fechaProceso'] = document.getElementById("fecha_proceso").value
         DATOS.push(dato);
         }
         
@@ -1144,6 +1234,7 @@ const obtenerReportePadron = async () => {
     .then(data =>{
        window.open(`..${data.archivo}`);
     })
+    
     Swal.close();
 
     
@@ -1519,5 +1610,9 @@ function openCity(evt, cityName) {
         document.getElementById("function").value = "grabarFase"
     }else if(cityName == "ProyectoFasesTabContent"){
         document.getElementById("function").value = "grabarProyectoFase"
+    }else if (cityName == "EncargadosTabContent"){
+        document.getElementById("function").value = "grabarEncargado"
+    }else if (cityName == "EncargadosProyectoTabContent"){
+        document.getElementById("function").value = "grabarEncargadoProyecto"
     }
   }
