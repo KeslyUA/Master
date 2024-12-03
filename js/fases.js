@@ -23,13 +23,13 @@ export const listarFases = (select) =>{
         }
 }
 
-export const listarFasesByProyecto = (select, cc) => {
+export const listarFasesByProyecto = async (select, cc) => {
     const formData = new FormData();
         formData.append("funcion","obtenerProyectosFases");
         select.innerHTML = `<option value='-1'>Seleccionar</option>`;
 
         try {
-            fetch('../inc/busquedas.inc.php',{
+            await fetch('../inc/busquedas.inc.php',{
                 method: 'POST',
                 body: formData
             })

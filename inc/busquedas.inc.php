@@ -592,6 +592,7 @@
         $sql = "SELECT 
                     tep.idencargadoproyecto, 
                     tep.ccodigoproyecto,
+                    tep.idencargado,
                     CONCAT(te.cnombres, ' ', te.capellidopat, ' ', te.capellidomat) AS nombreCompleto
                 FROM 
                     tb_encargadoproyectos tep

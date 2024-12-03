@@ -9,7 +9,7 @@
         if ($_POST['funcion'] == "plantillaExcel")
             echo json_encode(plantillaExcel($_POST['padron']));
         else if($_POST['funcion'] == "plantillaTareoExcel")
-            echo json_encode(newPlantillaTareoExcel($_POST['padron']));
+            echo json_encode(newPlantillaTareoExcel($_POST['padron'], $_POST['fechaProceso']));
     }
 
     function plantillaExcel($padron){
@@ -59,7 +59,7 @@
         return array("archivo"=>"/documentos/plantillas/plantillaRegistros.xlxs");
     }
 
-    function plantillaTareoExcel($padron){
+    function plantillaTareoExcel($padron,$fechaProceso){
         require_once("../libs/PHPExcel/PHPExcel.php");
         $archivoTemplate = '../documentos/plantillas/plantillaReporteTareo.xlsx';
         $objPHPExcel = PHPExcel_IOFactory::load($archivoTemplate);
@@ -78,7 +78,6 @@
         $fila = 7;
 
         $datos = json_decode($padron);
-        $fechaProceso =$padron['fechaProceso'];
         $nreg = count($datos);
         $hoja->setCellValue('A3', 'TAREOS - CONTROL DE ASISTENCIA REPORTE '.$datos[0]->proyecto.' '.$fechaProceso);
         for ($i=0; $i < $nreg; $i++) { 
@@ -119,7 +118,7 @@
         return array("archivo"=>"/documentos/reportes/".$nombreArchivoModificado.".xlsx");
     }
 
-    function newPlantillaTareoExcel($padron) {
+    function newPlantillaTareoExcel($padron, $fechaProceso) {
         require_once("../libs/PHPExcel/PHPExcel.php");
         $archivoTemplate = '../documentos/plantillas/newPlantillaReporteTareo.xlsx';
         $objPHPExcel = PHPExcel_IOFactory::load($archivoTemplate);
@@ -130,7 +129,6 @@
         $fila = 10;
     
         $datos = json_decode($padron);
-        $fechaProceso = $datos[0]->fechaProceso;
         $nreg = count($datos);
         $hoja->setCellValue('A3', 'TAREOS - CONTROL DE ASISTENCIA REPORTE ' . $datos[0]->proyecto . ' ' . $fechaProceso);
     

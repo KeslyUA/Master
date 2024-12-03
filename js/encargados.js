@@ -89,3 +89,33 @@ export const listarEncargados = (select) =>{
             console.log(error.message);
         }
 }
+
+export const listarEncargadosByProyecto = async (select, cc) => {
+    const formData = new FormData();
+        formData.append("funcion","obtenerEncargadosProyecto");
+        select.innerHTML = `<option value='-1'>Seleccionar</option>`;
+
+        try {
+            await fetch('../inc/busquedas.inc.php',{
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("listar encargado by proyecto")
+                console.log(data)
+                console.log(cc)
+                const dataByProyecto = data.filter(item => parseInt(item.ccodigoproyecto) == cc)
+                dataByProyecto.forEach(element => {
+                    let option = document.createElement("option");
+                    option.value = element.idencargado;
+                    option.innerHTML = element.nombreCompleto;
+    
+                    select.appendChild(option);
+               })
+               console.log(dataByProyecto)
+            })
+        } catch (error) {
+            console.log(error.message);
+        }
+}

@@ -3,7 +3,7 @@ import {calcularfechas,mostrarMensaje} from "./funciones.js";
 import {buscarDatosUsuarios} from "./usuarios.js";
 import {buscarProyectos,getColaboradorRegistro,getTareo,getTareosByFecha,listarPadron, listarPadronByFecha, listarPadronTerceros, listarPadronTercerosByFecha} from "./padron.js";
 import { listarFases, listarFasesByProyecto, listarFasesTable, listarProyectosFasesTable } from "./fases.js";
-import { listarEncargados, listarEncargadosProyectoTable, listarEncargadosTable } from "./encargados.js";
+import { listarEncargados, listarEncargadosByProyecto, listarEncargadosProyectoTable, listarEncargadosTable } from "./encargados.js";
 
 const documento = document.getElementById("documento");
 
@@ -102,7 +102,6 @@ const select = document.getElementById("select_proyectos");
 const regimen = document.getElementById("regimen");
 const especificacion_contrato = document.getElementById("especificacion_contrato");
 
-listarEncargados(encargado);
 
 let username = localStorage.getItem("username");
 if(!(username == "admin" || username == "adminrrhh")){
@@ -123,7 +122,9 @@ document.addEventListener('focusin',(e) =>{
 document.addEventListener('keypress',async (e)=>{
     if (e.target.id == 'documento'){
         if (e.keyCode === 13) {
-            buscarDatos(e.target.value);
+            await buscarDatos(e.target.value);
+            /* listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
+            listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value) */
         }
     }else if (e.target.id == 'regimen_trabajo'){
         if (e.keyCode === 13) {
@@ -257,7 +258,7 @@ document.addEventListener('click',(e)=>{
     }
 })
 
-document.addEventListener('change',(e)=>{
+document.addEventListener('change',async (e)=>{
     if (e.target.matches(".select") && e.target.id === "select_proyectos"){
         listarPadron(e.target.value);
     }if (e.target.matches(".select") && e.target.id === "select_proyectos_terceros"){
@@ -269,7 +270,8 @@ document.addEventListener('change',(e)=>{
     }if (e.target.matches(".select") && e.target.id === "select_fase"){
     }
     if(e.target.matches(".select") && e.target.id === "proyecto_actual"){
-        listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
+        await listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
+        await listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value)
     }
     if (e.target.matches(".archivo")){
         actualizarPadronExcel(fileUpload.files[0]);

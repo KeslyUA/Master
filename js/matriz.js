@@ -1,18 +1,21 @@
+import { listarEncargadosByProyecto } from "../js/encargados.js";
+import { listarFasesByProyecto } from "../js/fases.js";
+
 const ingreso_obra = document.getElementById("ingreso_obra");
 
-export const buscarDatos = (dni) =>{
+export const buscarDatos = async (dni) =>{
     let formData = new FormData();
     
     formData.append('funcion','buscarDatosColaborador');
     formData.append('dni',dni);
 
     try {
-        fetch('../inc/busquedas.inc.php',{
+        await fetch('../inc/busquedas.inc.php',{
             method: 'POST',
             body: formData
         })
         .then(response => response.json())
-        .then(data => {
+        .then(async data => {
             console.log(data)
             paterno.value           = data.datos[0]['paterno'];
             materno.value           = data.datos[0]['materno'];
@@ -36,7 +39,8 @@ export const buscarDatos = (dni) =>{
             dist.value          = data.ubigeo['dist'];
 
             procedencia.value   = data.datos[0]['cod_pais'] == 144 ? data.origen['dpto'] : data.datos[0]['pais'];
-
+            await listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
+            await listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value)
             if (data.datosTareo.length > 0) {
                 encargado.value = data.datosTareo[0]['cencargado'];
                 condicion.value = data.datosTareo[0]['ncondicion'];
@@ -166,7 +170,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
         body:formData
     })
     .then(response => response.json())
-    .then(data => {
+    .then(async data => {
         console.log(data);
         if(data.exist){
             paterno.value           = data.datos['paterno'];
@@ -193,7 +197,8 @@ export const buscarDatosColaboradorTercero = (dni) =>{
             prov.value          = data.datos['provincia'];
             dist.value          = data.datos['distrito'];
 
-            
+            await listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
+            await listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value)
 
             if (data.datosTareo.length > 0) {
                 /* document.getElementById("data_matriz")[1].reset(); */
