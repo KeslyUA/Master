@@ -41,8 +41,7 @@ export const listarFasesByProyecto = async (select, cc) => {
                 dataByProyecto.forEach(element => {
                     let option = document.createElement("option");
                     option.value = element.idFase;
-                    option.innerHTML = element.nombreFase;
-    
+                    option.innerHTML = `${element.nombreFase} ${element.descripcionFase}`;
                     select.appendChild(option);
                })
             })
@@ -72,6 +71,11 @@ export const listarFasesTable = () => {
                     <td>${fila++}</td>
                     <td class="padding20left">${element.cnombre}</td>
                     <td class="texto_centro">${element.cdescripcion}</td>
+                    <td>
+                        <a href="#" class="actions texto_centro" id="editFase" data-id=${element.idfase}>
+                            Editar
+                        </a>
+                    </td>
                 </tr>`;
 
                 cuerpo.insertRow(-1).outerHTML = row;
@@ -103,7 +107,7 @@ export const listarProyectosFasesTable = () => {
                 let row = `<tr>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.codigoProyecto}</td>
-                    <td class="texto_centro">${element.nombreFase}</td>
+                    <td class="texto_centro">${element.nombreFase} ${element.descripcionFase}</td>
                 </tr>`;
 
                 cuerpo.insertRow(-1).outerHTML = row;

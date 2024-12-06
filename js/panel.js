@@ -211,6 +211,8 @@ document.addEventListener('click',(e)=>{
             agregaFase();
         else if (e.target.closest('a').id == "agregaEncargados")
             agregaEncargado();
+        else if (e.target.closest('a').id == "agregaUbicacion")
+            agregaUbicacion();
         else if (e.target.closest('a').id == "agregaEncargadosProyecto")
             agregaEncargadoProyectos();
         else if (e.target.closest('a').id == "grabarDatosPadron")
@@ -255,7 +257,127 @@ document.addEventListener('click',(e)=>{
                 listarEncargadosProyectoTable();
             }
         }
-    }
+    }else if (e.target.matches(".actions")) {
+        if (e.target && e.target.id === 'editEncargado') {
+            e.preventDefault();
+
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Convertir las celdas editables en inputs
+                const cnumdocCell = cells[1];
+                const cnombrecompletoCell = cells[2];
+
+                const cnumdocValue = cnumdocCell.textContent.trim();
+                const cnombrecompletoValue = cnombrecompletoCell.textContent.trim();
+
+                cnumdocCell.innerHTML = `<input type="text" value="${cnumdocValue}" class="edit-input" />`;
+                cnombrecompletoCell.innerHTML = `<input type="text" value="${cnombrecompletoValue}" class="edit-input" />`;
+
+                // Cambiar el icono de edición a guardar
+                const editButton = row.querySelector('#editEncargado');
+                editButton.innerHTML = `Guardar`;
+                editButton.id = 'saveEncargado'; // Cambiar el id para manejar la acción de guardar
+            }
+        } else if (e.target && e.target.id === 'saveEncargado') {
+            e.preventDefault();
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Obtener los valores de los inputs
+                const cnumdocInput = cells[1].querySelector('input').value.trim();
+                const cnombrecompletoInput = cells[2].querySelector('input').value.trim();
+                const idEncargado = document.getElementById("saveEncargado").getAttribute("data-id")
+
+                // Reemplazar los inputs con los nuevos valores
+                cells[1].textContent = cnumdocInput;
+                cells[2].textContent = cnombrecompletoInput;
+
+                // Cambiar el icono de guardar a edición
+                const saveButton = row.querySelector('#saveEncargado');
+                saveButton.innerHTML = `Editar`;
+                saveButton.id = 'editEncargado'; // Cambiar el id para manejar la acción de edición
+                let formData = new FormData();
+                formData.append("funcion","actualizarEncargado");
+                formData.append("encargado",JSON.stringify({nombres: cnombrecompletoInput, numdoc:cnumdocInput, idEncargado: idEncargado}))
+                try {
+                    fetch('../inc/grabar.inc.php',{
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                       console.log(data)
+                    })
+                } catch (error) {
+                    console.log(error.message);
+                }
+            }
+        }if (e.target && e.target.id === 'editFase') {
+            e.preventDefault();
+
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Convertir las celdas editables en inputs
+                const cnombrefaseCell = cells[1];
+                const cdescripcionCell = cells[2];
+
+                const cnombrefaseValue = cnombrefaseCell.textContent.trim();
+                const cdescripcionValue = cdescripcionCell.textContent.trim();
+
+                cnombrefaseCell.innerHTML = `<input type="text" value="${cnombrefaseValue}" class="edit-input" />`;
+                cdescripcionCell.innerHTML = `<input type="text" value="${cdescripcionValue}" class="edit-input" />`;
+
+                // Cambiar el icono de edición a guardar
+                const editButton = row.querySelector('#editFase');
+                editButton.innerHTML = `Guardar`;
+                editButton.id = 'saveFase'; // Cambiar el id para manejar la acción de guardar
+            }
+        } else if (e.target && e.target.id === 'saveFase') {
+            e.preventDefault();
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Obtener los valores de los inputs
+                const cnombreFaseInput = cells[1].querySelector('input').value.trim();
+                const cdescripcionInput = cells[2].querySelector('input').value.trim();
+                const idFase = document.getElementById("saveFase").getAttribute("data-id")
+
+                // Reemplazar los inputs con los nuevos valores
+                cells[1].textContent = cnombreFaseInput;
+                cells[2].textContent = cdescripcionInput;
+
+                // Cambiar el icono de guardar a edición
+                const saveButton = row.querySelector('#saveFase');
+                saveButton.innerHTML = `Editar`;
+                saveButton.id = 'editFase'; // Cambiar el id para manejar la acción de edición
+                let formData = new FormData();
+                formData.append("funcion","actualizarFase");
+                formData.append("fase",JSON.stringify({nombre: cnombreFaseInput, descripcion:cdescripcionInput, idFase: idFase}))
+                try {
+                    fetch('../inc/grabar.inc.php',{
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                       console.log(data)
+                    })
+                } catch (error) {
+                    console.log(error.message);
+                }
+            }
+        }
+    } 
 })
 
 document.addEventListener('change',async (e)=>{
@@ -639,12 +761,6 @@ function agregaEncargado() {
                 <td>
                     <input type="text">
                 </td>
-                <td>
-                    <input type="text">
-                </td>
-                <td>
-                    <input type="text">
-                </td>
                 <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
     
@@ -678,6 +794,22 @@ function agregaEncargadoProyectos() {
     // Llenar el select de proyecto y fase para la nueva fila
     listarProyectos(selectNuevoProyecto);  // Asume que listarProyectos llena el select con datos de la base de datos
     listarEncargados(selectNuevoFase);  // Asume que listarFases llena el select con datos de la base de datos
+}
+
+function agregaUbicacion() {
+    const cuerpo = document.getElementById("tablaUbicacionBody");
+    
+    let fila = document.querySelector("#tablaUbicacionBody").getElementsByTagName("tr").length+1;
+
+    let row = `<tr data-grabado="0">
+                <td>${fila++}</td>
+                <td>
+                    <input type="text">
+                </td>
+                <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
+            </tr>`;
+    
+    cuerpo.insertRow(-1).outerHTML = row;
 }
 
 function LoadElement(page) {
@@ -774,8 +906,8 @@ const datosEncargados = () => {
             dato['item']        = fila[i].cells[0].innerHTML;
             dato['numdoc']      = fila[i].cells[1].children[0].value;
             dato['nombres'] = fila[i].cells[2].children[0].value;
-            dato['paterno'] = fila[i].cells[3].children[0].value;
-            dato['materno'] = fila[i].cells[4].children[0].value;
+            /* dato['paterno'] = fila[i].cells[3].children[0].value;
+            dato['materno'] = fila[i].cells[4].children[0].value; */
 
             DATOS.push(dato);
 

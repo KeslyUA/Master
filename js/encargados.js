@@ -18,9 +18,12 @@ export const listarEncargadosTable = () => {
                 let row = `<tr>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.cnumdoc}</td>
-                    <td class="texto_centro">${element.cnombres}</td>
-                    <td class="texto_centro">${element.capellidopat}</td>
-                    <td class="texto_centro">${element.capellidomat}</td>
+                    <td class="texto_centro">${element.cnombrecompleto}</td>
+                    <td>
+                        <a href="#" class="actions texto_centro" id="editEncargado" data-id=${element.idencargado}>
+                            Editar
+                        </a>
+                    </td>
                 </tr>`;
 
                 cuerpo.insertRow(-1).outerHTML = row;
@@ -80,7 +83,7 @@ export const listarEncargados = (select) =>{
                data.forEach(element => {
                     let option = document.createElement("option");
                     option.value = element.idencargado;
-                    option.innerHTML = `${element.cnombres} ${element.capellidopat} ${element.capellidomat}`;
+                    option.innerHTML = `${element.cnombrecompleto}`;
     
                     select.appendChild(option);
                })

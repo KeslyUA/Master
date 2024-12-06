@@ -153,7 +153,11 @@
            foreach($datos[$i]->estadosDia as $dia=>$estado){
             $columna = 13;
             $columna = $columna + $dia;
-            $hoja->setCellValue(PHPExcel_Cell::stringFromColumnIndex($columna) . $fila, $estado);
+            if (isset($estado)) { // Verificar si el estado está definido
+                $columna = 13 + $dia;
+                $hoja->setCellValue(PHPExcel_Cell::stringFromColumnIndex($columna) . $fila, $estado);
+            }
+            //$hoja->setCellValue(PHPExcel_Cell::stringFromColumnIndex($columna) . $fila, $estado);
            }
     
             $hoja->setCellValue('AT' . $fila, isset($datos[$i]->dias->A) ? $datos[$i]->dias->A : 0);

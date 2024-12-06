@@ -552,7 +552,8 @@
                     tp.idproyectofase AS idProyectoFase, 
                     tp.ccodigoproyecto AS codigoProyecto, 
                     tf.idfase AS idFase, 
-                    tf.cnombre AS nombreFase 
+                    tf.cnombre AS nombreFase,
+                    tf.cdescripcion as descripcionFase
                 FROM tb_proyectofases tp 
                 INNER JOIN tb_fases tf 
                 ON tf.idfase = tp.idfase
@@ -572,7 +573,7 @@
         $docData = [];
 
         /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
-        $sql = "SELECT te.idencargado, te.cnumdoc, te.cnombres, te. capellidopat, te.capellidomat 
+        $sql = "SELECT te.idencargado, te.cnumdoc, te.cnombres, te.capellidopat, te.capellidomat, te.cnombrecompleto 
         FROM tb_encargados te WHERE te.nflgactivo=1";
         
         $statement = $pdo->prepare($sql);
@@ -593,7 +594,7 @@
                     tep.idencargadoproyecto, 
                     tep.ccodigoproyecto,
                     tep.idencargado,
-                    CONCAT(te.cnombres, ' ', te.capellidopat, ' ', te.capellidomat) AS nombreCompleto
+                    te.cnombrecompleto AS nombreCompleto
                 FROM 
                     tb_encargadoproyectos tep
                 INNER JOIN 

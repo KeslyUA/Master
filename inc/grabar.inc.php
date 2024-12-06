@@ -27,6 +27,10 @@
             echo json_encode(grabarEncargado($pdo, $_POST));
         else if ($_POST['funcion'] == "grabarEncargadoProyecto") {
             echo json_encode(grabarEncargadoProyecto($pdo, $_POST));
+        }else if ($_POST['funcion'] == "actualizarEncargado") {
+            echo json_encode((actualizarEncargado($pdo, $_POST)));
+        }else if ($_POST['funcion'] == "actualizarFase") {
+            echo json_encode(actualizarFase($pdo, $_POST));
         }
     }
 
@@ -717,15 +721,11 @@
                 try {
                     $sql = "INSERT INTO tb_encargados
                             SET tb_encargados.cnumdoc = ?,
-                                tb_encargados.cnombres = ?,
-                                tb_encargados.capellidopat = ?,
-                                tb_encargados.capellidomat = ?";
+                                tb_encargados.cnombrecompleto = ?";
 
                     $statement = $pdo->prepare($sql);
                     $statement -> execute(array($encargados[$i]->numdoc,
-                                                $encargados[$i]->nombres,
-                                                $encargados[$i]->paterno,
-                                                $encargados[$i]->materno));
+                                                $encargados[$i]->nombres));
 
                     //var_dump($statement->errorInfo());
 
@@ -764,6 +764,70 @@
                     return false;
                 }
             }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function actualizarEncargado($pdo, $datos) {
+        try {
+            $encargados = json_decode($datos['encargado']);
+
+
+        
+                try {
+                    $sql = "UPDATE tb_encargados
+                            SET
+                            tb_encargados.cnombrecompleto = ?,
+                            tb_encargados.cnumdoc = ?
+                            WHERE tb_encargados.idencargado = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($encargados->nombres,
+                        $encargados->numdoc,
+                        $encargados->idEncargado));
+
+                    //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function actualizarFase($pdo, $datos) {
+        try {
+            $fase = json_decode($datos['fase']);
+
+
+        
+                try {
+                    $sql = "UPDATE tb_fases
+                            SET
+                            tb_fases.cnombre = ?,
+                            tb_fases.cdescripcion = ?
+                            WHERE tb_fases.idfase = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($fase->nombre,
+                        $fase->descripcion,
+                        $fase->idFase));
+
+                    //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
 
             //var_dump($proyectos[0]->codigo);
 

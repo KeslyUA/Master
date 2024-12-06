@@ -389,6 +389,11 @@ export const listarProyectos = (select) =>{
     
                     select.appendChild(option);
                })
+               let option = document.createElement("option");
+                    option.value = "390000";
+                    option.innerHTML = "390000 EPC RECAPEX II";
+    
+                    select.appendChild(option);
             })
         } catch (error) {
             console.log(error.message);

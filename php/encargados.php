@@ -65,9 +65,7 @@
                                     <tr>
                                         <th width="15%">Item</th>
                                         <th width="30%">N° Documento</th>
-                                        <th width="15%">Nombres</th>
-                                        <th width="20%">Apellido Paterno</th>
-                                        <th width="20%">Apellido Materno</th>
+                                        <th width="15%">Nombre Completo</th>
                                         <th width="10%">...</th>
                                     </tr>
                                 </thead>

@@ -218,10 +218,7 @@
                     </select>
                 </div>
 
-                <div class="ocho_columnas">
-                    <label for="observaciones">Observaciones :</label>
-                    <textarea name="observaciones" id="observaciones" form="data_matriz"></textarea>
-                </div>
+                
                 <div class="cuatro_columnas">
                     <label for="motivo_descanso">Motivo de descanso :</label>
                     <select name="motivo_descanso" id="motivo_descanso" form="data_matriz">
@@ -256,6 +253,10 @@
                         <option value="19">Directo</option>
                         <option value="19">Indirecto</option>
                     </select>
+                </div>
+                <div class="ocho_columnas" style="height: 100px;" >
+                    <label for="observaciones">Observaciones :</label>
+                    <textarea name="observaciones" id="observaciones" form="data_matriz" style="height: 100px;"></textarea>
                 </div>
             </div>
         </div>
