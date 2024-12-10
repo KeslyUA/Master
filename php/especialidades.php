@@ -17,9 +17,9 @@
         <input type="hidden" name="function" id="function">
         <div class="separator">
             <div class="titulo">
-                <span>UBICACIONES</span>
+                <span>ESPECIALIDADES</span>
                 <div class="btnOpciones">
-                    <a href="#" id="grabarDatosEncargados">
+                    <a href="#" id="grabarDatosEspecialidad">
                         <i class="fas fa-save botones"></i>
                         <p>Grabar</p>
                     </a>
@@ -41,32 +41,32 @@
             </div> -->
         </div>
         <div class="separator">
-        
-                        <div class="titulo">
-                            <span>LISTA DE UBICACIONES</span>
-                            <div class="btnOpciones">
-                                <a href="#" id="agregaUbicacion">
-                                    <i class="far fa-calendar-plus botones"></i>
-                                    <p>Agregar<br>Ubicacion</p>
-                                </a>
-                            </div>
-                        </div>
+
+            <div class="titulo">
+                <span>LISTA DE ESPECIALIDADES</span>
+                <div class="btnOpciones">
+                    <a href="#" id="agregaEspecialidad">
+                        <i class="far fa-calendar-plus botones"></i>
+                        <p>Agregar<br>Especialidad</p>
+                    </a>
+                </div>
+            </div>
 
 
-                        <div class="cuerpo_tabla">
-                            <table id="tablaUbicacion">
-                                <thead>
-                                    <tr>
-                                        <th width="15%">Item</th>
-                                        <th width="30%">Ubicacion</th>
-                                        <th width="10%">...</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tablaUbicacionBody">
+            <div class="cuerpo_tabla">
+                <table id="tablaEspecialidades">
+                    <thead>
+                        <tr>
+                            <th width="15%">Item</th>
+                            <th width="30%">Especialidad</th>
+                            <th width="10%">...</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaEspecialidadesBody">
 
-                                </tbody>
-                            </table>
-                        </div>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </section>

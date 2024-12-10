@@ -4,6 +4,8 @@ import {buscarDatosUsuarios} from "./usuarios.js";
 import {buscarProyectos,getColaboradorRegistro,getTareo,getTareosByFecha,listarPadron, listarPadronByFecha, listarPadronTerceros, listarPadronTercerosByFecha} from "./padron.js";
 import { listarFases, listarFasesByProyecto, listarFasesTable, listarProyectosFasesTable } from "./fases.js";
 import { listarEncargados, listarEncargadosByProyecto, listarEncargadosProyectoTable, listarEncargadosTable } from "./encargados.js";
+import { listarUbicaciones, listarUbicacionesTable } from "./ubicacion.js";
+import { listarEspecialidades, listarEspecialidadesTable } from "./especialidad.js";
 
 const documento = document.getElementById("documento");
 
@@ -107,8 +109,10 @@ let username = localStorage.getItem("username");
 if(!(username == "admin" || username == "adminrrhh")){
     document.getElementById("usuarios").style.display = 'none';
 }
-
     listarProyectos(document.getElementById("proyecto_actual"));
+    listarUbicaciones(document.getElementById("ubicacion"));
+    listarEspecialidades(document.getElementById("especialidad"));
+    
 document.addEventListener('DOMContentLoaded', datosUsuarioCabecera);
 
 document.addEventListener('focusin',(e) =>{
@@ -178,17 +182,28 @@ document.addEventListener('click',(e)=>{
         LoadElement(e.target.id + '.php');
         console.log(e.target.id)
         if (e.target.id == "terceros") {
-            console.log("hola");
             setTimeout(() => {
                 console.log(document.getElementById("proyecto"));
                 listarProyectos(document.getElementById("proyecto"));
                 listarProyectos(document.getElementById("proyecto_actual"));
                 listarEncargados(document.getElementById("encargado"));
+                listarUbicaciones(document.getElementById("ubicacion"));
+                listarEspecialidades(document.getElementById("especialidad"));
             }, 100); // Ajusta el tiempo según sea necesario
         }else if(e.target.id == "matriz") {
             setTimeout(() => {
                 listarProyectos(document.getElementById("proyecto_actual"));
                 listarEncargados(document.getElementById("encargado"));
+                listarUbicaciones(document.getElementById("ubicacion"));
+                listarEspecialidades(document.getElementById("especialidad"));
+            }, 100);
+        }else if(e.target.id == "ubicacion") {
+            setTimeout(() => {
+                listarUbicacionesTable();
+            }, 100);
+        }else if(e.target.id == "especialidad") {
+            setTimeout(() => {
+                listarEspecialidadesTable();
             }, 100);
         }
         return false;
@@ -215,6 +230,8 @@ document.addEventListener('click',(e)=>{
             agregaUbicacion();
         else if (e.target.closest('a').id == "agregaEncargadosProyecto")
             agregaEncargadoProyectos();
+        else if (e.target.closest('a').id == "agregaEspecialidad")
+            agregaEspecialidad();
         else if (e.target.closest('a').id == "grabarDatosPadron")
             grabarDatosTareo(codigo_costos.value);
         else if (e.target.closest('a').id == "cargarDatosPadron")
@@ -230,6 +247,10 @@ document.addEventListener('click',(e)=>{
             grabarDatosFaseOrProyectoFase();
         else if (e.target.closest('a').id == "grabarDatosEncargados")
             grabarDatosEncargadoOrEncargadoProyectos();
+        else if (e.target.closest('a').id == "grabarDatosUbicacion")
+            grabarDatosUbicacion();
+        else if (e.target.closest('a').id == "grabarDatosEspecialidad")
+            grabarDatosEspecialidad();
         return false;
     }else if (e.target.matches(".select")){
         codigo_costos.value= e.target.value;
@@ -685,6 +706,67 @@ function grabarDatosEncargadoOrEncargadoProyectos() {
     }
 }
 
+function grabarDatosUbicacion() {
+    try {
+        //serializar los formulario en javascript
+        const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
+        datos.append("funcion","grabarUbicacion");
+        datos.append("ubicaciones",JSON.stringify(datosUbicacion()))
+
+        fetch('../inc/grabar.inc.php',{
+            method: 'POST',
+            body:datos
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            Swal.fire({
+                icon: "success",
+                title: "Guardado Correctamente",
+                text: "Se han guardado los registros exitosamente"
+              });
+        });
+
+    } catch (error) {
+        /* mostrarMensaje(error.message,"msj_error"); */
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Ha ocurrido un error"+error.message
+        });
+    }
+}
+
+function grabarDatosEspecialidad() {
+    try {
+        //serializar los formulario en javascript
+        const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
+        datos.append("funcion","grabarEspecialidad");
+        datos.append("especialidades",JSON.stringify(datosEspecialidad()))
+
+        fetch('../inc/grabar.inc.php',{
+            method: 'POST',
+            body:datos
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            Swal.fire({
+                icon: "success",
+                title: "Guardado Correctamente",
+                text: "Se han guardado los registros exitosamente"
+              });
+        });
+
+    } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Ha ocurrido un error"+error.message
+        });
+    }
+}
+
 function agregaProyectosUsuario(){
     const cuerpo = document.getElementById("tablaProyectosBody");
     
@@ -797,9 +879,25 @@ function agregaEncargadoProyectos() {
 }
 
 function agregaUbicacion() {
-    const cuerpo = document.getElementById("tablaUbicacionBody");
+    const cuerpo = document.getElementById("tablaUbicacionesBody");
     
-    let fila = document.querySelector("#tablaUbicacionBody").getElementsByTagName("tr").length+1;
+    let fila = document.querySelector("#tablaUbicacionesBody").getElementsByTagName("tr").length+1;
+
+    let row = `<tr data-grabado="0">
+                <td>${fila++}</td>
+                <td>
+                    <input type="text">
+                </td>
+                <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
+            </tr>`;
+    
+    cuerpo.insertRow(-1).outerHTML = row;
+}
+
+function agregaEspecialidad() {
+    const cuerpo = document.getElementById("tablaEspecialidadesBody");
+    
+    let fila = document.querySelector("#tablaEspecialidadesBody").getElementsByTagName("tr").length+1;
 
     let row = `<tr data-grabado="0">
                 <td>${fila++}</td>
@@ -918,6 +1016,28 @@ const datosEncargados = () => {
     return DATOS;
 }
 
+const datosEspecialidad = () => {
+    let fila = document.querySelector("#tablaEspecialidadesBody").getElementsByTagName("tr"),
+        nreg = fila.length;
+
+    let DATOS = [];
+
+    for (let i = 0; i < nreg; i++) {
+        let dato = {};
+
+        if ( fila[i].dataset.grabado  === "0" ) {
+            dato['item']        = fila[i].cells[0].innerHTML;
+            dato['especialidad']      = fila[i].cells[1].children[0].value;
+
+            DATOS.push(dato);
+
+            fila[i].setAttribute("data-grabado", "1");
+        }   
+    }
+
+    return DATOS;
+}
+
 const datosEncargadoProyectos = () => {
     let fila = document.querySelector("#tablaEncargadosProyectoBody").getElementsByTagName("tr"),
         nreg = fila.length;
@@ -931,6 +1051,28 @@ const datosEncargadoProyectos = () => {
             dato['item']        = fila[i].cells[0].innerHTML;
             dato['proyecto']      = fila[i].cells[1].children[0].value;
             dato['encargado'] = fila[i].cells[2].children[0].value;
+
+            DATOS.push(dato);
+
+            fila[i].setAttribute("data-grabado", "1");
+        }   
+    }
+
+    return DATOS;
+}
+
+const datosUbicacion = () => {
+    let fila = document.querySelector("#tablaUbicacionesBody").getElementsByTagName("tr"),
+        nreg = fila.length;
+
+    let DATOS = [];
+
+    for (let i = 0; i < nreg; i++) {
+        let dato = {};
+
+        if ( fila[i].dataset.grabado  === "0" ) {
+            dato['item']        = fila[i].cells[0].innerHTML;
+            dato['ubicacion']      = fila[i].cells[1].children[0].value;
 
             DATOS.push(dato);
 
@@ -1357,7 +1499,8 @@ const obtenerReportePadron = async () => {
         
     }
     console.log(DATOS);
-    formData.append("padron",JSON.stringify(DATOS));
+    newPlantillaTareoExcel(JSON.stringify(DATOS), document.getElementById("fecha_proceso").value)
+    /* formData.append("padron",JSON.stringify(DATOS));
     formData.append("funcion","plantillaTareoExcel");
 
     await fetch('../inc/exportar.inc.php',{
@@ -1369,7 +1512,7 @@ const obtenerReportePadron = async () => {
        window.open(`..${data.archivo}`);
     })
     
-    Swal.close();
+    Swal.close(); */
 
     
     
@@ -1421,6 +1564,76 @@ const obtenerReportePadron = async () => {
     })
     Swal.close();  */
 }
+
+async function newPlantillaTareoExcel(padron, fechaProceso) {
+    /* const archivoTemplate = '../documentos/plantillas/newPlantillaReporteTareo.xlsx'; */
+    const archivoTemplate = '../documentos/plantillas/newPlantillaReporteTareo.xlsx'
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(archivoTemplate);
+  
+    const hoja = workbook.getWorksheet('SEPCON S.A.C.');
+  
+    let fila = 10;
+    const datos = JSON.parse(padron);
+    const nreg = datos.length;
+  
+    hoja.getCell('A3').value = 'TAREOS - CONTROL DE ASISTENCIA REPORTE ' + datos[0].proyecto + ' ' + fechaProceso;
+  
+    for (let i = 0; i < nreg; i++) {
+      hoja.insertRow(fila); // Insertar una nueva fila
+  
+      // No es necesario en ExcelJS: hoja.getStyle(`A${fila}:E${fila}`).fill = { type: 'none' };
+  
+      hoja.getCell(`A${fila}`).value = datos[i].item;
+      hoja.getCell(`E${fila}`).value = datos[i].nombres;
+      hoja.getCell(`D${fila}`).value = datos[i].documento;
+      hoja.getCell(`M${fila}`).value = datos[i].proyecto;
+      hoja.getCell(`N${fila}`).value = datos[i].ubicacion;
+      hoja.getCell(`K${fila}`).value = datos[i].cargo;
+  
+      // Lógica para los estadosDia
+      for (let dia = 0; dia < datos[i].estadosDia.length; dia++) {
+        const estado = datos[i].estadosDia[dia];
+        if (estado) {
+          const columna = 13 + dia;
+          hoja.getCell(getColumnLetter(columna) + fila).value = estado; 
+        }
+      }
+  
+      hoja.getCell('AT' + fila).value = datos[i].dias.A || 0;
+      hoja.getCell('AU' + fila).value = datos[i].dias.D || 0;
+      hoja.getCell('AV' + fila).value = datos[i].dias.F || 0;
+      hoja.getCell('AW' + fila).value = datos[i].dias.M || 0;
+      hoja.getCell('AX' + fila).value = datos[i].dias.V || 0;
+      hoja.getCell('AY' + fila).value = datos[i].dias.P || 0;
+      hoja.getCell('AZ' + fila).value = datos[i].dias.total || 0;
+  
+      hoja.getCell('BA' + fila).value = datos[i].regimen || '';
+      hoja.getCell('BB' + fila).value = datos[i].manoObra || '';
+  
+      fila++;
+    }
+  
+    const nombreArchivoModificado = 'reporte_tareos_' + fechaProceso;
+    await workbook.xlsx.writeFile('../documentos/reportes/' + nombreArchivoModificado + '.xlsx');
+  
+    return { archivo: "/documentos/reportes/" + nombreArchivoModificado + ".xlsx" };
+  }
+  
+  // Función auxiliar para obtener la letra de la columna
+  function getColumnLetter(colIndex) {
+    let dividend = colIndex;
+    let columnName = '';
+    let modulo;
+  
+    while (dividend > 0) {
+      modulo = (dividend - 1) % 26;
+      columnName = String.fromCharCode(65 + modulo) + columnName;
+      dividend = Math.floor((dividend - modulo) / 26);
+    }
+  
+    return columnName;
+  }
 
 const generarReportePadron = async () => {
     Swal.fire({

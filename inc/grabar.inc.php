@@ -31,6 +31,10 @@
             echo json_encode((actualizarEncargado($pdo, $_POST)));
         }else if ($_POST['funcion'] == "actualizarFase") {
             echo json_encode(actualizarFase($pdo, $_POST));
+        }else if ($_POST['funcion'] == "grabarUbicacion") {
+            echo json_encode(grabarUbicacion($pdo, $_POST));
+        }else if ($_POST['funcion'] == "grabarEspecialidad") {
+            echo json_encode(grabarEspecialidad($pdo, $_POST));
         }
     }
 
@@ -758,6 +762,58 @@
                                                 $encargados[$i]->encargado));
 
                     //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+            }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function grabarUbicacion($pdo, $datos){
+        try {
+            $ubicaciones = json_decode($datos['ubicaciones']);
+            $nreg = count($ubicaciones);
+
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $sql = "INSERT INTO tb_ubicacion
+                            SET tb_ubicacion.cubicacion = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($ubicaciones[$i]->ubicacion));
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+            }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function grabarEspecialidad($pdo, $datos){
+        try {
+            $especialidades = json_decode($datos['especialidades']);
+            $nreg = count($especialidades);
+
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $sql = "INSERT INTO tb_especialidad
+                            SET tb_especialidad.cespecialidad = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($especialidades[$i]->especialidad));
 
                 } catch (PDOException $th) {
                     echo "Error: " . $th->getMessage;

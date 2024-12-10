@@ -42,6 +42,10 @@
             echo json_encode(obtenerEncargados($pdo));
         }else if ($_POST['funcion'] === "obtenerEncargadosProyecto"){
             echo json_encode(obtenerEncargadosProyecto($pdo));
+        }else if ($_POST['funcion'] === "obtenerUbicaciones"){
+            echo json_encode(obtenerUbicaciones($pdo));
+        }else if ($_POST['funcion'] === "obtenerEspecialidades"){
+            echo json_encode(obtenerEspecialidades(($pdo)));
         }
     }
  
@@ -575,6 +579,38 @@
         /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
         $sql = "SELECT te.idencargado, te.cnumdoc, te.cnombres, te.capellidopat, te.capellidomat, te.cnombrecompleto 
         FROM tb_encargados te WHERE te.nflgactivo=1";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute();
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+    
+    function obtenerUbicaciones($pdo) {
+        $docData = [];
+
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
+        $sql = "SELECT idubicacion, cubicacion, fregesys, nflgactivo FROM tb_ubicacion where  nflgactivo = 1;";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute();
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+
+    function obtenerEspecialidades($pdo) {
+        $docData = [];
+
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
+        $sql = "SELECT idespecialidad, cespecialidad, fregsys, nflgactivo FROM tb_especialidad where  nflgactivo = 1";
         
         $statement = $pdo->prepare($sql);
         $statement -> execute();

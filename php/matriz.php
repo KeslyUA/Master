@@ -142,7 +142,10 @@
                 </div>
                 <div class="tres_columnas">
                     <label for="especialidad">Especialidad :</label>
-                    <input type="text" name="especialidad" id="especialidad" form="data_matriz">
+                    <!-- <input type="text" name="especialidad" id="especialidad" form="data_matriz"> -->
+                    <select name="especialidad" id="especialidad" form="data_matriz">
+                        <option value="-1">Seleccionar</option>
+                    </select>
                 </div>
                 <div class="dos_columnas">
                     <label for="manoobra">Mano de Obra :</label>
@@ -168,7 +171,10 @@
                 </div>
                 <div class="cuatro_columnas">
                     <label for="ubicacion">Ubicacion :</label>
-                    <input type="text" name="ubicacion" id="ubicacion" form="data_matriz">
+                    <!-- <input type="text" name="ubicacion" id="ubicacion" form="data_matriz"> -->
+                    <select name="ubicacion" id="ubicacion" form="data_matriz" class="select">
+                        <option value="-1">Seleccionar</option>
+                    </select>
                 </div>
                 <div class="dos_columnas">
                     <label for="regimen_trabajo">Regimen Trabajo:</label>
