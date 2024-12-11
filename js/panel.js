@@ -1,7 +1,7 @@
-import {buscarDatosColaboradorTercero, buscarDatos, buscarDatosTerceroDB, buscarDatosTerceros, listarProyectos} from "./matriz.js";
-import {calcularfechas,mostrarMensaje} from "./funciones.js";
-import {buscarDatosUsuarios} from "./usuarios.js";
-import {buscarProyectos,getColaboradorRegistro,getTareo,getTareosByFecha,listarPadron, listarPadronByFecha, listarPadronTerceros, listarPadronTercerosByFecha} from "./padron.js";
+import { buscarDatosColaboradorTercero, buscarDatos, buscarDatosTerceroDB, buscarDatosTerceros, listarProyectos } from "./matriz.js";
+import { calcularfechas, mostrarMensaje } from "./funciones.js";
+import { buscarDatosUsuarios } from "./usuarios.js";
+import { buscarProyectos, getColaboradorRegistro, getTareo, getTareosByFecha, listarPadron, listarPadronByFecha, listarPadronTerceros, listarPadronTercerosByFecha } from "./padron.js";
 import { listarFases, listarFasesByProyecto, listarFasesTable, listarProyectosFasesTable } from "./fases.js";
 import { listarEncargados, listarEncargadosByProyecto, listarEncargadosProyectoTable, listarEncargadosTable } from "./encargados.js";
 import { listarUbicaciones, listarUbicacionesTable } from "./ubicacion.js";
@@ -15,7 +15,7 @@ const nombres = document.getElementById("nombres");
 const nacimiento = document.getElementById("nacimiento");
 const codigo = document.getElementById("codigo");
 const grupo = document.getElementById("grupo");
-const planilla = document.getElementById("planilla");   
+const planilla = document.getElementById("planilla");
 const cargo = document.getElementById("cargo");
 const nacionalidad = document.getElementById("nacionalidad");
 const procedencia = document.getElementById("procedencia");
@@ -106,56 +106,56 @@ const especificacion_contrato = document.getElementById("especificacion_contrato
 
 
 let username = localStorage.getItem("username");
-if(!(username == "admin" || username == "adminrrhh")){
+if (!(username == "admin" || username == "adminrrhh")) {
     document.getElementById("usuarios").style.display = 'none';
 }
-    listarProyectos(document.getElementById("proyecto_actual"));
-    listarUbicaciones(document.getElementById("ubicacion"));
-    listarEspecialidades(document.getElementById("especialidad"));
-    
+listarProyectos(document.getElementById("proyecto_actual"));
+listarUbicaciones(document.getElementById("ubicacion"));
+listarEspecialidades(document.getElementById("especialidad"));
+
 document.addEventListener('DOMContentLoaded', datosUsuarioCabecera);
 
-document.addEventListener('focusin',(e) =>{
-    if (e.target.matches(".select") && (e.target.id === "select_proyectos" || e.target.id === "select_proyectos_terceros")){
+document.addEventListener('focusin', (e) => {
+    if (e.target.matches(".select") && (e.target.id === "select_proyectos" || e.target.id === "select_proyectos_terceros")) {
         buscarProyectos(e.target);
-    }else if (e.target.matches(".select") && e.target.id === "proyecto"){
+    } else if (e.target.matches(".select") && e.target.id === "proyecto") {
         listarProyectos(e.target);
     }
 })
 
-document.addEventListener('keypress',async (e)=>{
-    if (e.target.id == 'documento'){
+document.addEventListener('keypress', async (e) => {
+    if (e.target.id == 'documento') {
         if (e.keyCode === 13) {
             await buscarDatos(e.target.value);
             /* listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
             listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value) */
         }
-    }else if (e.target.id == 'regimen_trabajo'){
+    } else if (e.target.id == 'regimen_trabajo') {
         if (e.keyCode === 13) {
             const regimen = e.target.value.split('/');
 
-            const salida_de_obra = calcularfechas(document.getElementById('ingreso_obra').value,regimen[0]);
-            const retorno_programado = calcularfechas(salida_de_obra,regimen[1]);
+            const salida_de_obra = calcularfechas(document.getElementById('ingreso_obra').value, regimen[0]);
+            const retorno_programado = calcularfechas(salida_de_obra, regimen[1]);
 
             document.getElementById('salida_obra').value = salida_de_obra;
             document.getElementById('retorno_programado').value = retorno_programado;
         }
-    }else if(e.target.id == 'dias_goce'){
+    } else if (e.target.id == 'dias_goce') {
         if (e.keyCode === 13) {
             const valor = parseInt(e.target.value);
 
             for (let i = 1; i <= valor; i++) {
-                let pos = 'p'+i;
+                let pos = 'p' + i;
                 document.getElementById(pos).value = 'A';
             }
         }
-    }else if (e.target.id == 'user_doc'){
+    } else if (e.target.id == 'user_doc') {
         if (e.keyCode === 13) {
             buscarDatosUsuarios(e.target.value);
         }
-    }else if (e.target.id == 'ubicacion_padron'){
-        buscar(document.getElementById(e.target.id).value); 
-    }else if (e.target.id == 'documento_tercero'){
+    } else if (e.target.id == 'ubicacion_padron') {
+        buscar(document.getElementById(e.target.id).value);
+    } else if (e.target.id == 'documento_tercero') {
         if (e.keyCode === 13) {
             /* buscarDatosTerceros(e.target.value); */
             /* let datoTercero = await buscarDatosTerceroDB(e.target.value);
@@ -168,16 +168,16 @@ document.addEventListener('keypress',async (e)=>{
     }
 })
 
-document.addEventListener('click',(e)=>{
-    if (e.target.matches(".opciones")){
+document.addEventListener('click', (e) => {
+    if (e.target.matches(".opciones")) {
         e.preventDefault();
 
         opcionesMenu.forEach(element => {
             element.classList.remove('menu_selected');
         });
-    
+
         e.target.closest('li').classList.add('menu_selected');
-    
+
         //////PARA CARGAR LA PAGINA EXTERNA//////
         LoadElement(e.target.id + '.php');
         console.log(e.target.id)
@@ -190,33 +190,33 @@ document.addEventListener('click',(e)=>{
                 listarUbicaciones(document.getElementById("ubicacion"));
                 listarEspecialidades(document.getElementById("especialidad"));
             }, 100); // Ajusta el tiempo según sea necesario
-        }else if(e.target.id == "matriz") {
+        } else if (e.target.id == "matriz") {
             setTimeout(() => {
                 listarProyectos(document.getElementById("proyecto_actual"));
                 listarEncargados(document.getElementById("encargado"));
                 listarUbicaciones(document.getElementById("ubicacion"));
                 listarEspecialidades(document.getElementById("especialidad"));
             }, 100);
-        }else if(e.target.id == "ubicacion") {
+        } else if (e.target.id == "ubicacion") {
             setTimeout(() => {
                 listarUbicacionesTable();
             }, 100);
-        }else if(e.target.id == "especialidad") {
+        } else if (e.target.id == "especialidad") {
             setTimeout(() => {
                 listarEspecialidadesTable();
             }, 100);
         }
         return false;
-    }else if (e.target.matches(".botones")){
+    } else if (e.target.matches(".botones")) {
         e.preventDefault();
 
         if (e.target.closest('a').id == 'grabarDatos')
             grabarDatosMatriz();
         else if (e.target.closest('a').id == 'hojaSalida')
             hojaSalida(proyecto_actual.value);
-        else if(e.target.closest('a').id == 'reporteDiario') 
+        else if (e.target.closest('a').id == 'reporteDiario')
             reporteMatriz();
-        else if(e.target.closest('a').id == 'grabarDatosUsuario') 
+        else if (e.target.closest('a').id == 'grabarDatosUsuario')
             grabarDatosUsuario();
         else if (e.target.closest('a').id == "agregaProyectosUsuario")
             agregaProyectosUsuario();
@@ -240,7 +240,7 @@ document.addEventListener('click',(e)=>{
             obtenerDatosPadron();
         else if (e.target.closest('a').id == "descargarReporteTareo")
             obtenerReportePadron();
-            /* generarReportePadron(); */
+        /* generarReportePadron(); */
         else if (e.target.closest('a').id == "grabarDatosTerceros")
             grabarDatosMatrizTerceros();
         else if (e.target.closest('a').id == "grabarDatosFases")
@@ -252,33 +252,33 @@ document.addEventListener('click',(e)=>{
         else if (e.target.closest('a').id == "grabarDatosEspecialidad")
             grabarDatosEspecialidad();
         return false;
-    }else if (e.target.matches(".select")){
-        codigo_costos.value= e.target.value;
-    }else if (e.target.matches(".modal__body")){
-        vistaPreliminarHojaSalida.setAttribute('src',"");
+    } else if (e.target.matches(".select")) {
+        codigo_costos.value = e.target.value;
+    } else if (e.target.matches(".modal__body")) {
+        vistaPreliminarHojaSalida.setAttribute('src', "");
         modalHojaSalida.style.display = 'none';
-    }else if (e.target.matches(".item_click_remove")){
-        if(e.target.closest('a').id == "deleteProyecto"){
+    } else if (e.target.matches(".item_click_remove")) {
+        if (e.target.closest('a').id == "deleteProyecto") {
             deleteProyectoUsuario(e.target.closest('a'));
         }
-        
-    }else if (e.target.matches(".tablinks")){
-        if(e.target.closest('button')){
+
+    } else if (e.target.matches(".tablinks")) {
+        if (e.target.closest('button')) {
             const ref_id = e.target.getAttribute("ref-id")
             console.log(e)
             console.log(ref_id)
             openCity(e, ref_id)
-            if(ref_id == "FasesTabContent"){
+            if (ref_id == "FasesTabContent") {
                 listarFasesTable();
-            }else if (ref_id == "ProyectoFasesTabContent"){
+            } else if (ref_id == "ProyectoFasesTabContent") {
                 listarProyectosFasesTable();
-            }else if (ref_id == "EncargadosTabContent"){
+            } else if (ref_id == "EncargadosTabContent") {
                 listarEncargadosTable();
-            }else if (ref_id == "EncargadosProyectoTabContent"){
+            } else if (ref_id == "EncargadosProyectoTabContent") {
                 listarEncargadosProyectoTable();
             }
         }
-    }else if (e.target.matches(".actions")) {
+    } else if (e.target.matches(".actions")) {
         if (e.target && e.target.id === 'editEncargado') {
             e.preventDefault();
 
@@ -323,22 +323,22 @@ document.addEventListener('click',(e)=>{
                 saveButton.innerHTML = `Editar`;
                 saveButton.id = 'editEncargado'; // Cambiar el id para manejar la acción de edición
                 let formData = new FormData();
-                formData.append("funcion","actualizarEncargado");
-                formData.append("encargado",JSON.stringify({nombres: cnombrecompletoInput, numdoc:cnumdocInput, idEncargado: idEncargado}))
+                formData.append("funcion", "actualizarEncargado");
+                formData.append("encargado", JSON.stringify({ nombres: cnombrecompletoInput, numdoc: cnumdocInput, idEncargado: idEncargado }))
                 try {
-                    fetch('../inc/grabar.inc.php',{
+                    fetch('../inc/grabar.inc.php', {
                         method: 'POST',
                         body: formData
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                       console.log(data)
-                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        })
                 } catch (error) {
                     console.log(error.message);
                 }
             }
-        }if (e.target && e.target.id === 'editFase') {
+        } if (e.target && e.target.id === 'editFase') {
             e.preventDefault();
 
             // Encontrar la fila a la que pertenece el botón
@@ -382,54 +382,54 @@ document.addEventListener('click',(e)=>{
                 saveButton.innerHTML = `Editar`;
                 saveButton.id = 'editFase'; // Cambiar el id para manejar la acción de edición
                 let formData = new FormData();
-                formData.append("funcion","actualizarFase");
-                formData.append("fase",JSON.stringify({nombre: cnombreFaseInput, descripcion:cdescripcionInput, idFase: idFase}))
+                formData.append("funcion", "actualizarFase");
+                formData.append("fase", JSON.stringify({ nombre: cnombreFaseInput, descripcion: cdescripcionInput, idFase: idFase }))
                 try {
-                    fetch('../inc/grabar.inc.php',{
+                    fetch('../inc/grabar.inc.php', {
                         method: 'POST',
                         body: formData
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                       console.log(data)
-                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        })
                 } catch (error) {
                     console.log(error.message);
                 }
             }
         }
-    } 
+    }
 })
 
-document.addEventListener('change',async (e)=>{
-    if (e.target.matches(".select") && e.target.id === "select_proyectos"){
+document.addEventListener('change', async (e) => {
+    if (e.target.matches(".select") && e.target.id === "select_proyectos") {
         listarPadron(e.target.value);
-    }if (e.target.matches(".select") && e.target.id === "select_proyectos_terceros"){
+    } if (e.target.matches(".select") && e.target.id === "select_proyectos_terceros") {
         let selectedText = e.target.options[e.target.selectedIndex].text;
         listarPadronTerceros(e.target.value, selectedText);
         console.log(selectedText)
-    } if (e.target.matches(".select") && e.target.id === "select_proyectoFase"){
-        
-    }if (e.target.matches(".select") && e.target.id === "select_fase"){
+    } if (e.target.matches(".select") && e.target.id === "select_proyectoFase") {
+
+    } if (e.target.matches(".select") && e.target.id === "select_fase") {
     }
-    if(e.target.matches(".select") && e.target.id === "proyecto_actual"){
+    if (e.target.matches(".select") && e.target.id === "proyecto_actual") {
         await listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
         await listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value)
     }
-    if (e.target.matches(".archivo")){
+    if (e.target.matches(".archivo")) {
         actualizarPadronExcel(fileUpload.files[0]);
-    }if (e.target.id == "fecha_proceso"){
+    } if (e.target.id == "fecha_proceso") {
         console.log(e.target.value);
         /* getTareosByFecha(codigo_costos.value, e.target.value); */
-        if(e.target.getAttribute("esTercero") == 1){
+        if (e.target.getAttribute("esTercero") == 1) {
             let selectProy = document.getElementById("select_proyectos_terceros");
             console.log(selectProy);
             let selectedText = selectProy.options[selectProy.selectedIndex].text;
-            listarPadronTercerosByFecha(codigo_costos.value,selectedText, e.target.value)
-        }else {
+            listarPadronTercerosByFecha(codigo_costos.value, selectedText, e.target.value)
+        } else {
             listarPadronByFecha(codigo_costos.value, e.target.value);
             document.getElementById("fecha_text").textContent = 'Fecha de Proceso: ' + e.target.value;
-        }    
+        }
     }
     if (e.target.id == "ingreso_obra" || e.target.id == "salida_obra") {
         const inicio = new Date(document.getElementById("ingreso_obra").value);
@@ -447,14 +447,14 @@ document.addEventListener('change',async (e)=>{
 
         // Verificar que ambos sean números y el denominador no sea cero
         if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
-        const resultado = numerador / denominador;
-        console.log(resultado);
-        document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value/resultado);
+            const resultado = numerador / denominador;
+            console.log(resultado);
+            document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value / resultado);
         }
 
         const retorno = new Date(document.getElementById("salida_obra").value);
 
-        retorno.setDate(retorno.getDate()+parseInt(document.getElementById("dias_goce").value)+1)
+        retorno.setDate(retorno.getDate() + parseInt(document.getElementById("dias_goce").value) + 1)
 
         const anio = retorno.getFullYear();
         const mes = (retorno.getMonth() + 1).toString().padStart(2, '0'); // Mes con dos dígitos
@@ -462,7 +462,7 @@ document.addEventListener('change',async (e)=>{
 
         document.getElementById("retorno_programado").value = `${anio}-${mes}-${dia}`;
     }
-    if(e.target.id == "regimen_trabajo") {
+    if (e.target.id == "regimen_trabajo") {
         console.log(e.target.value)
         const partes = e.target.value.split(/[/xX]/)
         const numerador = parseInt(partes[0].trim());
@@ -470,86 +470,86 @@ document.addEventListener('change',async (e)=>{
 
         // Verificar que ambos sean números y el denominador no sea cero
         if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
-        const resultado = numerador / denominador;
-        console.log(resultado);
-        document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value/resultado);
+            const resultado = numerador / denominador;
+            console.log(resultado);
+            document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value / resultado);
         }
     }
-    if(e.target.id == "dias_campo"){
+    if (e.target.id == "dias_campo") {
         const partes = document.getElementById("regimen_trabajo").value.split(/[/xX]/);
         const numerador = parseInt(partes[0].trim());
         const denominador = parseInt(partes[1].trim());
 
         // Verificar que ambos sean números y el denominador no sea cero
         if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
-        const resultado = numerador / denominador;
-        console.log(resultado);
-        document.getElementById("dias_goce").value = parseInt(e.target.value/resultado);
+            const resultado = numerador / denominador;
+            console.log(resultado);
+            document.getElementById("dias_goce").value = parseInt(e.target.value / resultado);
         }
     }
 })
 
-function reporteMatriz(){
+function reporteMatriz() {
     let formData = new FormData();
-    formData.append("funcion","reporteDiario");
+    formData.append("funcion", "reporteDiario");
 
-    fetch('../inc/reportes.inc.php',{
-        method:'POST',
-        body:formData
+    fetch('../inc/reportes.inc.php', {
+        method: 'POST',
+        body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        window.open("http://localhost/master/documentos/reportes/reportediario.xlsx");
-    })
+        .then(response => response.json())
+        .then(data => {
+            window.open("http://localhost/master/documentos/reportes/reportediario.xlsx");
+        })
 }
 
-function grabarDatosMatriz(){
-     //serializar los formulario en javascript
-     const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
-     datos.append("funcion","grabar");
- 
-     fetch('../inc/grabar.inc.php',{
-         method: 'POST',
-         body:datos
-     })
-     .then(response => response.json())
-     .then(data => {
-         console.log(data);
-         Swal.fire({
-            icon: "success",
-            title: "Guardado Correctamente",
-            text: "Se han guardado los registros exitosamente"
-          });
-        document.getElementById("existe").value = 1
-     });
- 
+function grabarDatosMatriz() {
+    //serializar los formulario en javascript
+    const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
+    datos.append("funcion", "grabar");
+
+    fetch('../inc/grabar.inc.php', {
+        method: 'POST',
+        body: datos
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            Swal.fire({
+                icon: "success",
+                title: "Guardado Correctamente",
+                text: "Se han guardado los registros exitosamente"
+            });
+            document.getElementById("existe").value = 1
+        });
+
 }
 
-function grabarDatosUsuario(){
+function grabarDatosUsuario() {
     try {
-        if (document.getElementById("user_doc").value == "" ) throw new Error('Por favor elija un usuario');
+        if (document.getElementById("user_doc").value == "") throw new Error('Por favor elija un usuario');
         if (document.getElementById('usuario').value == "") throw new Error('Escribe el usuario');
         if (document.getElementById('clave').value == "") throw new Error('Escriba la clave');
         if (document.getElementById('estado_user').value == "-1") throw new Error('Indique el estado del usuario');
 
         //serializar los formulario en javascript
         const datos = new URLSearchParams(new FormData(document.getElementById("data_usuarios")));
-        datos.append("funcion","grabarUsuario");
-        datos.append("proyectos",JSON.stringify(datosProyectos()))
+        datos.append("funcion", "grabarUsuario");
+        datos.append("proyectos", JSON.stringify(datosProyectos()))
 
-        fetch('../inc/grabar.inc.php',{
+        fetch('../inc/grabar.inc.php', {
             method: 'POST',
-            body:datos
+            body: datos
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            Swal.fire({
-                icon: "success",
-                title: "Guardado Correctamente",
-                text: "Se han guardado los registros exitosamente"
-              });
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente",
+                    text: "Se han guardado los registros exitosamente"
+                });
+            });
 
     } catch (error) {
         /* mostrarMensaje(error.message,"msj_error"); */
@@ -558,29 +558,29 @@ function grabarDatosUsuario(){
             title: "Error!",
             text: "Ha ocurrido un error"
         });
-    }   
+    }
 }
 
-function grabarDatosFase(){
+function grabarDatosFase() {
     try {
         //serializar los formulario en javascript
         const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
-        datos.append("funcion","grabarFase");
-        datos.append("fases",JSON.stringify(datosFases()))
+        datos.append("funcion", "grabarFase");
+        datos.append("fases", JSON.stringify(datosFases()))
 
-        fetch('../inc/grabar.inc.php',{
+        fetch('../inc/grabar.inc.php', {
             method: 'POST',
-            body:datos
+            body: datos
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            Swal.fire({
-                icon: "success",
-                title: "Guardado Correctamente",
-                text: "Se han guardado los registros exitosamente"
-              });
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente",
+                    text: "Se han guardado los registros exitosamente"
+                });
+            });
 
     } catch (error) {
         /* mostrarMensaje(error.message,"msj_error"); */
@@ -589,30 +589,30 @@ function grabarDatosFase(){
             title: "Error!",
             text: "Ha ocurrido un error"
         });
-    }   
+    }
 }
 
 
-function grabarDatosProyectoFase(){
+function grabarDatosProyectoFase() {
     try {
         //serializar los formulario en javascript
         const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
-        datos.append("funcion","grabarProyectoFase");
-        datos.append("proyectoFases",JSON.stringify(datosProyectoFases()))
+        datos.append("funcion", "grabarProyectoFase");
+        datos.append("proyectoFases", JSON.stringify(datosProyectoFases()))
 
-        fetch('../inc/grabar.inc.php',{
+        fetch('../inc/grabar.inc.php', {
             method: 'POST',
-            body:datos
+            body: datos
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            Swal.fire({
-                icon: "success",
-                title: "Guardado Correctamente",
-                text: "Se han guardado los registros exitosamente"
-              });
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente",
+                    text: "Se han guardado los registros exitosamente"
+                });
+            });
 
     } catch (error) {
         /* mostrarMensaje(error.message,"msj_error"); */
@@ -621,15 +621,15 @@ function grabarDatosProyectoFase(){
             title: "Error!",
             text: "Ha ocurrido un error"
         });
-    }   
+    }
 }
 
 function grabarDatosFaseOrProyectoFase() {
     const funcion = document.getElementById("function").value;
     console.log(funcion)
-    if(funcion == "grabarFase"){
+    if (funcion == "grabarFase") {
         grabarDatosFase();
-    }else if (funcion == "grabarProyectoFase"){
+    } else if (funcion == "grabarProyectoFase") {
         grabarDatosProyectoFase();
     }
 }
@@ -638,70 +638,70 @@ function grabarDatosEncargados() {
     try {
         //serializar los formulario en javascript
         const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
-        datos.append("funcion","grabarEncargado");
-        datos.append("encargados",JSON.stringify(datosEncargados()))
+        datos.append("funcion", "grabarEncargado");
+        datos.append("encargados", JSON.stringify(datosEncargados()))
 
-        fetch('../inc/grabar.inc.php',{
+        fetch('../inc/grabar.inc.php', {
             method: 'POST',
-            body:datos
+            body: datos
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            Swal.fire({
-                icon: "success",
-                title: "Guardado Correctamente",
-                text: "Se han guardado los registros exitosamente"
-              });
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente",
+                    text: "Se han guardado los registros exitosamente"
+                });
+            });
 
     } catch (error) {
         /* mostrarMensaje(error.message,"msj_error"); */
         Swal.fire({
             icon: "error",
             title: "Error!",
-            text: "Ha ocurrido un error"+error.message
+            text: "Ha ocurrido un error" + error.message
         });
-    }   
+    }
 }
 
-function grabarDatosEncargadoProyectos(){
+function grabarDatosEncargadoProyectos() {
     try {
         //serializar los formulario en javascript
         const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
-        datos.append("funcion","grabarEncargadoProyecto");
-        datos.append("encargadosProyecto",JSON.stringify(datosEncargadoProyectos()))
+        datos.append("funcion", "grabarEncargadoProyecto");
+        datos.append("encargadosProyecto", JSON.stringify(datosEncargadoProyectos()))
 
-        fetch('../inc/grabar.inc.php',{
+        fetch('../inc/grabar.inc.php', {
             method: 'POST',
-            body:datos
+            body: datos
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            Swal.fire({
-                icon: "success",
-                title: "Guardado Correctamente",
-                text: "Se han guardado los registros exitosamente"
-              });
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente",
+                    text: "Se han guardado los registros exitosamente"
+                });
+            });
 
     } catch (error) {
         /* mostrarMensaje(error.message,"msj_error"); */
         Swal.fire({
             icon: "error",
             title: "Error!",
-            text: "Ha ocurrido un error"+error.message
+            text: "Ha ocurrido un error" + error.message
         });
-    } 
+    }
 }
 
 function grabarDatosEncargadoOrEncargadoProyectos() {
     const funcion = document.getElementById("function").value;
     console.log(funcion)
-    if(funcion == "grabarEncargado"){
+    if (funcion == "grabarEncargado") {
         grabarDatosEncargados();
-    }else if (funcion == "grabarEncargadoProyecto"){
+    } else if (funcion == "grabarEncargadoProyecto") {
         grabarDatosEncargadoProyectos();
     }
 }
@@ -710,29 +710,29 @@ function grabarDatosUbicacion() {
     try {
         //serializar los formulario en javascript
         const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
-        datos.append("funcion","grabarUbicacion");
-        datos.append("ubicaciones",JSON.stringify(datosUbicacion()))
+        datos.append("funcion", "grabarUbicacion");
+        datos.append("ubicaciones", JSON.stringify(datosUbicacion()))
 
-        fetch('../inc/grabar.inc.php',{
+        fetch('../inc/grabar.inc.php', {
             method: 'POST',
-            body:datos
+            body: datos
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            Swal.fire({
-                icon: "success",
-                title: "Guardado Correctamente",
-                text: "Se han guardado los registros exitosamente"
-              });
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente",
+                    text: "Se han guardado los registros exitosamente"
+                });
+            });
 
     } catch (error) {
         /* mostrarMensaje(error.message,"msj_error"); */
         Swal.fire({
             icon: "error",
             title: "Error!",
-            text: "Ha ocurrido un error"+error.message
+            text: "Ha ocurrido un error" + error.message
         });
     }
 }
@@ -741,36 +741,36 @@ function grabarDatosEspecialidad() {
     try {
         //serializar los formulario en javascript
         const datos = new URLSearchParams(new FormData(document.getElementById("data_fases")));
-        datos.append("funcion","grabarEspecialidad");
-        datos.append("especialidades",JSON.stringify(datosEspecialidad()))
+        datos.append("funcion", "grabarEspecialidad");
+        datos.append("especialidades", JSON.stringify(datosEspecialidad()))
 
-        fetch('../inc/grabar.inc.php',{
+        fetch('../inc/grabar.inc.php', {
             method: 'POST',
-            body:datos
+            body: datos
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            Swal.fire({
-                icon: "success",
-                title: "Guardado Correctamente",
-                text: "Se han guardado los registros exitosamente"
-              });
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente",
+                    text: "Se han guardado los registros exitosamente"
+                });
+            });
 
     } catch (error) {
         Swal.fire({
             icon: "error",
             title: "Error!",
-            text: "Ha ocurrido un error"+error.message
+            text: "Ha ocurrido un error" + error.message
         });
     }
 }
 
-function agregaProyectosUsuario(){
+function agregaProyectosUsuario() {
     const cuerpo = document.getElementById("tablaProyectosBody");
-    
-    let fila = document.querySelector("#tablaProyectosBody").getElementsByTagName("tr").length+1;
+
+    let fila = document.querySelector("#tablaProyectosBody").getElementsByTagName("tr").length + 1;
 
     let row = `<tr data-grabado="0">
                 <td>${fila++}</td>
@@ -778,14 +778,14 @@ function agregaProyectosUsuario(){
                 <td><input type="value"></td>
                 <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
-    
+
     cuerpo.insertRow(-1).outerHTML = row;
 }
 
 function agregaProyectoFase() {
     const cuerpo = document.getElementById("tablaProyectosFasesBody");
-    
-    let fila = document.querySelector("#tablaProyectosFasesBody").getElementsByTagName("tr").length+1;
+
+    let fila = document.querySelector("#tablaProyectosFasesBody").getElementsByTagName("tr").length + 1;
 
     let row = `<tr data-grabado="0">
                 <td>${fila++}</td>
@@ -801,7 +801,7 @@ function agregaProyectoFase() {
                 </td>
                 <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
-    
+
     cuerpo.insertRow(-1).outerHTML = row;
     const selectNuevoProyecto = document.querySelector(`.select_proyectoFase[data-id="proyecto-${fila}"]`);
     const selectNuevoFase = document.querySelector(`.select_fase[data-id="fase-${fila}"]`);
@@ -813,8 +813,8 @@ function agregaProyectoFase() {
 
 function agregaFase() {
     const cuerpo = document.getElementById("tablaFasesBody");
-    
-    let fila = document.querySelector("#tablaFasesBody").getElementsByTagName("tr").length+1;
+
+    let fila = document.querySelector("#tablaFasesBody").getElementsByTagName("tr").length + 1;
 
     let row = `<tr data-grabado="0">
                 <td>${fila++}</td>
@@ -826,14 +826,14 @@ function agregaFase() {
                 </td>
                 <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
-    
+
     cuerpo.insertRow(-1).outerHTML = row;
 }
 
 function agregaEncargado() {
     const cuerpo = document.getElementById("tablaEncargadosBody");
-    
-    let fila = document.querySelector("#tablaEncargadosBody").getElementsByTagName("tr").length+1;
+
+    let fila = document.querySelector("#tablaEncargadosBody").getElementsByTagName("tr").length + 1;
 
     let row = `<tr data-grabado="0">
                 <td>${fila++}</td>
@@ -845,14 +845,14 @@ function agregaEncargado() {
                 </td>
                 <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
-    
+
     cuerpo.insertRow(-1).outerHTML = row;
 }
 
 function agregaEncargadoProyectos() {
     const cuerpo = document.getElementById("tablaEncargadosProyectoBody");
-    
-    let fila = document.querySelector("#tablaEncargadosProyectoBody").getElementsByTagName("tr").length+1;
+
+    let fila = document.querySelector("#tablaEncargadosProyectoBody").getElementsByTagName("tr").length + 1;
 
     let row = `<tr data-grabado="0">
                 <td>${fila++}</td>
@@ -868,7 +868,7 @@ function agregaEncargadoProyectos() {
                 </td>
                 <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
-    
+
     cuerpo.insertRow(-1).outerHTML = row;
     const selectNuevoProyecto = document.querySelector(`.select_proyectoFase[data-id="proyecto-${fila}"]`);
     const selectNuevoFase = document.querySelector(`.select_encargado[data-id="encargado-${fila}"]`);
@@ -880,8 +880,8 @@ function agregaEncargadoProyectos() {
 
 function agregaUbicacion() {
     const cuerpo = document.getElementById("tablaUbicacionesBody");
-    
-    let fila = document.querySelector("#tablaUbicacionesBody").getElementsByTagName("tr").length+1;
+
+    let fila = document.querySelector("#tablaUbicacionesBody").getElementsByTagName("tr").length + 1;
 
     let row = `<tr data-grabado="0">
                 <td>${fila++}</td>
@@ -890,14 +890,14 @@ function agregaUbicacion() {
                 </td>
                 <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
-    
+
     cuerpo.insertRow(-1).outerHTML = row;
 }
 
 function agregaEspecialidad() {
     const cuerpo = document.getElementById("tablaEspecialidadesBody");
-    
-    let fila = document.querySelector("#tablaEspecialidadesBody").getElementsByTagName("tr").length+1;
+
+    let fila = document.querySelector("#tablaEspecialidadesBody").getElementsByTagName("tr").length + 1;
 
     let row = `<tr data-grabado="0">
                 <td>${fila++}</td>
@@ -906,16 +906,16 @@ function agregaEspecialidad() {
                 </td>
                 <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
-    
+
     cuerpo.insertRow(-1).outerHTML = row;
 }
 
 function LoadElement(page) {
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-       if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-          document.querySelector(".loader").innerHTML = xmlhttp.responseText;
-       }
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            document.querySelector(".loader").innerHTML = xmlhttp.responseText;
+        }
     }
     xmlhttp.open("GET", page, true);
     xmlhttp.send();
@@ -930,15 +930,15 @@ const datosProyectos = () => {
     for (let i = 0; i < nreg; i++) {
         let dato = {};
 
-        if ( fila[i].dataset.grabado  === "0" ) {
-            dato['item']        = fila[i].cells[0].innerHTML;
-            dato['codigo']      = fila[i].cells[1].children[0].value;
+        if (fila[i].dataset.grabado === "0") {
+            dato['item'] = fila[i].cells[0].innerHTML;
+            dato['codigo'] = fila[i].cells[1].children[0].value;
             dato['descripcion'] = fila[i].cells[2].children[0].value;
 
             DATOS.push(dato);
 
             fila[i].setAttribute("data-grabado", "1");
-        }   
+        }
     }
 
     return DATOS;
@@ -953,15 +953,15 @@ const datosFases = () => {
     for (let i = 0; i < nreg; i++) {
         let dato = {};
 
-        if ( fila[i].dataset.grabado  === "0" ) {
-            dato['item']        = fila[i].cells[0].innerHTML;
-            dato['nombre']      = fila[i].cells[1].children[0].value;
+        if (fila[i].dataset.grabado === "0") {
+            dato['item'] = fila[i].cells[0].innerHTML;
+            dato['nombre'] = fila[i].cells[1].children[0].value;
             dato['descripcion'] = fila[i].cells[2].children[0].value;
 
             DATOS.push(dato);
 
             fila[i].setAttribute("data-grabado", "1");
-        }   
+        }
     }
 
     return DATOS;
@@ -976,15 +976,15 @@ const datosProyectoFases = () => {
     for (let i = 0; i < nreg; i++) {
         let dato = {};
 
-        if ( fila[i].dataset.grabado  === "0" ) {
-            dato['item']        = fila[i].cells[0].innerHTML;
-            dato['proyecto']      = fila[i].cells[1].children[0].value;
+        if (fila[i].dataset.grabado === "0") {
+            dato['item'] = fila[i].cells[0].innerHTML;
+            dato['proyecto'] = fila[i].cells[1].children[0].value;
             dato['fase'] = fila[i].cells[2].children[0].value;
 
             DATOS.push(dato);
 
             fila[i].setAttribute("data-grabado", "1");
-        }   
+        }
     }
 
     return DATOS;
@@ -1000,9 +1000,9 @@ const datosEncargados = () => {
     for (let i = 0; i < nreg; i++) {
         let dato = {};
 
-        if ( fila[i].dataset.grabado  === "0" ) {
-            dato['item']        = fila[i].cells[0].innerHTML;
-            dato['numdoc']      = fila[i].cells[1].children[0].value;
+        if (fila[i].dataset.grabado === "0") {
+            dato['item'] = fila[i].cells[0].innerHTML;
+            dato['numdoc'] = fila[i].cells[1].children[0].value;
             dato['nombres'] = fila[i].cells[2].children[0].value;
             /* dato['paterno'] = fila[i].cells[3].children[0].value;
             dato['materno'] = fila[i].cells[4].children[0].value; */
@@ -1010,7 +1010,7 @@ const datosEncargados = () => {
             DATOS.push(dato);
 
             fila[i].setAttribute("data-grabado", "1");
-        }   
+        }
     }
 
     return DATOS;
@@ -1025,14 +1025,14 @@ const datosEspecialidad = () => {
     for (let i = 0; i < nreg; i++) {
         let dato = {};
 
-        if ( fila[i].dataset.grabado  === "0" ) {
-            dato['item']        = fila[i].cells[0].innerHTML;
-            dato['especialidad']      = fila[i].cells[1].children[0].value;
+        if (fila[i].dataset.grabado === "0") {
+            dato['item'] = fila[i].cells[0].innerHTML;
+            dato['especialidad'] = fila[i].cells[1].children[0].value;
 
             DATOS.push(dato);
 
             fila[i].setAttribute("data-grabado", "1");
-        }   
+        }
     }
 
     return DATOS;
@@ -1047,15 +1047,15 @@ const datosEncargadoProyectos = () => {
     for (let i = 0; i < nreg; i++) {
         let dato = {};
 
-        if ( fila[i].dataset.grabado  === "0" ) {
-            dato['item']        = fila[i].cells[0].innerHTML;
-            dato['proyecto']      = fila[i].cells[1].children[0].value;
+        if (fila[i].dataset.grabado === "0") {
+            dato['item'] = fila[i].cells[0].innerHTML;
+            dato['proyecto'] = fila[i].cells[1].children[0].value;
             dato['encargado'] = fila[i].cells[2].children[0].value;
 
             DATOS.push(dato);
 
             fila[i].setAttribute("data-grabado", "1");
-        }   
+        }
     }
 
     return DATOS;
@@ -1070,55 +1070,55 @@ const datosUbicacion = () => {
     for (let i = 0; i < nreg; i++) {
         let dato = {};
 
-        if ( fila[i].dataset.grabado  === "0" ) {
-            dato['item']        = fila[i].cells[0].innerHTML;
-            dato['ubicacion']      = fila[i].cells[1].children[0].value;
+        if (fila[i].dataset.grabado === "0") {
+            dato['item'] = fila[i].cells[0].innerHTML;
+            dato['ubicacion'] = fila[i].cells[1].children[0].value;
 
             DATOS.push(dato);
 
             fila[i].setAttribute("data-grabado", "1");
-        }   
+        }
     }
 
     return DATOS;
 }
 
-function datosUsuarioCabecera () {
+function datosUsuarioCabecera() {
     let nro_doc = localStorage.getItem("documento"),
         formData = new FormData();
-    
-    formData.append("funcion","buscarDatosUsuarioSistema");
-    formData.append("dni",nro_doc);
+
+    formData.append("funcion", "buscarDatosUsuarioSistema");
+    formData.append("dni", nro_doc);
 
     try {
-        fetch('../inc/busquedas.inc.php',{
+        fetch('../inc/busquedas.inc.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("nombreUsuarioSistema").outerHTML = data.datos[0].nombres+' '+data.datos[0].paterno;
-            document.getElementById("cargoUsuarioSistema").innerHTML = data.datos[0].cargo;
-            document.getElementById("correoUsuarioSistema").innerHTML = data.datos[0].correo;  
-        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("nombreUsuarioSistema").outerHTML = data.datos[0].nombres + ' ' + data.datos[0].paterno;
+                document.getElementById("cargoUsuarioSistema").innerHTML = data.datos[0].cargo;
+                document.getElementById("correoUsuarioSistema").innerHTML = data.datos[0].correo;
+            })
     } catch (error) {
         console.log(error.message);
     }
 
 }
 
-async function grabarDatosTareo(proyecto){
+async function grabarDatosTareo(proyecto) {
     const fecha = new Date();
     const fechaFormateada = fecha.toLocaleDateString('en-CA');
     console.log(fechaFormateada);
     const fechaProceso = document.getElementById("fecha_proceso").value;
 
-    
+
     let formData = new FormData();
     let lisTable = datosTareoPersonal(); //obtener tareos de la tabla de la vista
     let listTareoToday = await getTareo(); //obtener tareos del dia
 
-    if(fechaFormateada == fechaProceso){
+    if (fechaFormateada == fechaProceso) {
         console.log("lista de la tabla")
         console.log(lisTable)
 
@@ -1127,7 +1127,7 @@ async function grabarDatosTareo(proyecto){
         console.log("lista de no registrados");
         console.log(listNoRegistrado)
         //Agregar en la tabla los no registrados del dia de hoy
-        if(listNoRegistrado.length > 0){
+        if (listNoRegistrado.length > 0) {
             grabarNoRegistrados(listNoRegistrado);
         }
 
@@ -1135,25 +1135,25 @@ async function grabarDatosTareo(proyecto){
         console.log(listStatesChanged);
 
         //actualizar estado si encuentra estados diferentes
-        if(listStatesChanged.length > 0) {
+        if (listStatesChanged.length > 0) {
             actualizarDatosTareo(listStatesChanged)
         }
         /* let cc = document.getElementById("select_proyectos");
         listarPadron(cc.value); */
-    }else{
+    } else {
         console.log(false)
         let tareosByFecha = await getTareosByFecha(proyecto, fechaProceso);
         console.log(tareosByFecha)
         const listStatesChanged = obtenerEstadosCambiados(lisTable, tareosByFecha);
         console.log(listStatesChanged);
-        if(listStatesChanged.length > 0){
+        if (listStatesChanged.length > 0) {
             actualizarDatosTareo(listStatesChanged);
         }
     }
-    
-    function getDocumentosNoRegistrados(listaDeTareosDeHoy, listaTabla){
+
+    function getDocumentosNoRegistrados(listaDeTareosDeHoy, listaTabla) {
         const documentosRegistrados = listaDeTareosDeHoy.map(item => item.nrodoc);
-        
+
         // Filtrar los elementos de lista1 que no están en nrodocLista2
         const documentosNoRegistrados = listaTabla.filter(item => !documentosRegistrados.includes(item.documento));
         console.log(documentosNoRegistrados)
@@ -1164,100 +1164,100 @@ async function grabarDatosTareo(proyecto){
     }
 
     async function grabarNoRegistrados(NoRegistrados) {
-        formData.append("funcion","grabarEstadosPersonal");
-        formData.append("proyecto",proyecto);
-        formData.append("datosTareo",JSON.stringify(NoRegistrados));
+        formData.append("funcion", "grabarEstadosPersonal");
+        formData.append("proyecto", proyecto);
+        formData.append("datosTareo", JSON.stringify(NoRegistrados));
         Swal.showLoading();
-        await fetch('../inc/grabar.inc.php',{
+        await fetch('../inc/grabar.inc.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            if(data){
-                console.log(`agregando ${NoRegistrados.length} registros`);
-                Swal.fire({
-                    icon: "success",
-                    title: "Guardado Correctamente",
-                    text: "Se han guardado los registros exitosamente"
-                  });
-            }else{
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    console.log(`agregando ${NoRegistrados.length} registros`);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Guardado Correctamente",
+                        text: "Se han guardado los registros exitosamente"
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: "Ha ocurrido un error"
+                    });
+                }
+            })
+            .catch(error => {
                 Swal.fire({
                     icon: "error",
                     title: "Error!",
-                    text: "Ha ocurrido un error"
+                    text: "Ha ocurrido un error" + error
                 });
-            }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: "error",
-                title: "Error!",
-                text: "Ha ocurrido un error" + error
-            });
-        })
-        
+            })
+
     }
-    async function actualizarDatosTareo(datosActualizar){
-        formData.set("funcion","actualizarEstadoPersonal");
+    async function actualizarDatosTareo(datosActualizar) {
+        formData.set("funcion", "actualizarEstadoPersonal");
         formData.append("updateDatosTareo", JSON.stringify(datosActualizar));
         Swal.showLoading();
-        await fetch('../inc/grabar.inc.php',{
+        await fetch('../inc/grabar.inc.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            if(data.success){
-                console.log(`actualizando ${datosActualizar.length} registros`);
-                Swal.fire({
-                    icon: "success",
-                    title: "Guardado Correctamente",
-                    text: "Se han guardado los registros exitosamente"
-                });
-            }else{
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    console.log(`actualizando ${datosActualizar.length} registros`);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Guardado Correctamente",
+                        text: "Se han guardado los registros exitosamente"
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: "Ha ocurrido un error"
+                    });
+                }
+            })
+            .catch(error => {
                 Swal.fire({
                     icon: "error",
                     title: "Error!",
-                    text: "Ha ocurrido un error"
+                    text: "Ha ocurrido un error" + error
                 });
-            }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: "error",
-                title: "Error!",
-                text: "Ha ocurrido un error" + error
-            });
-        })
+            })
     }
 
-    function obtenerEstadosCambiados(listaTabla, tareosDeHoy){
-        const lisTableStates = listaTabla.map(item =>{
-            return {nrodoc: item.documento, estado: item.estado};
+    function obtenerEstadosCambiados(listaTabla, tareosDeHoy) {
+        const lisTableStates = listaTabla.map(item => {
+            return { nrodoc: item.documento, estado: item.estado };
         })
         console.log("parseado lista de la tabla:");
         console.log(lisTableStates)
-    
+
         //obtener tareos de hoy y comparar
-        
+
         console.log(tareosDeHoy);
         /* const filterData = lisTable.filter(item => item.estado !== 'A'); */
-    
+
         //Obtener listado de tareos que tienen diferente estado al ya registrado en la base de datos
         const result = tareosDeHoy.filter(item2 => {
             const match = listaTabla.find(item1 => item1.documento === item2.nrodoc);
-            if(match != undefined){
+            if (match != undefined) {
                 match.fingreso = match.fingreso.trim() === '' ? null : match.fingreso;
                 return match && (match.estado !== item2.estado || match.fingreso != item2.fingreso); // Devolver solo si el estado es diferente
             }
-            
+
         }).map(item2 => {
             const match = listaTabla.find(item1 => item1.documento === item2.nrodoc);
-    
+
             /* const result = match.fingreso != null ? { ...item2, estado: match.estado, fingreso: match.fingreso } : {...item2, estado: match.estado}; */
-            return {...item2, estado: match.estado, fingreso: match.fingreso, item: match.item};
+            return { ...item2, estado: match.estado, fingreso: match.fingreso, item: match.item };
         })
         return result;
     }
@@ -1382,31 +1382,31 @@ const obtenerDatosPadron = () => {
     let DATOS = [];
 
     for (let i = 0; i < nreg; i++) {
-        if(window.getComputedStyle(fila[i]).display !== 'none'){
+        if (window.getComputedStyle(fila[i]).display !== 'none') {
             let dato = {};
 
-        dato['item']        = fila[i].cells[0].innerHTML;
-        dato['nombres']     = fila[i].cells[1].innerHTML;
-        dato['documento']   = fila[i].cells[2].innerHTML;
-        dato['ubicacion']   = fila[i].cells[3].innerHTML;
-        dato['estado']      = fila[i].cells[5].children[0].value;
+            dato['item'] = fila[i].cells[0].innerHTML;
+            dato['nombres'] = fila[i].cells[1].innerHTML;
+            dato['documento'] = fila[i].cells[2].innerHTML;
+            dato['ubicacion'] = fila[i].cells[3].innerHTML;
+            dato['estado'] = fila[i].cells[5].children[0].value;
 
-        DATOS.push(dato);
+            DATOS.push(dato);
         }
-        
+
     }
 
-    formData.append("padron",JSON.stringify(DATOS));
-    formData.append("funcion","plantillaExcel");
+    formData.append("padron", JSON.stringify(DATOS));
+    formData.append("funcion", "plantillaExcel");
 
-    fetch('../inc/exportar.inc.php',{
+    fetch('../inc/exportar.inc.php', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data =>{
-       window.open("../documentos/plantillas/plantillaRegistros.xlsx");
-    })
+        .then(response => response.json())
+        .then(data => {
+            window.open("../documentos/plantillas/plantillaRegistros.xlsx");
+        })
 }
 
 const obtenerReportePadron = async () => {
@@ -1415,9 +1415,9 @@ const obtenerReportePadron = async () => {
         html: "Se están cargando los datos del reporte, por favor, espere",
         timerProgressBar: true,
         didOpen: () => {
-          Swal.showLoading();
+            Swal.showLoading();
         }
-      })
+    })
     let fila = document.querySelector("#tablaPersonalBody").getElementsByTagName("tr"),
         nreg = fila.length,
         formData = new FormData();
@@ -1425,7 +1425,7 @@ const obtenerReportePadron = async () => {
     let DATOS = [];
     let datosReporte;
 
-    formData.append("funcion","obtenerTareosProyectoColaborador");
+    formData.append("funcion", "obtenerTareosProyectoColaborador");
     formData.append("proyecto", codigo_costos.value)
     formData.append("fechaProceso", document.getElementById("fecha_proceso").value)
 
@@ -1433,73 +1433,74 @@ const obtenerReportePadron = async () => {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data =>{
-        console.log(data);
-        datosReporte = data;
-    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            datosReporte = data;
+        })
 
-    for (let i=0; i < nreg; i++){
-        if(window.getComputedStyle(fila[i]).display !== 'none'){
+    for (let i = 0; i < nreg; i++) {
+        if (window.getComputedStyle(fila[i]).display !== 'none') {
             let dato = {};
 
-        dato['item']        = fila[i].cells[0].innerHTML;
-        dato['nombres']     = fila[i].cells[1].innerHTML;
-        dato['documento']   = fila[i].cells[2].innerHTML;
-        dato['proyecto']   = fila[i].cells[3].innerHTML;
-        dato['ubicacion']  = fila[i].cells[4].innerHTML;
-        dato['cargo'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).cargo;
-        /* dato['tareos'] = datosReporte.tareos.filter(item => {
-            if(item.nrodoc == dato['documento']){
-                return item.estados.split(',');
-            }
-        }).map(item => item.estados.split(',')) */
-        dato['tareos'] = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.estados.split(','));
-        //dato['numDias'] = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.dias.split(','));
+            dato['item'] = fila[i].cells[0].innerHTML;
+            dato['nombres'] = fila[i].cells[1].innerHTML;
+            dato['documento'] = fila[i].cells[2].innerHTML;
+            dato['proyecto'] = fila[i].cells[3].innerHTML;
+            dato['ubicacion'] = fila[i].cells[4].innerHTML;
+            dato['cargo'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).cargo;
+            /* dato['tareos'] = datosReporte.tareos.filter(item => {
+                if(item.nrodoc == dato['documento']){
+                    return item.estados.split(',');
+                }
+            }).map(item => item.estados.split(',')) */
+            dato['tareos'] = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.estados.split(','));
+            //dato['numDias'] = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.dias.split(','));
 
-        /* let diasTareo = {}
-        dato['numDias'].forEach((item, index) => {
-            diasTareo[item] = dato['tareos'][index];
-        })
-        dato['estadosDia'] = diasTareo;
- */
-        let tareosDatos = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']);
+            /* let diasTareo = {}
+            dato['numDias'].forEach((item, index) => {
+                diasTareo[item] = dato['tareos'][index];
+            })
+            dato['estadosDia'] = diasTareo;
+     */
+            let tareosDatos = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']);
 
-        // Crear las listas de 'tareos' y 'numDias' de una vez
-        let diasTareo = {};
-        tareosDatos.forEach(item => {
-            let dias = item.dias.split(',');
-            let estados = item.estados.split(',');
+            // Crear las listas de 'tareos' y 'numDias' de una vez
+            let diasTareo = {};
+            tareosDatos.forEach(item => {
+                let dias = item.dias.split(',');
+                let estados = item.estados.split(',');
 
-            dias.forEach((dia, index) => {
-                diasTareo[dia] = estados[index];
+                dias.forEach((dia, index) => {
+                    diasTareo[dia] = estados[index];
+                });
             });
-        });
 
-        // Asignar la estructura de 'estadosDia'
-        dato['estadosDia'] = diasTareo;
-        let contador = {};
-        dato['tareos'].forEach(item => {
-            if (contador[item]) {
-                contador[item]++;
-            } else {
-                contador[item] = 1;
-            }
-        });
-        contador.total = (contador.A || 0) + 
-        (contador.D || 0) + 
-        (contador.F || 0) + 
-        (contador.M || 0) + 
-        (contador.V || 0) + 
-        (contador.P || 0);
-        dato['dias'] = contador;
-        dato['fechaProceso'] = document.getElementById("fecha_proceso").value
-        DATOS.push(dato);
+            // Asignar la estructura de 'estadosDia'
+            dato['estadosDia'] = diasTareo;
+            let contador = {};
+            dato['tareos'].forEach(item => {
+                if (contador[item]) {
+                    contador[item]++;
+                } else {
+                    contador[item] = 1;
+                }
+            });
+            contador.total = (contador.A || 0) +
+                (contador.D || 0) +
+                (contador.F || 0) +
+                (contador.M || 0) +
+                (contador.V || 0) +
+                (contador.P || 0);
+            dato['dias'] = contador;
+            dato['fechaProceso'] = document.getElementById("fecha_proceso").value
+            DATOS.push(dato);
         }
-        
+
     }
     console.log(DATOS);
-    newPlantillaTareoExcel(JSON.stringify(DATOS), document.getElementById("fecha_proceso").value)
+    await newPlantillaTareoExcel(JSON.stringify(DATOS), document.getElementById("fecha_proceso").value)
+    Swal.close();
     /* formData.append("padron",JSON.stringify(DATOS));
     formData.append("funcion","plantillaTareoExcel");
 
@@ -1514,8 +1515,8 @@ const obtenerReportePadron = async () => {
     
     Swal.close(); */
 
-    
-    
+
+
 
     /* for (let i = 0; i < nreg; i++) {
         let dato = {};
@@ -1566,74 +1567,237 @@ const obtenerReportePadron = async () => {
 }
 
 async function newPlantillaTareoExcel(padron, fechaProceso) {
-    /* const archivoTemplate = '../documentos/plantillas/newPlantillaReporteTareo.xlsx'; */
-    const archivoTemplate = '../documentos/plantillas/newPlantillaReporteTareo.xlsx'
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(archivoTemplate);
-  
-    const hoja = workbook.getWorksheet('SEPCON S.A.C.');
-  
-    let fila = 10;
+    const worksheet = workbook.addWorksheet('Tareo Reporte',{
+        views: [{state: "frozen", xSplit: 5}]
+    });
+
     const datos = JSON.parse(padron);
+    console.log(datos)
     const nreg = datos.length;
-  
-    hoja.getCell('A3').value = 'TAREOS - CONTROL DE ASISTENCIA REPORTE ' + datos[0].proyecto + ' ' + fechaProceso;
-  
-    for (let i = 0; i < nreg; i++) {
-      hoja.insertRow(fila); // Insertar una nueva fila
-  
-      // No es necesario en ExcelJS: hoja.getStyle(`A${fila}:E${fila}`).fill = { type: 'none' };
-  
-      hoja.getCell(`A${fila}`).value = datos[i].item;
-      hoja.getCell(`E${fila}`).value = datos[i].nombres;
-      hoja.getCell(`D${fila}`).value = datos[i].documento;
-      hoja.getCell(`M${fila}`).value = datos[i].proyecto;
-      hoja.getCell(`N${fila}`).value = datos[i].ubicacion;
-      hoja.getCell(`K${fila}`).value = datos[i].cargo;
-  
-      // Lógica para los estadosDia
-      for (let dia = 0; dia < datos[i].estadosDia.length; dia++) {
-        const estado = datos[i].estadosDia[dia];
-        if (estado) {
-          const columna = 13 + dia;
-          hoja.getCell(getColumnLetter(columna) + fila).value = estado; 
+
+    const titleStyle = {
+        font: {
+            name: 'Arial',
+            size: 12,
+            bold: true
         }
-      }
-  
-      hoja.getCell('AT' + fila).value = datos[i].dias.A || 0;
-      hoja.getCell('AU' + fila).value = datos[i].dias.D || 0;
-      hoja.getCell('AV' + fila).value = datos[i].dias.F || 0;
-      hoja.getCell('AW' + fila).value = datos[i].dias.M || 0;
-      hoja.getCell('AX' + fila).value = datos[i].dias.V || 0;
-      hoja.getCell('AY' + fila).value = datos[i].dias.P || 0;
-      hoja.getCell('AZ' + fila).value = datos[i].dias.total || 0;
-  
-      hoja.getCell('BA' + fila).value = datos[i].regimen || '';
-      hoja.getCell('BB' + fila).value = datos[i].manoObra || '';
-  
-      fila++;
     }
-  
-    const nombreArchivoModificado = 'reporte_tareos_' + fechaProceso;
-    await workbook.xlsx.writeFile('../documentos/reportes/' + nombreArchivoModificado + '.xlsx');
-  
-    return { archivo: "/documentos/reportes/" + nombreArchivoModificado + ".xlsx" };
-  }
-  
-  // Función auxiliar para obtener la letra de la columna
-  function getColumnLetter(colIndex) {
-    let dividend = colIndex;
-    let columnName = '';
-    let modulo;
-  
-    while (dividend > 0) {
-      modulo = (dividend - 1) % 26;
-      columnName = String.fromCharCode(65 + modulo) + columnName;
-      dividend = Math.floor((dividend - modulo) / 26);
+
+    const headerStyle = {
+        fill: {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: {argb:'44749F'},
+            bgColor: {argb:'44749F'}
+        },
+        border: {
+            top: {style:'thin'},
+            left: {style:'thin'},
+            bottom: {style:'thin'},
+            right: {style:'thin'}
+        },
+        alignment : {
+            horizontal: 'center',
+            vertical: 'middle',
+            wrapText: true
+        },
+        font: {
+            name: 'Arial',
+            size: 10,
+            color: {argb: 'FFFFFF'},
+            bold: true
+        }
     }
-  
-    return columnName;
-  }
+
+    const dataStyle = {
+        alignment : {
+            horizontal: 'center',
+            vertical: 'middle',
+            wrapText: true
+        }
+    }
+
+    const columns = [
+        { width: 6 },
+        { width: 3 },
+        { width: 8 },
+        { width: 15 },
+        { width: 45 },
+        { width: 15 },
+        { width: 11 },
+        { width: 6 },
+        { width: 18 },
+        { width: 14 },
+        { width: 40 },
+        { width: 18 },
+        { width: 50 },
+        { width: 11 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+        { width: 4 },
+    ];
+
+    const headersValue = ['ITEM', 'N°', 'CODIGO', 'DNI', 'APELLIDOS Y NOMBRES', 'PROCEDENCIA', 'F.INGRESO', 'TIPO', 'Último Ingreso a Obra', 'Dias 14*7 Laborados', 'CARGO', 'FASE ACTUAL', 'PROYECTO ACTUAL', 'UBICACIÓN', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', 'DA', 'DD', 'DF', 'DM', 'DV', 'DP', 'DT']
+
+    const bgColorStatesValue = {
+        'A' : '92CDDC',
+        'D': 'FF0000',
+        'TI': '7030A0',
+        'TS': '0070C0',
+        'M': 'F5B1DD',
+        'LCG': '00B0F0',
+        'LSG': 'CCFFCC',
+        'SUSP': 'CCC0DA',
+        'V': 'FFFF00',
+        'TTR': 'FFC000',
+        'PU': 'CCC0DA',
+        'PI': 'C5DEB5',
+        'L': '92D050',
+        'TI-S': '7030A0',
+        'TS-S': '0070C0'
+    }
+
+    const bgColorStatesMap = new Map(Object.entries(bgColorStatesValue));
+
+    worksheet.columns = columns;
+
+    worksheet.getCell('A2').value = `SEPCON S.A.C`
+    worksheet.getCell('A3').value = `TAREOS - CONTROL DE ASISTENCIA REPORTE ${datos[0].proyecto} ${fechaProceso}`;
+    worksheet.getCell('A2').style = titleStyle
+    worksheet.getCell('A3').style = titleStyle
+
+    /* worksheet.getCell('A5').style = headerStyle */
+    worksheet.mergeCells('C5:F5')
+    worksheet.mergeCells('L5:N5')
+    worksheet.mergeCells('O5:AS5')
+    worksheet.mergeCells('AT5:AZ5')
+
+    worksheet.getCell('C5').value = 'DATOS PERSONALES'
+    worksheet.getCell('L5').value = 'MAQUINARIA Y EQUIPOS'
+    worksheet.getCell('O5').value = 'CONTROL DE ASISTENCIA'
+    worksheet.getCell('AT5').value = 'TOTALES'
+
+    worksheet.getRow(5).eachCell({ includeEmpty: true }, (cell) => {
+        cell.style = headerStyle;
+    });
+
+    worksheet.getRow(6).values = headersValue
+
+    worksheet.getRow(6).eachCell(cell => {
+        cell.style = headerStyle
+    })
+
+
+    let fila = 10;
+
+   /*  datos.forEach(dato => {
+        const arrayData = Object.values(dato);
+        worksheet.addRow(arrayData);
+        fila++;
+    }) */
+        for (let i = 0; i < datos.length; i++) {
+
+            worksheet.getRow(fila).style = dataStyle
+            const item = datos[i];
+    
+            /* // Insertar una nueva fila
+            worksheet.insertRow(fila, [
+                item.item,
+                item.documento,
+                item.nombres,
+                item.proyecto,
+                item.ubicacion,
+                item.cargo,
+            ]); */
+            worksheet.getCell(fila, 1).value = item.item
+            worksheet.getCell(fila, 4).value = item.documento
+            worksheet.getCell(fila, 5).value = item.nombres
+            
+            worksheet.getCell(fila, 13).value = item.proyecto
+            worksheet.getCell(fila, 14).value = item.ubicacion
+            worksheet.getCell(fila, 11).value = item.cargo
+    
+            // Llenar las celdas para los estados por día
+            for (const dia in item.estadosDia) {
+                const estado = item.estadosDia[dia];
+                const color = bgColorStatesMap.get(estado)
+                const columna = 14 + parseInt(dia); // Ajustar columna según el día
+                worksheet.getCell(fila, columna).value = estado;
+                worksheet.getCell(fila, columna).fill = {
+        
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: {argb:color},
+                        bgColor: {argb:color}
+    
+                }
+            }
+    
+            // Llenar celdas para los días (A, D, F, M, V, P, total)
+            worksheet.getCell(`AT${fila}`).value = item.dias.A || 0;
+            worksheet.getCell(`AU${fila}`).value = item.dias.D || 0;
+            worksheet.getCell(`AV${fila}`).value = item.dias.F || 0;
+            worksheet.getCell(`AW${fila}`).value = item.dias.M || 0;
+            worksheet.getCell(`AX${fila}`).value = item.dias.V || 0;
+            worksheet.getCell(`AY${fila}`).value = item.dias.P || 0;
+            worksheet.getCell(`AZ${fila}`).value = item.dias.total || 0;
+    
+            // Llenar celdas para régimen y mano de obra
+            worksheet.getCell(`BA${fila}`).value = item.regimen || '';
+            worksheet.getCell(`BB${fila}`).value = item.manoObra || '';
+    
+            fila++; // Avanzar a la siguiente fila
+        }
+    
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'datos_personalizados.xlsx';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    
+}
 
 const generarReportePadron = async () => {
     Swal.fire({
@@ -1641,11 +1805,11 @@ const generarReportePadron = async () => {
         html: "Se están cargando los datos del reporte, por favor, espere",
         timerProgressBar: true,
         didOpen: () => {
-          Swal.showLoading();
+            Swal.showLoading();
         }
-      })
+    })
     let formData = new FormData();
-    formData.append("funcion","obtenerTareosProyectoColaborador");
+    formData.append("funcion", "obtenerTareosProyectoColaborador");
     formData.append("proyecto", codigo_costos.value)
 
     let dataReporte;
@@ -1655,22 +1819,22 @@ const generarReportePadron = async () => {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data =>{
-        console.log(data);
-        dataReporte = data;
-    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            dataReporte = data;
+        })
 
     let colaboradores = [...dataReporte.colaboradoresProyecto, ...dataReporte.colaboradoresProyectoTerceros];
-    
+
     /* colaboradores += dataReporte.colaboradoresProyectoTerceros; */
-    colaboradores.forEach((item,index) => {
+    colaboradores.forEach((item, index) => {
         let dato = {};
-        dato['item']        = index+1;
-        dato['nombres']     = `${item.paterno} ${item.materno} ${item.nombres}`;
-        dato['documento']   = item.dni;
-        dato['proyecto']   = item.proyecto;
-        dato['ubicacion']  = item.sucursal;
+        dato['item'] = index + 1;
+        dato['nombres'] = `${item.paterno} ${item.materno} ${item.nombres}`;
+        dato['documento'] = item.dni;
+        dato['proyecto'] = item.proyecto;
+        dato['ubicacion'] = item.sucursal;
         dato['cargo'] = item.cargo;
         dato['tareos'] = dataReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.estados.split(','));
         let contador = {};
@@ -1681,35 +1845,35 @@ const generarReportePadron = async () => {
                 contador[item] = 1;
             }
         });
-        contador.total = (contador.A || 0) + 
-        (contador.D || 0) + 
-        (contador.F || 0) + 
-        (contador.M || 0) + 
-        (contador.V || 0) + 
-        (contador.P || 0);
+        contador.total = (contador.A || 0) +
+            (contador.D || 0) +
+            (contador.F || 0) +
+            (contador.M || 0) +
+            (contador.V || 0) +
+            (contador.P || 0);
         dato['dias'] = contador;
         dato['regimen'] = dataReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.regimen;
         dato['manoObra'] = dataReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.mano_obra;
         datos.push(dato);
     })
     console.log(datos);
-    formData.append("padron",JSON.stringify(datos));
-    formData.append("funcion","plantillaTareoExcel");
+    formData.append("padron", JSON.stringify(datos));
+    formData.append("funcion", "plantillaTareoExcel");
 
-    await fetch('../inc/exportar.inc.php',{
+    await fetch('../inc/exportar.inc.php', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data =>{
-       window.open(`..${data.archivo}`);
-    })
+        .then(response => response.json())
+        .then(data => {
+            window.open(`..${data.archivo}`);
+        })
     Swal.close();
 }
 
-const datosTareoPersonal = () =>{
+const datosTareoPersonal = () => {
     let fila = document.querySelector("#tablaPersonalBody").getElementsByTagName("tr"),
-    nreg = fila.length;
+        nreg = fila.length;
 
     let DATOS = [];
 
@@ -1717,14 +1881,14 @@ const datosTareoPersonal = () =>{
         let dato = {};
 
         //if ( fila[i].dataset.grabado  === "0" ) {
-            dato['documento']   = fila[i].cells[2].innerHTML;
-            dato['ubicacion']   = fila[i].cells[4].innerHTML;
-            dato['estado']      = fila[i].cells[5].children[0].value;
-            dato['fingreso']    = fila[i].cells[7].children[0].value;
+        dato['documento'] = fila[i].cells[2].innerHTML;
+        dato['ubicacion'] = fila[i].cells[4].innerHTML;
+        dato['estado'] = fila[i].cells[5].children[0].value;
+        dato['fingreso'] = fila[i].cells[7].children[0].value;
 
-            DATOS.push(dato);
+        DATOS.push(dato);
 
-            /* fila[i].setAttribute("data-grabado", "1"); */
+        /* fila[i].setAttribute("data-grabado", "1"); */
         //}   
     }
 
@@ -1732,45 +1896,45 @@ const datosTareoPersonal = () =>{
     return DATOS;
 }
 
-const actualizarPadronExcel = (archivo) =>{
+const actualizarPadronExcel = (archivo) => {
     try {
         const formData = new FormData();
-        formData.append("funcion",'importarArchivo');
-        formData.append("archivo",archivo );
+        formData.append("funcion", 'importarArchivo');
+        formData.append("archivo", archivo);
 
         let fila = document.querySelector("#tablaPersonalBody").getElementsByTagName("tr");
 
-        fetch('../inc/importar.inc.php',{
+        fetch('../inc/importar.inc.php', {
             method: 'POST',
             body: formData,
             cache: 'no-store'
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            data.datos.forEach( function(valor, indice) {
-                const filaIndex = [...fila].findIndex(f => f.cells[2].innerHTML == valor.documento)
-                console.log('filaIndex', [...fila])
-                if (fila[filaIndex].cells[2].innerHTML == valor.documento){
-                    /* fila[indice].cells[4].innerHTML = valor.ubicacion; */
-                    fila[filaIndex].cells[5].children[0].value = valor.estado;
-                    /* if(valor.ingreso != null){
-                        fila[indice].cells[7].children[0].value = valor.ingreso;
-                    } */
-                    fila[filaIndex].cells[7].children[0].value = valor.ingreso != null ? valor.ingreso : ''
-                }
-            });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                data.datos.forEach(function (valor, indice) {
+                    const filaIndex = [...fila].findIndex(f => f.cells[2].innerHTML == valor.documento)
+                    console.log('filaIndex', [...fila])
+                    if (fila[filaIndex].cells[2].innerHTML == valor.documento) {
+                        /* fila[indice].cells[4].innerHTML = valor.ubicacion; */
+                        fila[filaIndex].cells[5].children[0].value = valor.estado;
+                        /* if(valor.ingreso != null){
+                            fila[indice].cells[7].children[0].value = valor.ingreso;
+                        } */
+                        fila[filaIndex].cells[7].children[0].value = valor.ingreso != null ? valor.ingreso : ''
+                    }
+                });
 
-            // Limpiar el valor del input de archivo
-            fileUpload.value = "";
-        })
+                // Limpiar el valor del input de archivo
+                fileUpload.value = "";
+            })
     } catch (error) {
         console.log(error.message);
     }
 }
 
 const buscar = (texto) => {
-    let input,filter, table, tr, td, i, j, visible;
+    let input, filter, table, tr, td, i, j, visible;
 
     input = document.getElementById("ubicacion_padron");
     filter = input.value.toUpperCase();
@@ -1795,27 +1959,27 @@ const buscar = (texto) => {
     }
 }
 
-const hojaSalida = (proyecto) =>{
+const hojaSalida = (proyecto) => {
     try {
 
-        if ( documento.value == "" ) throw new Error("Escribe el nro. de documento");
+        if (documento.value == "") throw new Error("Escribe el nro. de documento");
 
         const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
 
-        datos.append("funcion","hojaSalida");
-        datos.append("proyecto",proyecto);
-    
-        fetch('../inc/reportes.inc.php',{
+        datos.append("funcion", "hojaSalida");
+        datos.append("proyecto", proyecto);
+
+        fetch('../inc/reportes.inc.php', {
             method: 'POST',
             body: datos
         })
-        .then(response => response.json())
-        .then(data => {
-            modalHojaSalida.style.display = 'block';
-            vistaPreliminarHojaSalida.setAttribute('src',data);
-        })
+            .then(response => response.json())
+            .then(data => {
+                modalHojaSalida.style.display = 'block';
+                vistaPreliminarHojaSalida.setAttribute('src', data);
+            })
     } catch (error) {
-         mostrarMensaje(error.message,"msj_error");
+        mostrarMensaje(error.message, "msj_error");
     }
 }
 
@@ -1823,121 +1987,121 @@ const readExcel = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
 
-    reader.onload = function(event) {
-      const data = new Uint8Array(event.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
+    reader.onload = function (event) {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
 
-      // Aquí puedes acceder a las hojas del libro
-      const firstSheetName = workbook.SheetNames[0]; // Nombre de la primera hoja
-      const worksheet = workbook.Sheets[firstSheetName];
+        // Aquí puedes acceder a las hojas del libro
+        const firstSheetName = workbook.SheetNames[0]; // Nombre de la primera hoja
+        const worksheet = workbook.Sheets[firstSheetName];
 
-      // Convertir la hoja a JSON
-      const jsonData = XLSX.utils.sheet_to_json(worksheet);
-      console.log(jsonData); // Aquí están los datos en formato JSON
+        // Convertir la hoja a JSON
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        console.log(jsonData); // Aquí están los datos en formato JSON
+    }
 }
-}
 
-document.getElementById("toggleMenu").addEventListener("click",function(e){
+document.getElementById("toggleMenu").addEventListener("click", function (e) {
     e.preventDefault();/*  */
     document.getElementById("menu").classList.toggle('active');
 })
 
-function grabarDatosMatrizTerceros(){
+function grabarDatosMatrizTerceros() {
     //serializar los formulario en javascript
     const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
-    datos.append("funcion","grabarTerceros");
+    datos.append("funcion", "grabarTerceros");
 
-    fetch('../inc/grabar.inc.php',{
+    fetch('../inc/grabar.inc.php', {
         method: 'POST',
-        body:datos
+        body: datos
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-        if(data.success){
-            Swal.fire({
-                icon: "success",
-                title: "Guardado Correctamente",
-                text: "Se han guardado los registros exitosamente"
-            });
-        }else{
-            Swal.fire({
-                icon: "error",
-                title: "Error!",
-                text: "Ha ocurrido un error"
-            });
-        }
-    });
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente",
+                    text: "Se han guardado los registros exitosamente"
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Ha ocurrido un error"
+                });
+            }
+        });
 }
 
 /* document.getElementById("ubigeo").addEventListener("blur", function() {
     console.log("El campo ha perdido el foco");
     getUbigeo(); // Asegúrate de que esta función esté definida
 }); */
-document.addEventListener("focusout", (e)=>{
-    if(e.target.id == 'ubigeo'){
+document.addEventListener("focusout", (e) => {
+    if (e.target.id == 'ubigeo') {
         getUbigeo();
     }
 })
-function getUbigeo(){
+function getUbigeo() {
     let ubigeo = document.getElementById("ubigeo").value;
     const formData = new FormData();
-    formData.append("funcion","obtenerUbigeo");
+    formData.append("funcion", "obtenerUbigeo");
     formData.append("ubigeo", ubigeo);
-    fetch('../inc/busquedas.inc.php',{
+    fetch('../inc/busquedas.inc.php', {
         method: 'POST',
-        body:formData
+        body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-        document.getElementById("dist").value=data.ubigeo.dist;
-        document.getElementById("dpto").value=data.ubigeo.dpto;
-        document.getElementById("prov").value=data.ubigeo.prov;
-    });
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            document.getElementById("dist").value = data.ubigeo.dist;
+            document.getElementById("dpto").value = data.ubigeo.dpto;
+            document.getElementById("prov").value = data.ubigeo.prov;
+        });
 }
 
-function obtenerTercero(dni){
+function obtenerTercero(dni) {
     const formData = new FormData();
-    formData.append("funcion","obtenerTercero");
+    formData.append("funcion", "obtenerTercero");
     formData.append("dni", dni);
-    fetch('../inc/busquedas.inc.php',{
+    fetch('../inc/busquedas.inc.php', {
         method: 'POST',
-        body:formData
+        body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-    });
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        });
 }
 
-function deleteProyectoUsuario(e){
+function deleteProyectoUsuario(e) {
     let id = e.getAttribute('id-reg');
     console.log(`eliminando id: ${id}`)
     let formData = new FormData()
     formData.append("funcion", "actualizarAccesoProyecto");
     formData.append("idreg", id)
-    fetch('../inc/grabar.inc.php',{
+    fetch('../inc/grabar.inc.php', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        if(data.success){
-            Swal.fire({
-                icon: "success",
-                title: "Guardado Correctamente",
-                text: "Se han guardado los registros exitosamente"
-              });
-        }else{
-            Swal.fire({
-                icon: "error",
-                title: "Error!",
-                text: "Ha ocurrido un error"
-            });
-        }
-        
-    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Guardado Correctamente",
+                    text: "Se han guardado los registros exitosamente"
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Ha ocurrido un error"
+                });
+            }
+
+        })
 }
 
 function openCity(evt, cityName) {
@@ -1945,21 +2109,21 @@ function openCity(evt, cityName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
+        tabcontent[i].style.display = "none";
     }
     tablinks = document.getElementsByClassName("tablinks");
     for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
     document.getElementById(cityName).style.display = "block";
     evt.target.className += " active";
-    if(cityName == "FasesTabContent"){
+    if (cityName == "FasesTabContent") {
         document.getElementById("function").value = "grabarFase"
-    }else if(cityName == "ProyectoFasesTabContent"){
+    } else if (cityName == "ProyectoFasesTabContent") {
         document.getElementById("function").value = "grabarProyectoFase"
-    }else if (cityName == "EncargadosTabContent"){
+    } else if (cityName == "EncargadosTabContent") {
         document.getElementById("function").value = "grabarEncargado"
-    }else if (cityName == "EncargadosProyectoTabContent"){
+    } else if (cityName == "EncargadosProyectoTabContent") {
         document.getElementById("function").value = "grabarEncargadoProyecto"
     }
-  }
+}
