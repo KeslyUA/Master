@@ -1494,6 +1494,10 @@ const obtenerReportePadron = async () => {
                 (contador.P || 0);
             dato['dias'] = contador;
             dato['fechaProceso'] = document.getElementById("fecha_proceso").value
+            dato['fase'] = datosReporte.fases.find(fase => fase.nrodoc == dato['documento']).fase
+            dato['codFase'] = datosReporte.fases.find(fase => fase.nrodoc == dato['documento']).cfase
+            dato['regimen'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.regimen ?? 'No Especificado'
+            dato['manoObra'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.mano_obra ?? 'No Especificado'
             DATOS.push(dato);
         }
 
@@ -1575,6 +1579,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
     const datos = JSON.parse(padron);
     console.log(datos)
     const nreg = datos.length;
+    const groupByFase = _.groupBy(datos, item => item.fase)
 
     const titleStyle = {
         font: {
@@ -1618,8 +1623,37 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         }
     }
 
+    const faseStyle = {
+        fill: {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: {argb:'B6DDE8'},
+            bgColor: {argb:'B6DDE8'}
+        }
+    }
+
+    const extraStyle = {
+        font: {
+            name: 'Arial',
+            size: 10,
+            color: {argb: 'FFFF00'},
+            bold: true
+        },
+        alignment : {
+            horizontal: 'center',
+            vertical: 'middle',
+            wrapText: true
+        },
+        fill: {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: '002060' },
+            bgColor: { argb: '002060' }
+        }
+    }
+
     const columns = [
-        { width: 6 },
+        { width: 10 },
         { width: 3 },
         { width: 8 },
         { width: 15 },
@@ -1671,9 +1705,11 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         { width: 4 },
         { width: 4 },
         { width: 4 },
+        { width: 15 },
+        { width: 15 },
     ];
 
-    const headersValue = ['ITEM', 'N°', 'CODIGO', 'DNI', 'APELLIDOS Y NOMBRES', 'PROCEDENCIA', 'F.INGRESO', 'TIPO', 'Último Ingreso a Obra', 'Dias 14*7 Laborados', 'CARGO', 'FASE ACTUAL', 'PROYECTO ACTUAL', 'UBICACIÓN', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', 'DA', 'DD', 'DF', 'DM', 'DV', 'DP', 'DT']
+    const headersValue = ['ITEM', 'N°', 'CODIGO', 'DNI', 'APELLIDOS Y NOMBRES', 'PROCEDENCIA', 'F.INGRESO', 'TIPO', 'Último Ingreso a Obra', 'Dias 14*7 Laborados', 'CARGO', 'FASE ACTUAL', 'PROYECTO ACTUAL', 'UBICACIÓN', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', 'DA', 'DD', 'DF', 'DM', 'DV', 'DP', 'DT','Régimen','Mano de Obra']
 
     const bgColorStatesValue = {
         'A' : '92CDDC',
@@ -1707,6 +1743,8 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
     worksheet.mergeCells('L5:N5')
     worksheet.mergeCells('O5:AS5')
     worksheet.mergeCells('AT5:AZ5')
+    worksheet.mergeCells('BA5:BA6')
+    worksheet.mergeCells('BB5:BB6')
 
     worksheet.getCell('C5').value = 'DATOS PERSONALES'
     worksheet.getCell('L5').value = 'MAQUINARIA Y EQUIPOS'
@@ -1723,18 +1761,27 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         cell.style = headerStyle
     })
 
+    worksheet.getCell('BA6').style = extraStyle
+    worksheet.getCell('BB6').style = extraStyle
 
-    let fila = 10;
 
-   /*  datos.forEach(dato => {
-        const arrayData = Object.values(dato);
-        worksheet.addRow(arrayData);
-        fila++;
-    }) */
-        for (let i = 0; i < datos.length; i++) {
+    let fila = 8;
+    
+    for (const fase in groupByFase) {
+        const dataByFase = groupByFase[fase]
+        worksheet.getCell(`A${fila}`).style = faseStyle
+        worksheet.getCell(`B${fila}`).style = faseStyle
+        worksheet.getCell(`C${fila}`).style = faseStyle
+        worksheet.getCell(`D${fila}`).style = faseStyle
+        worksheet.getCell(`E${fila}`).style = faseStyle
+
+        worksheet.getCell(`A${fila}`).value = dataByFase[0].codFase
+        worksheet.getCell(`B${fila}`).value = fase
+        fila++
+        for (let i = 0; i < dataByFase.length; i++) {
 
             worksheet.getRow(fila).style = dataStyle
-            const item = datos[i];
+            const item = dataByFase[i];
     
             /* // Insertar una nueva fila
             worksheet.insertRow(fila, [
@@ -1784,6 +1831,14 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
     
             fila++; // Avanzar a la siguiente fila
         }
+    }
+
+   /*  datos.forEach(dato => {
+        const arrayData = Object.values(dato);
+        worksheet.addRow(arrayData);
+        fila++;
+    }) */
+        
     
 
     const buffer = await workbook.xlsx.writeBuffer();

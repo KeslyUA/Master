@@ -57,6 +57,7 @@
         </div>
     </section>
     <script src="../js/sweetalert2@11.js"></script>
+    <script src="../js/es-toolkit@^1.js" ></script>
     <script src="../js/exceljs.min.js"></script>
     <script src="../js/panel.js?v<?php echo $random; ?>" type="module"></script>
 </body>

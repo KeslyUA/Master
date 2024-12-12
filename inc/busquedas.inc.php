@@ -422,16 +422,16 @@
             $colaboradoresProyectoTerceros = listarPadronTerceros($pdo, $cc);
 
             /* $sql = "SELECT nrodoc, GROUP_CONCAT(estado ORDER BY estado SEPARATOR ',') AS estados FROM tb_tareos where cproyecto = ? GROUP BY nrodoc"; */
-            /* SELECT t.nrodoc, td.cfase, tf.cnombre, tf.cdescripcion, GROUP_CONCAT(t.estado ORDER BY t.fregsys SEPARATOR ',') AS estados, group_concat(day(t.fregsys) order by t.fregsys separator ',') as dias 
-FROM tb_tareos t
-left join tb_datostareo td on td.nddoc = t.nrodoc
-left join tb_fases tf on tf.idfase = td.cfase
-where t.cproyecto = '020000' and month(t.fregsys) = 12 GROUP BY t.nrodoc */
             $sql = "SELECT nrodoc, 
                     GROUP_CONCAT(estado ORDER BY fregsys SEPARATOR ',') AS estados,
                     group_concat(day(fregsys) order by fregsys separator ',') as dias 
                     FROM tb_tareos where cproyecto = ? and month(fregsys) = ?
                     GROUP BY nrodoc";
+            /* $sql = "SELECT t.nrodoc, td.cfase, concat(tf.cnombre,' ', tf.cdescripcion) as fase, GROUP_CONCAT(t.estado ORDER BY t.fregsys SEPARATOR ',') AS estados, group_concat(day(t.fregsys) order by t.fregsys separator ',') as dias 
+                    FROM tb_tareos t
+                    left join tb_datostareo td on td.nddoc = t.nrodoc
+                    left join tb_fases tf on tf.idfase = td.cfase
+                    where t.cproyecto = ? and month(t.fregsys) = ? GROUP BY t.nrodoc"; */
         
             $statement = $pdo->prepare($sql);
             $statement -> execute(array($cc, $mes));
@@ -448,7 +448,18 @@ where t.cproyecto = '020000' and month(t.fregsys) = 12 GROUP BY t.nrodoc */
                 $datosT[] = $rowData;
             }
 
-            return array("colaboradoresProyecto" =>$colaboradoresProyecto,"colaboradoresProyectoTerceros" => $colaboradoresProyectoTerceros['datos'] ,"tareos"=>$tareos,"datosTareo" => $datosT);
+            $sqlDataFases = "SELECT t.nrodoc, coalesce(td.cfase, 0) as idFase, coalesce(tf.cnombre,t.cproyecto) as cfase , coalesce(tf.cdescripcion, 'SIN FASE ASIGNADO') as fase
+                            FROM tb_tareos t
+                            left join tb_datostareo td on td.nddoc = t.nrodoc
+                            left join tb_fases tf on tf.idfase = td.cfase
+                            where t.cproyecto = ? and month(t.fregsys) = ? GROUP BY t.nrodoc";
+            $dataFasesStatement = $pdo->prepare($sqlDataFases);
+            $dataFasesStatement -> execute(array($cc, $mes));
+            while($rowDataFasesStatement = $dataFasesStatement->fetch(PDO::FETCH_ASSOC)){
+                $datosFases[] = $rowDataFasesStatement;
+            }
+
+            return array("colaboradoresProyecto" =>$colaboradoresProyecto,"colaboradoresProyectoTerceros" => $colaboradoresProyectoTerceros['datos'] ,"tareos"=>$tareos,"datosTareo" => $datosT, "fases"=>$datosFases);
 
         }  catch ( PDOException $e) {
             echo "Error: " . $e->getMessage;

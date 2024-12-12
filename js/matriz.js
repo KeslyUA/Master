@@ -67,14 +67,14 @@ export const buscarDatos = async (dni) =>{
                 document.getElementById("existe").value = 1;
             }else{
                 /* document.getElementById("data_matriz")[0].reset; */
-                encargado.value = '';
+                encargado.value = -1;
                 condicion.value = -1;
                 personal.value = -1;
-                especialidad.value = '';
+                especialidad.value = -1;
                 manoobra.value = -1;
                 /* proyecto_actual.value = ''; */
-                fase_actual.value = '';
-                ubicacion.value = '';
+                fase_actual.value = -1;
+                ubicacion.value = -1;
                 regimen_trabajo.value = '';
                 ingreso_obra.value = null;
                 salida_obra.value = null;
