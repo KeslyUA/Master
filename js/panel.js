@@ -197,11 +197,11 @@ document.addEventListener('click', (e) => {
                 listarUbicaciones(document.getElementById("ubicacion"));
                 listarEspecialidades(document.getElementById("especialidad"));
             }, 100);
-        } else if (e.target.id == "ubicacion") {
+        } else if (e.target.id == "ubicaciones") {
             setTimeout(() => {
                 listarUbicacionesTable();
             }, 100);
-        } else if (e.target.id == "especialidad") {
+        } else if (e.target.id == "especialidades") {
             setTimeout(() => {
                 listarEspecialidadesTable();
             }, 100);
@@ -1572,8 +1572,8 @@ const obtenerReportePadron = async () => {
 
 async function newPlantillaTareoExcel(padron, fechaProceso) {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Tareo Reporte',{
-        views: [{state: "frozen", xSplit: 5}]
+    const worksheet = workbook.addWorksheet('Tareo Reporte', {
+        views: [{ state: "frozen", xSplit: 5 }]
     });
 
     const datos = JSON.parse(padron);
@@ -1593,16 +1593,16 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         fill: {
             type: 'pattern',
             pattern: 'solid',
-            fgColor: {argb:'44749F'},
-            bgColor: {argb:'44749F'}
+            fgColor: { argb: '44749F' },
+            bgColor: { argb: '44749F' }
         },
         border: {
-            top: {style:'thin'},
-            left: {style:'thin'},
-            bottom: {style:'thin'},
-            right: {style:'thin'}
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
         },
-        alignment : {
+        alignment: {
             horizontal: 'center',
             vertical: 'middle',
             wrapText: true
@@ -1610,13 +1610,13 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         font: {
             name: 'Arial',
             size: 10,
-            color: {argb: 'FFFFFF'},
+            color: { argb: 'FFFFFF' },
             bold: true
         }
     }
 
     const dataStyle = {
-        alignment : {
+        alignment: {
             horizontal: 'center',
             vertical: 'middle',
             wrapText: true
@@ -1627,8 +1627,8 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         fill: {
             type: 'pattern',
             pattern: 'solid',
-            fgColor: {argb:'B6DDE8'},
-            bgColor: {argb:'B6DDE8'}
+            fgColor: { argb: 'B6DDE8' },
+            bgColor: { argb: 'B6DDE8' }
         }
     }
 
@@ -1636,10 +1636,10 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         font: {
             name: 'Arial',
             size: 10,
-            color: {argb: 'FFFF00'},
+            color: { argb: 'FFFF00' },
             bold: true
         },
-        alignment : {
+        alignment: {
             horizontal: 'center',
             vertical: 'middle',
             wrapText: true
@@ -1709,10 +1709,10 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         { width: 15 },
     ];
 
-    const headersValue = ['ITEM', 'N°', 'CODIGO', 'DNI', 'APELLIDOS Y NOMBRES', 'PROCEDENCIA', 'F.INGRESO', 'TIPO', 'Último Ingreso a Obra', 'Dias 14*7 Laborados', 'CARGO', 'FASE ACTUAL', 'PROYECTO ACTUAL', 'UBICACIÓN', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', 'DA', 'DD', 'DF', 'DM', 'DV', 'DP', 'DT','Régimen','Mano de Obra']
+    const headersValue = ['ITEM', 'N°', 'CODIGO', 'DNI', 'APELLIDOS Y NOMBRES', 'PROCEDENCIA', 'F.INGRESO', 'TIPO', 'Último Ingreso a Obra', 'Dias 14*7 Laborados', 'CARGO', 'FASE ACTUAL', 'PROYECTO ACTUAL', 'UBICACIÓN', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', 'DA', 'DD', 'DF', 'DM', 'DV', 'DP', 'DT', 'Régimen', 'Mano de Obra']
 
     const bgColorStatesValue = {
-        'A' : '92CDDC',
+        'A': '92CDDC',
         'D': 'FF0000',
         'TI': '7030A0',
         'TS': '0070C0',
@@ -1766,7 +1766,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
 
 
     let fila = 8;
-    
+
     for (const fase in groupByFase) {
         const dataByFase = groupByFase[fase]
         worksheet.getCell(`A${fila}`).style = faseStyle
@@ -1782,7 +1782,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
 
             worksheet.getRow(fila).style = dataStyle
             const item = dataByFase[i];
-    
+
             /* // Insertar una nueva fila
             worksheet.insertRow(fila, [
                 item.item,
@@ -1795,11 +1795,11 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             worksheet.getCell(fila, 1).value = item.item
             worksheet.getCell(fila, 4).value = item.documento
             worksheet.getCell(fila, 5).value = item.nombres
-            
+
             worksheet.getCell(fila, 13).value = item.proyecto
             worksheet.getCell(fila, 14).value = item.ubicacion
             worksheet.getCell(fila, 11).value = item.cargo
-    
+
             // Llenar las celdas para los estados por día
             for (const dia in item.estadosDia) {
                 const estado = item.estadosDia[dia];
@@ -1807,15 +1807,13 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
                 const columna = 14 + parseInt(dia); // Ajustar columna según el día
                 worksheet.getCell(fila, columna).value = estado;
                 worksheet.getCell(fila, columna).fill = {
-        
-                        type: 'pattern',
-                        pattern: 'solid',
-                        fgColor: {argb:color},
-                        bgColor: {argb:color}
-    
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: color },
+                    bgColor: { argb: color }
                 }
             }
-    
+
             // Llenar celdas para los días (A, D, F, M, V, P, total)
             worksheet.getCell(`AT${fila}`).value = item.dias.A || 0;
             worksheet.getCell(`AU${fila}`).value = item.dias.D || 0;
@@ -1824,22 +1822,22 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             worksheet.getCell(`AX${fila}`).value = item.dias.V || 0;
             worksheet.getCell(`AY${fila}`).value = item.dias.P || 0;
             worksheet.getCell(`AZ${fila}`).value = item.dias.total || 0;
-    
+
             // Llenar celdas para régimen y mano de obra
             worksheet.getCell(`BA${fila}`).value = item.regimen || '';
             worksheet.getCell(`BB${fila}`).value = item.manoObra || '';
-    
+
             fila++; // Avanzar a la siguiente fila
         }
     }
 
-   /*  datos.forEach(dato => {
-        const arrayData = Object.values(dato);
-        worksheet.addRow(arrayData);
-        fila++;
-    }) */
-        
-    
+    /*  datos.forEach(dato => {
+         const arrayData = Object.values(dato);
+         worksheet.addRow(arrayData);
+         fila++;
+     }) */
+
+
 
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
@@ -1851,7 +1849,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
     a.click();
     URL.revokeObjectURL(url);
 
-    
+
 }
 
 const generarReportePadron = async () => {

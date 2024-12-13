@@ -19,7 +19,7 @@ export const listarUbicacionesTable = () => {
                     <td>${fila++}</td>
                     <td class="padding20left">${element.cubicacion}</td>
                     <td>
-                        <a href="#" class="actions texto_centro" id="editUbicacion" data-id=${element.idfase}>
+                        <a href="#" class="actions texto_centro" id="editUbicacion" data-id=${element.idubicacion}>
                             Editar
                         </a>
                     </td>
