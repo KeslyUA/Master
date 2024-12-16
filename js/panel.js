@@ -1100,6 +1100,7 @@ function datosUsuarioCabecera() {
                 document.getElementById("nombreUsuarioSistema").outerHTML = data.datos[0].nombres + ' ' + data.datos[0].paterno;
                 document.getElementById("cargoUsuarioSistema").innerHTML = data.datos[0].cargo;
                 document.getElementById("correoUsuarioSistema").innerHTML = data.datos[0].correo;
+                document.querySelector('.img_user').style.backgroundImage = `url("https://rrhhperu.sepcon.net/postulanterrhh/documentos/jpg/${data.foto.data}")`
             })
     } catch (error) {
         console.log(error.message);
@@ -1498,6 +1499,8 @@ const obtenerReportePadron = async () => {
             dato['codFase'] = datosReporte.fases.find(fase => fase.nrodoc == dato['documento']).cfase
             dato['regimen'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.regimen ?? 'No Especificado'
             dato['manoObra'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.mano_obra ?? 'No Especificado'
+            dato['cut'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).cut;
+            dato['fingreso'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.fingreso ?? ''
             DATOS.push(dato);
         }
 
@@ -1579,7 +1582,14 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
     const datos = JSON.parse(padron);
     console.log(datos)
     const nreg = datos.length;
-    const groupByFase = _.groupBy(datos, item => item.fase)
+    const groupByFase = _.groupBy(datos, item => item.codFase)
+    console.log(groupByFase)
+
+    const arrayOrdenado = Object.entries(groupByFase)
+  .sort(([claveA], [claveB]) => claveA.localeCompare(claveB)); // Ordenar por clave
+
+    // Convertir el array de nuevo a objeto
+    const groupByFaseOrdenado = Object.fromEntries(arrayOrdenado);
 
     const titleStyle = {
         font: {
@@ -1766,9 +1776,10 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
 
 
     let fila = 8;
+    let indexItem = 1;
 
-    for (const fase in groupByFase) {
-        const dataByFase = groupByFase[fase]
+    for (const fase in groupByFaseOrdenado) {
+        const dataByFase = groupByFaseOrdenado[fase]
         worksheet.getCell(`A${fila}`).style = faseStyle
         worksheet.getCell(`B${fila}`).style = faseStyle
         worksheet.getCell(`C${fila}`).style = faseStyle
@@ -1776,7 +1787,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         worksheet.getCell(`E${fila}`).style = faseStyle
 
         worksheet.getCell(`A${fila}`).value = dataByFase[0].codFase
-        worksheet.getCell(`B${fila}`).value = fase
+        worksheet.getCell(`B${fila}`).value = dataByFase[0].fase
         fila++
         for (let i = 0; i < dataByFase.length; i++) {
 
@@ -1792,9 +1803,12 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
                 item.ubicacion,
                 item.cargo,
             ]); */
-            worksheet.getCell(fila, 1).value = item.item
+            worksheet.getCell(fila, 1).value = indexItem
+            worksheet.getCell(fila, 3).value = item.cut
+            worksheet.getCell(fila, 2).value = i+1;
             worksheet.getCell(fila, 4).value = item.documento
             worksheet.getCell(fila, 5).value = item.nombres
+            worksheet.getCell(fila, 7).value = item.fingreso
 
             worksheet.getCell(fila, 13).value = item.proyecto
             worksheet.getCell(fila, 14).value = item.ubicacion
@@ -1826,7 +1840,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             // Llenar celdas para régimen y mano de obra
             worksheet.getCell(`BA${fila}`).value = item.regimen || '';
             worksheet.getCell(`BB${fila}`).value = item.manoObra || '';
-
+            indexItem++;
             fila++; // Avanzar a la siguiente fila
         }
     }

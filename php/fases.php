@@ -25,7 +25,7 @@
                     </a>
                 </div>
             </div>
-            <div class="cuerpo">
+            <!-- <div class="cuerpo">
                 <div class="seis_columnas">
                     <label for="proyectos">Proyectos :</label>
                     <select name="proyectos" id="proyectos" form="data_fases" class="select">
@@ -38,7 +38,7 @@
                         <option value="-1">Seleccionar</option>
                     </select>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="separator">
             <div class="tab">  

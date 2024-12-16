@@ -42,7 +42,7 @@
            <ul id="menuList" >
                 <li class="menu_selected"><a href="matriz" id="matriz" class="opciones">Matriz Personal</a></li>
                 <li><a href="padron" id="padron" class="opciones">Listado del Padron</a></li>
-                <li><a href="encargados"  id="encargados" class="opciones">Encargados</a></li>
+                <li><a href="encargados"  id="encargados" class="opciones">Jefe Inmediato</a></li>
                 <li><a href="fases" id="fases" class="opciones">Fases</a></li>
                 <li><a href="ubicaciones" id="ubicaciones" class="opciones">Ubicacion</a></li>
                 <li><a href="especialidades" id="especialidades" class="opciones">Especialidad</a></li>

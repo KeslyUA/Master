@@ -17,7 +17,7 @@
         <input type="hidden" name="function" id="function" >
         <div class="separator">
             <div class="titulo">
-                <span>ENCARGADOS</span>
+                <span>JEFES INMEDIATOS</span>
                 <div class="btnOpciones">
                     <a href="#" id="grabarDatosEncargados">
                         <i class="fas fa-save botones"></i>
@@ -25,7 +25,7 @@
                     </a>
                 </div>
             </div>
-            <div class="cuerpo">
+            <!-- <div class="cuerpo">
                 <div class="seis_columnas">
                     <label for="proyectos">Proyectos :</label>
                     <select name="proyectos" id="proyectos" form="data_fases" class="select">
@@ -38,18 +38,18 @@
                         <option value="-1">Seleccionar</option>
                     </select>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="separator">
             <div class="tab">  
-                <button class="tablinks" ref-id="EncargadosTabContent">Encargados</button>
-                <button class="tablinks" ref-id="EncargadosProyectoTabContent">Encargados por Proyecto</button>    
+                <button class="tablinks" ref-id="EncargadosTabContent">Jefes Inmediatos</button>
+                <button class="tablinks" ref-id="EncargadosProyectoTabContent">Jefes Inmediatos por Proyecto</button>    
             </div>
             <div>
                 <div id="EncargadosTabContent" class="tabcontent">
                     <div class="separator">
                         <div class="titulo">
-                            <span>LISTA DE ENCARGADOS</span>
+                            <span>LISTA DE JEFES INMEDIATOS</span>
                             <div class="btnOpciones">
                                 <a href="#" id="agregaEncargados">
                                     <i class="far fa-calendar-plus botones"></i>
@@ -80,7 +80,7 @@
                 <div id="EncargadosProyectoTabContent" class="tabcontent">
                 <div class="separator">
                         <div class="titulo">
-                            <span>LISTA DE ENCARGADOS POR PROYECTO</span>
+                            <span>LISTA DE JEFES INMEDIATOS POR PROYECTO</span>
                             <div class="btnOpciones">
                                 <a href="#" id="agregaEncargadosProyecto">
                                     <i class="far fa-calendar-plus botones"></i>

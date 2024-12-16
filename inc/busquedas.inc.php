@@ -265,13 +265,28 @@
             $url = "http://sicalsepcon.net/api/matrizworkerdataapi.php?documento=".$doc;
             $api = file_get_contents($url);
             $datos =  json_decode($api);
+            $foto = fotoUsuarioSistema($doc);
 
-            return array("datos" => $datos);
+            return array("datos" => $datos, "foto" => $foto);
 
         } catch ( PDOException $e) {
             echo "Error: " . $e->getMessage;
             return false;
         }
+    }
+
+    function fotoUsuarioSistema($doc){
+        $dni = $doc;
+        $url2 = 'http://rrhhperu.sepcon.net/api/postulantes/fotospostulantes.php';
+                $json_permiso = file_get_contents($url2, false, stream_context_create([
+                                        'http' => [
+                                            'method' => 'POST',
+                                            'header' => 'Content-Type: application/json',
+                                            'content' => json_encode(['dni' => $dni])
+                                        ]
+                                    ]));
+                $dato2 = json_decode($json_permiso);
+        return $dato2;
     }
 
     function listarPadron($pdo,$costos){
@@ -441,7 +456,7 @@
             }
 
             $datosT = [];
-            $sqlData = "SELECT nddoc, regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t INNER JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03 INNER JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01";
+            $sqlData = "SELECT nddoc, t.fingreso, regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t INNER JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03 INNER JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01";
             $dataStatement = $pdo->prepare($sqlData);
             $dataStatement -> execute();
             while($rowData = $dataStatement->fetch(PDO::FETCH_ASSOC)){
@@ -452,7 +467,8 @@
                             FROM tb_tareos t
                             left join tb_datostareo td on td.nddoc = t.nrodoc
                             left join tb_fases tf on tf.idfase = td.cfase
-                            where t.cproyecto = ? and month(t.fregsys) = ? GROUP BY t.nrodoc";
+                            where t.cproyecto = ? and month(t.fregsys) = ? GROUP BY t.nrodoc
+                            ORDER BY td.cfase";
             $dataFasesStatement = $pdo->prepare($sqlDataFases);
             $dataFasesStatement -> execute(array($cc, $mes));
             while($rowDataFasesStatement = $dataFasesStatement->fetch(PDO::FETCH_ASSOC)){
@@ -552,7 +568,7 @@
         $docData = [];
 
         /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
-        $sql = "SELECT idfase, cnombre, cdescripcion FROM tb_fases WHERE nflgactivo = 1";
+        $sql = "SELECT idfase, cnombre, cdescripcion FROM tb_fases WHERE nflgactivo = 1 ORDER BY cnombre";
         
         $statement = $pdo->prepare($sql);
         $statement -> execute();
