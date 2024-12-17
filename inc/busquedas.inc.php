@@ -69,7 +69,9 @@
             $apiOrigen =  file_get_contents($origen);
             $datosOrigen = json_decode($apiOrigen);
 
-            return array("datos" => $datos,"ubigeo"=>$datosUbigeo,"origen"=>$datosOrigen,"datosTareo"=>$datosTareo,"tareo"=>$tareo);
+            $foto = fotoUsuarioSistema($doc);
+
+            return array("datos" => $datos,"ubigeo"=>$datosUbigeo,"origen"=>$datosOrigen,"datosTareo"=>$datosTareo,"tareo"=>$tareo, "foto"=>$foto);
 
         }  catch ( PDOException $e) {
             echo "Error: " . $e->getMessage;
@@ -434,6 +436,11 @@
             $api = file_get_contents($url);
             $colaboradoresProyecto =  json_decode($api);
 
+            foreach($colaboradoresProyecto as $colab) {
+                $dataColab = buscarDatosColaborador($pdo,$colab->dni);
+                $colab->dataColab = $dataColab;
+            }
+
             $colaboradoresProyectoTerceros = listarPadronTerceros($pdo, $cc);
 
             /* $sql = "SELECT nrodoc, GROUP_CONCAT(estado ORDER BY estado SEPARATOR ',') AS estados FROM tb_tareos where cproyecto = ? GROUP BY nrodoc"; */
@@ -456,7 +463,10 @@
             }
 
             $datosT = [];
-            $sqlData = "SELECT nddoc, t.fingreso, regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t INNER JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03 INNER JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01";
+            $sqlData = "SELECT nddoc, t.fingreso , personal.cdescripcion as tipoPersonal, regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t 
+            LEFT JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03 
+            LEFT JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01
+            LEFT JOIN tb_parametros personal ON personal.idreg  = t.npersonal and personal.nclase = 02";
             $dataStatement = $pdo->prepare($sqlData);
             $dataStatement -> execute();
             while($rowData = $dataStatement->fetch(PDO::FETCH_ASSOC)){

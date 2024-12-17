@@ -39,6 +39,7 @@ export const buscarDatos = async (dni) =>{
             dist.value          = data.ubigeo['dist'];
 
             procedencia.value   = data.datos[0]['cod_pais'] == 144 ? data.origen['dpto'] : data.datos[0]['pais'];
+            document.getElementById("foto_personal").style.backgroundImage = `url("https://rrhhperu.sepcon.net/postulanterrhh/documentos/jpg/${data.foto.data}")`
             await listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
             await listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value)
             if (data.datosTareo.length > 0) {

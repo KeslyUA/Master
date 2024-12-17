@@ -1500,7 +1500,10 @@ const obtenerReportePadron = async () => {
             dato['regimen'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.regimen ?? 'No Especificado'
             dato['manoObra'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.mano_obra ?? 'No Especificado'
             dato['cut'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).cut;
-            dato['fingreso'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.fingreso ?? ''
+            dato['ingresoObra'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.fingreso ?? ''
+            dato['ingreso'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).ingreso;
+            dato['tipoPersonal'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.tipoPersonal ?? ''
+            dato['procedencia'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).dataColab.datos[0].cod_pais == 144 ? datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).dataColab.origen['prov'] :datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).dataColab.datos[0].pais;
             DATOS.push(dato);
         }
 
@@ -1508,69 +1511,6 @@ const obtenerReportePadron = async () => {
     console.log(DATOS);
     await newPlantillaTareoExcel(JSON.stringify(DATOS), document.getElementById("fecha_proceso").value)
     Swal.close();
-    /* formData.append("padron",JSON.stringify(DATOS));
-    formData.append("funcion","plantillaTareoExcel");
-
-    await fetch('../inc/exportar.inc.php',{
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data =>{
-       window.open(`..${data.archivo}`);
-    })
-    
-    Swal.close(); */
-
-
-
-
-    /* for (let i = 0; i < nreg; i++) {
-        let dato = {};
-
-        dato['item']        = fila[i].cells[0].innerHTML;
-        dato['nombres']     = fila[i].cells[1].innerHTML;
-        dato['documento']   = fila[i].cells[2].innerHTML;
-        dato['proyecto']   = fila[i].cells[3].innerHTML;
-        dato['ubicacion']  = fila[i].cells[4].innerHTML;
-        dato['estado']      = fila[i].cells[5].children[0].value;
-        //buscarDatosColaborador
-        formData.append("funcion","buscarDatosColaborador");
-        formData.append("dni",dato['documento']);
-        await fetch('../inc/busquedas.inc.php',{
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data =>{
-            dato['cargo'] = data.datos.find(item => item.dni == dato['documento']).cargo;
-            dato['tareos'] = data.tareo.map(item => item.estado);
-        })
-        let contador = {};
-        dato['tareos'].forEach(item => {
-            if (contador[item]) {
-                contador[item]++;
-            } else {
-                contador[item] = 1;
-            }
-        });
-            
-        dato['dias'] = contador;
-        DATOS.push(dato);
-    } 
-   console.log(DATOS);
-    formData.append("padron",JSON.stringify(DATOS));
-    formData.append("funcion","plantillaTareoExcel");
-
-    await fetch('../inc/exportar.inc.php',{
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data =>{
-       window.open(`..${data.archivo}`);
-    })
-    Swal.close();  */
 }
 
 async function newPlantillaTareoExcel(padron, fechaProceso) {
@@ -1804,12 +1744,16 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
                 item.cargo,
             ]); */
             worksheet.getCell(fila, 1).value = indexItem
-            worksheet.getCell(fila, 3).value = item.cut
             worksheet.getCell(fila, 2).value = i+1;
+            worksheet.getCell(fila, 3).value = item.cut
             worksheet.getCell(fila, 4).value = item.documento
             worksheet.getCell(fila, 5).value = item.nombres
-            worksheet.getCell(fila, 7).value = item.fingreso
+            worksheet.getCell(fila, 6).value = item.procedencia
+            worksheet.getCell(fila, 7).value = item.ingreso
+            worksheet.getCell(fila, 8).value = item.tipoPersonal
+            worksheet.getCell(fila, 9).value = item.ingresoObra
 
+            worksheet.getCell(fila, 12).value = item.fase
             worksheet.getCell(fila, 13).value = item.proyecto
             worksheet.getCell(fila, 14).value = item.ubicacion
             worksheet.getCell(fila, 11).value = item.cargo

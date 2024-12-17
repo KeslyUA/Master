@@ -108,6 +108,10 @@
                     <label for="proyecto">Proyecto :</label>
                     <input type="text" name="proyecto" id="proyecto" readonly>
                 </div>
+                <!-- <div class="cuatro_columnas" id="foto_personal" style="height: 150px; width: 150px; background-size: 100% 100%;">
+                </div> -->
+                <div class="foto_personal" id="foto_personal">
+                </div>
             </div>
         </div>
         <div class="separator">
@@ -132,7 +136,7 @@
                     </select>
                 </div>
                 <div class="dos_columnas">
-                    <label for="personal">Personal :</label>
+                    <label for="personal">Tipo Personal :</label>
                     <select name="personal" id="personal" form="data_matriz">
                         <option value="-1">Seleccionar</option>
                         <option value="9">Foreaneo</option>
