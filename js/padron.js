@@ -43,6 +43,10 @@ export const listarPadron = (cc) => {
         estadosTareo = data;
         console.log(data)
     });
+    let todosTareo
+    getTodosDatosTareo().then(data => {
+        todosTareo = data;
+    })
     try {
         fetch('../inc/busquedas.inc.php',{
             method: 'POST',
@@ -62,12 +66,14 @@ export const listarPadron = (cc) => {
            })
            console.log(data)
            data.datos.forEach(element => {
+            const ubicacion = todosTareo.find(item => item.nddoc == element.dni)
+            console.log(ubicacion)
                 let row = `<tr>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.paterno+ ' ' + element.materno + ' ' + element.nombres}</td>
                     <td class="texto_centro">${element.dni}</td>
                     <td class="texto_centro">${element.proyecto}</td>
-                    <td class="texto_centro">${element.sucursal}</td>
+                    <td class="texto_centro">${ubicacion != undefined ? ubicacion.cubicacion : element.sucursal}</td>
                     <td><input type="text" value="${element.estado}" class="texto_centro"></td>
                     <td class="texto_centro">${element.fmodificacion != null ? element.fmodificacion : ''}</td>
                     <td><input type="text" class="texto_centro" value="${element.fingreso != null ? element.fingreso : ''}"></td>
@@ -301,6 +307,16 @@ export const getTareosByFecha = (cc, fecha) => {
     formData.append("funcion","getTareosByFecha");
     formData.append("fecha",fecha);
     formData.append("proyecto",cc)
+    return fetch('../inc/busquedas.inc.php',{
+        method: 'POST',
+        body: formData
+    }).then(response => response.json())
+    .then(data => {console.log(data); return data})
+}
+
+export const getTodosDatosTareo = () => {
+    let formData = new FormData();
+    formData.append("funcion","obtenerTodosDatosTareo");
     return fetch('../inc/busquedas.inc.php',{
         method: 'POST',
         body: formData

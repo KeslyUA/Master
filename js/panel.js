@@ -1449,7 +1449,7 @@ const obtenerReportePadron = async () => {
             dato['documento'] = fila[i].cells[2].innerHTML;
             dato['proyecto'] = fila[i].cells[3].innerHTML;
             dato['ubicacion'] = fila[i].cells[4].innerHTML;
-            dato['cargo'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).cargo;
+            dato['cargo'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.cargo;
             /* dato['tareos'] = datosReporte.tareos.filter(item => {
                 if(item.nrodoc == dato['documento']){
                     return item.estados.split(',');
@@ -1499,11 +1499,11 @@ const obtenerReportePadron = async () => {
             dato['codFase'] = datosReporte.fases.find(fase => fase.nrodoc == dato['documento']).cfase
             dato['regimen'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.regimen ?? 'No Especificado'
             dato['manoObra'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.mano_obra ?? 'No Especificado'
-            dato['cut'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).cut;
+            dato['cut'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.cut;
             dato['ingresoObra'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.fingreso ?? ''
-            dato['ingreso'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).ingreso;
+            dato['ingreso'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.ingreso;
             dato['tipoPersonal'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.tipoPersonal ?? ''
-            dato['procedencia'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).dataColab.datos[0].cod_pais == 144 ? datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).dataColab.origen['prov'] :datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento']).dataColab.datos[0].pais;
+            dato['procedencia'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].cod_pais == 144 ? datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.origen['prov'] :datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].pais;
             DATOS.push(dato);
         }
 

@@ -46,6 +46,8 @@
             echo json_encode(obtenerUbicaciones($pdo));
         }else if ($_POST['funcion'] === "obtenerEspecialidades"){
             echo json_encode(obtenerEspecialidades(($pdo)));
+        }else if ($_POST['funcion'] === "obtenerTodosDatosTareo"){
+            echo json_encode(obtenerTodosDatosTareo($pdo));
         }
     }
  
@@ -423,7 +425,20 @@
     }
 
     function obtenerTodosDatosTareo($pdo){
+        $docData = [];
+
+        /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
+        $sql = "select tdt.nddoc, tdt.cubicacion, tub.cubicacion from tb_datostareo tdt
+        inner join tb_ubicacion tub on tub.idubicacion = tdt.cubicacion" ;
         
+        $statement = $pdo->prepare($sql);
+        $statement -> execute();
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
     }
 
     function obtenerTareosProyectoColaborador($pdo,$datos){
