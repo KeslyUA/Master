@@ -16,7 +16,6 @@ export const buscarDatos = async (dni) =>{
         })
         .then(response => response.json())
         .then(async data => {
-            console.log(data)
             paterno.value           = data.datos[0]['paterno'];
             materno.value           = data.datos[0]['materno'];
             nombres.value           = data.datos[0]['nombres'];
@@ -131,8 +130,6 @@ export const buscarDatosTerceros = (dni) =>{
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
-            console.log(document.getElementById("data_matriz"));
             document.getElementById("data_matriz")[0].reset();
             paterno.value           = data.apellidoPaterno;
             materno.value           = data.apellidoMaterno;
@@ -172,7 +169,6 @@ export const buscarDatosColaboradorTercero = (dni) =>{
     })
     .then(response => response.json())
     .then(async data => {
-        console.log(data);
         if(data.exist){
             paterno.value           = data.datos['paterno'];
             materno.value           = data.datos['materno'];

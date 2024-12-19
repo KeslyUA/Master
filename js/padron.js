@@ -41,7 +41,6 @@ export const listarPadron = (cc) => {
     let estadosTareo
     getTareoMaxFecha(cc).then(data => {
         estadosTareo = data;
-        console.log(data)
     });
     let todosTareo
     getTodosDatosTareo().then(data => {
@@ -64,10 +63,8 @@ export const listarPadron = (cc) => {
                 }
                 return { ...item, estado: 'A' };
            })
-           console.log(data)
            data.datos.forEach(element => {
             const ubicacion = todosTareo.find(item => item.nddoc == element.dni)
-            console.log(ubicacion)
                 let row = `<tr>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.paterno+ ' ' + element.materno + ' ' + element.nombres}</td>
@@ -81,7 +78,6 @@ export const listarPadron = (cc) => {
 
                 cuerpo.insertRow(-1).outerHTML = row;
            })
-           /* console.log(estadosTareo) */
         })
     } catch (error) {
         console.log(error.message);
@@ -100,7 +96,6 @@ export const listarPadronByFecha = (cc, fecha) => {
     let estadosTareo
     getTareosByFecha(cc,fecha).then(data => {
         estadosTareo = data;
-        /* console.log(data) */
     });
     try {
         fetch('../inc/busquedas.inc.php',{
@@ -119,7 +114,6 @@ export const listarPadronByFecha = (cc, fecha) => {
                 }
                 return { ...item, estado: 'A' };
            })
-           console.log(data)
            data.datos.forEach(element => {
                 let row = `<tr>
                     <td>${fila++}</td>
@@ -134,7 +128,6 @@ export const listarPadronByFecha = (cc, fecha) => {
 
                 cuerpo.insertRow(-1).outerHTML = row;
            })
-           /* console.log(estadosTareo) */
         })
     } catch (error) {
         console.log(error.message);
@@ -206,9 +199,7 @@ export const listarPadronTerceros = async (cc, selectedText) => {
     let estadosTareo
     await getTareoMaxFecha(cc).then(data => {
         estadosTareo = data;
-        /* console.log(data) */
     });
-    console.log(estadosTareo)
     try {
         fetch('../inc/busquedas.inc.php',{
             method: 'POST',
@@ -241,7 +232,6 @@ export const listarPadronTerceros = async (cc, selectedText) => {
 
                 cuerpo.insertRow(-1).outerHTML = row;
            })
-           /* console.log(estadosTareo) */
         })
     } catch (error) {
         console.log(error.message);
@@ -260,9 +250,7 @@ export const listarPadronTercerosByFecha = async (cc, selectedText, fecha) => {
     let estadosTareo
     await getTareosByFecha(cc,fecha).then(data => {
         estadosTareo = data;
-        /* console.log(data) */
     });
-    console.log(estadosTareo)
     try {
         fetch('../inc/busquedas.inc.php',{
             method: 'POST',
@@ -295,7 +283,6 @@ export const listarPadronTercerosByFecha = async (cc, selectedText, fecha) => {
 
                 cuerpo.insertRow(-1).outerHTML = row;
            })
-           /* console.log(estadosTareo) */
         })
     } catch (error) {
         console.log(error.message);
@@ -311,7 +298,7 @@ export const getTareosByFecha = (cc, fecha) => {
         method: 'POST',
         body: formData
     }).then(response => response.json())
-    .then(data => {console.log(data); return data})
+    .then(data => {return data})
 }
 
 export const getTodosDatosTareo = () => {
@@ -321,5 +308,5 @@ export const getTodosDatosTareo = () => {
         method: 'POST',
         body: formData
     }).then(response => response.json())
-    .then(data => {console.log(data); return data})
+    .then(data => {return data})
 }

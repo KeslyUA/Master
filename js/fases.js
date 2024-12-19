@@ -35,8 +35,6 @@ export const listarFasesByProyecto = async (select, cc) => {
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
-                console.log(cc)
                 const dataByProyecto = data.filter(item => item.codigoProyecto == cc)
                 dataByProyecto.forEach(element => {
                     let option = document.createElement("option");
@@ -65,7 +63,6 @@ export const listarFasesTable = () => {
         })
         .then(response => response.json())
         .then(data => {
-           console.log(data)
            data.forEach(element => {
                 let row = `<tr>
                     <td>${fila++}</td>
@@ -102,7 +99,6 @@ export const listarProyectosFasesTable = () => {
         })
         .then(response => response.json())
         .then(data => {
-           console.log(data)
            data.forEach(element => {
                 let row = `<tr>
                     <td>${fila++}</td>

@@ -13,7 +13,6 @@ export const listarEncargadosTable = () => {
         })
         .then(response => response.json())
         .then(data => {
-           console.log(data)
            data.forEach(element => {
                 let row = `<tr>
                     <td>${fila++}</td>
@@ -51,7 +50,6 @@ export const listarEncargadosProyectoTable = () => {
         })
         .then(response => response.json())
         .then(data => {
-           console.log(data)
            data.forEach(element => {
                 let row = `<tr>
                     <td>${fila++}</td>
@@ -105,9 +103,6 @@ export const listarEncargadosByProyecto = async (select, cc) => {
             })
             .then(response => response.json())
             .then(data => {
-                console.log("listar encargado by proyecto")
-                console.log(data)
-                console.log(cc)
                 const dataByProyecto = data.filter(item => parseInt(item.ccodigoproyecto) == cc)
                 dataByProyecto.forEach(element => {
                     let option = document.createElement("option");
@@ -116,7 +111,6 @@ export const listarEncargadosByProyecto = async (select, cc) => {
     
                     select.appendChild(option);
                })
-               console.log(dataByProyecto)
             })
         } catch (error) {
             console.log(error.message);

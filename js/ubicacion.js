@@ -13,7 +13,6 @@ export const listarUbicacionesTable = () => {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 data.forEach(element => {
                     let row = `<tr>
                     <td>${fila++}</td>

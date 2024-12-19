@@ -159,7 +159,6 @@ document.addEventListener('keypress', async (e) => {
         if (e.keyCode === 13) {
             /* buscarDatosTerceros(e.target.value); */
             /* let datoTercero = await buscarDatosTerceroDB(e.target.value);
-            console.log(datoTercero)
             if(!datoTercero){
                 buscarDatosTerceros(e.target.value);
             } */
@@ -180,10 +179,8 @@ document.addEventListener('click', (e) => {
 
         //////PARA CARGAR LA PAGINA EXTERNA//////
         LoadElement(e.target.id + '.php');
-        console.log(e.target.id)
         if (e.target.id == "terceros") {
             setTimeout(() => {
-                console.log(document.getElementById("proyecto"));
                 listarProyectos(document.getElementById("proyecto"));
                 listarProyectos(document.getElementById("proyecto_actual"));
                 listarEncargados(document.getElementById("encargado"));
@@ -265,8 +262,6 @@ document.addEventListener('click', (e) => {
     } else if (e.target.matches(".tablinks")) {
         if (e.target.closest('button')) {
             const ref_id = e.target.getAttribute("ref-id")
-            console.log(e)
-            console.log(ref_id)
             openCity(e, ref_id)
             if (ref_id == "FasesTabContent") {
                 listarFasesTable();
@@ -332,7 +327,6 @@ document.addEventListener('click', (e) => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            console.log(data)
                         })
                 } catch (error) {
                     console.log(error.message);
@@ -391,7 +385,6 @@ document.addEventListener('click', (e) => {
                     })
                         .then(response => response.json())
                         .then(data => {
-                            console.log(data)
                         })
                 } catch (error) {
                     console.log(error.message);
@@ -407,7 +400,6 @@ document.addEventListener('change', async (e) => {
     } if (e.target.matches(".select") && e.target.id === "select_proyectos_terceros") {
         let selectedText = e.target.options[e.target.selectedIndex].text;
         listarPadronTerceros(e.target.value, selectedText);
-        console.log(selectedText)
     } if (e.target.matches(".select") && e.target.id === "select_proyectoFase") {
 
     } if (e.target.matches(".select") && e.target.id === "select_fase") {
@@ -419,11 +411,9 @@ document.addEventListener('change', async (e) => {
     if (e.target.matches(".archivo")) {
         actualizarPadronExcel(fileUpload.files[0]);
     } if (e.target.id == "fecha_proceso") {
-        console.log(e.target.value);
         /* getTareosByFecha(codigo_costos.value, e.target.value); */
         if (e.target.getAttribute("esTercero") == 1) {
             let selectProy = document.getElementById("select_proyectos_terceros");
-            console.log(selectProy);
             let selectedText = selectProy.options[selectProy.selectedIndex].text;
             listarPadronTercerosByFecha(codigo_costos.value, selectedText, e.target.value)
         } else {
@@ -448,7 +438,6 @@ document.addEventListener('change', async (e) => {
         // Verificar que ambos sean números y el denominador no sea cero
         if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
             const resultado = numerador / denominador;
-            console.log(resultado);
             document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value / resultado);
         }
 
@@ -463,7 +452,6 @@ document.addEventListener('change', async (e) => {
         document.getElementById("retorno_programado").value = `${anio}-${mes}-${dia}`;
     }
     if (e.target.id == "regimen_trabajo") {
-        console.log(e.target.value)
         const partes = e.target.value.split(/[/xX]/)
         const numerador = parseInt(partes[0].trim());
         const denominador = parseInt(partes[1].trim());
@@ -471,7 +459,6 @@ document.addEventListener('change', async (e) => {
         // Verificar que ambos sean números y el denominador no sea cero
         if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
             const resultado = numerador / denominador;
-            console.log(resultado);
             document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value / resultado);
         }
     }
@@ -483,7 +470,6 @@ document.addEventListener('change', async (e) => {
         // Verificar que ambos sean números y el denominador no sea cero
         if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
             const resultado = numerador / denominador;
-            console.log(resultado);
             document.getElementById("dias_goce").value = parseInt(e.target.value / resultado);
         }
     }
@@ -514,7 +500,6 @@ function grabarDatosMatriz() {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             Swal.fire({
                 icon: "success",
                 title: "Guardado Correctamente",
@@ -543,7 +528,6 @@ function grabarDatosUsuario() {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 Swal.fire({
                     icon: "success",
                     title: "Guardado Correctamente",
@@ -574,7 +558,6 @@ function grabarDatosFase() {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 Swal.fire({
                     icon: "success",
                     title: "Guardado Correctamente",
@@ -606,7 +589,6 @@ function grabarDatosProyectoFase() {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 Swal.fire({
                     icon: "success",
                     title: "Guardado Correctamente",
@@ -626,7 +608,6 @@ function grabarDatosProyectoFase() {
 
 function grabarDatosFaseOrProyectoFase() {
     const funcion = document.getElementById("function").value;
-    console.log(funcion)
     if (funcion == "grabarFase") {
         grabarDatosFase();
     } else if (funcion == "grabarProyectoFase") {
@@ -647,7 +628,6 @@ function grabarDatosEncargados() {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 Swal.fire({
                     icon: "success",
                     title: "Guardado Correctamente",
@@ -678,7 +658,6 @@ function grabarDatosEncargadoProyectos() {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 Swal.fire({
                     icon: "success",
                     title: "Guardado Correctamente",
@@ -698,7 +677,6 @@ function grabarDatosEncargadoProyectos() {
 
 function grabarDatosEncargadoOrEncargadoProyectos() {
     const funcion = document.getElementById("function").value;
-    console.log(funcion)
     if (funcion == "grabarEncargado") {
         grabarDatosEncargados();
     } else if (funcion == "grabarEncargadoProyecto") {
@@ -719,7 +697,6 @@ function grabarDatosUbicacion() {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 Swal.fire({
                     icon: "success",
                     title: "Guardado Correctamente",
@@ -750,7 +727,6 @@ function grabarDatosEspecialidad() {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 Swal.fire({
                     icon: "success",
                     title: "Guardado Correctamente",
@@ -1111,7 +1087,6 @@ function datosUsuarioCabecera() {
 async function grabarDatosTareo(proyecto) {
     const fecha = new Date();
     const fechaFormateada = fecha.toLocaleDateString('en-CA');
-    console.log(fechaFormateada);
     const fechaProceso = document.getElementById("fecha_proceso").value;
 
 
@@ -1120,20 +1095,15 @@ async function grabarDatosTareo(proyecto) {
     let listTareoToday = await getTareo(); //obtener tareos del dia
 
     if (fechaFormateada == fechaProceso) {
-        console.log("lista de la tabla")
-        console.log(lisTable)
 
         const listNoRegistrado = getDocumentosNoRegistrados(listTareoToday, lisTable);
 
-        console.log("lista de no registrados");
-        console.log(listNoRegistrado)
         //Agregar en la tabla los no registrados del dia de hoy
         if (listNoRegistrado.length > 0) {
             grabarNoRegistrados(listNoRegistrado);
         }
 
         const listStatesChanged = obtenerEstadosCambiados(lisTable, listTareoToday);
-        console.log(listStatesChanged);
 
         //actualizar estado si encuentra estados diferentes
         if (listStatesChanged.length > 0) {
@@ -1142,11 +1112,8 @@ async function grabarDatosTareo(proyecto) {
         /* let cc = document.getElementById("select_proyectos");
         listarPadron(cc.value); */
     } else {
-        console.log(false)
         let tareosByFecha = await getTareosByFecha(proyecto, fechaProceso);
-        console.log(tareosByFecha)
         const listStatesChanged = obtenerEstadosCambiados(lisTable, tareosByFecha);
-        console.log(listStatesChanged);
         if (listStatesChanged.length > 0) {
             actualizarDatosTareo(listStatesChanged);
         }
@@ -1157,7 +1124,6 @@ async function grabarDatosTareo(proyecto) {
 
         // Filtrar los elementos de lista1 que no están en nrodocLista2
         const documentosNoRegistrados = listaTabla.filter(item => !documentosRegistrados.includes(item.documento));
-        console.log(documentosNoRegistrados)
         documentosNoRegistrados.map(item => {
             item.fingreso = item.fingreso.trim() === '' ? null : item.fingreso;
         })
@@ -1176,7 +1142,6 @@ async function grabarDatosTareo(proyecto) {
             .then(response => response.json())
             .then(data => {
                 if (data) {
-                    console.log(`agregando ${NoRegistrados.length} registros`);
                     Swal.fire({
                         icon: "success",
                         title: "Guardado Correctamente",
@@ -1209,9 +1174,7 @@ async function grabarDatosTareo(proyecto) {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 if (data.success) {
-                    console.log(`actualizando ${datosActualizar.length} registros`);
                     Swal.fire({
                         icon: "success",
                         title: "Guardado Correctamente",
@@ -1238,12 +1201,9 @@ async function grabarDatosTareo(proyecto) {
         const lisTableStates = listaTabla.map(item => {
             return { nrodoc: item.documento, estado: item.estado };
         })
-        console.log("parseado lista de la tabla:");
-        console.log(lisTableStates)
 
         //obtener tareos de hoy y comparar
 
-        console.log(tareosDeHoy);
         /* const filterData = lisTable.filter(item => item.estado !== 'A'); */
 
         //Obtener listado de tareos que tienen diferente estado al ya registrado en la base de datos
@@ -1263,117 +1223,6 @@ async function grabarDatosTareo(proyecto) {
         return result;
     }
 }
-
-/* async function grabarDatosTareo(proyecto){
-    let formData = new FormData();
-    formData.append("funcion","grabarEstadosPersonal");
-    formData.append("proyecto",proyecto);
-    let sendData = datosTareoPersonal();
-    const filterData = sendData.filter(item => item.estado !== 'A');
-    let registrados;
-
-    let estadosTareo = await getTareo()
-    console.log(sendData);
-
-    //identificar colaboradores no registrados
-    let colaboradorRegistro = await getColaboradorRegistro();
-    const listaDocsRegistro = colaboradorRegistro.map(item => item.nrodoc);
-    const listaDocsTable = sendData.map(item => item.documento)
-
-    // Filtrar los elementos de lista1 que no están en nrodocLista2
-    const colaboradorNoRegistrado = sendData.filter(item => !listaDocsRegistro.includes(item.documento));
-
-    if(colaboradorNoRegistrado.length > 0){
-        console.log(`Añadiendo ${colaboradorNoRegistrado.length} no registrodados`)
-        formData.append("datosTareo", JSON.stringify(colaboradorNoRegistrado));
-        fetch('../inc/grabar.inc.php',{
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(async data => {
-            if(data){
-                console.log("exitoso");
-                Swal.fire({
-                    icon: "success",
-                    title: "Guardado Correctamente"
-                });
-                registrados = await getTareo();
-                console.log(registrados);
-            }else{
-                console.log("error");
-            }
-        })
-    }
-    
-    // verificar que haya registros
-    
-    let nrodocs = estadosTareo.map(item => {return item.nrodoc});
-
-    const filterExistData = filterData.filter(item => !nrodocs.includes(item.documento));
-    console.log(estadosTareo);
-    console.log(filterExistData);
-    if(filterExistData.length == 0 && registrados.length == 0){
-        if(!nrodocs.includes("00000000")){
-            console.log("añadiendo dni 00000 porque no hay estados diferentes a 'A'")
-            filterExistData[0] = {
-                "documento" : "00000000",
-                "estado" : "A",
-                "ubicacion": "LIMA"
-            }
-        }
-        
-    }
-
-    formData.append("datosTareo", JSON.stringify(filterExistData));
-    console.log(filterExistData);
-    fetch('../inc/grabar.inc.php',{
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if(data){
-            console.log(`Añadiendo diferentes ${filterExistData.length} a 'A'`);
-            Swal.fire({
-                icon: "success",
-                title: "Guardado Correctamente"
-              });
-        }else{
-            console.log("error");
-        }
-    })
-
-    const result = estadosTareo.filter(item2 => {
-        const match = filterData.find(item1 => item1.documento === item2.nrodoc);
-        return match && match.estado !== item2.estado; // Devolver solo si el estado es diferente
-    }).map(item2 => {
-        const match = filterData.find(item1 => item1.documento === item2.nrodoc);
-        return {...item2, estado: match.estado};
-    })
-    console.log(result)
-    if(result.length > 0) {
-        formData.set("funcion","actualizarEstadoPersonal");
-        formData.append("updateDatosTareo", JSON.stringify(result));
-        fetch('../inc/grabar.inc.php',{
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data){
-                console.log(`actualizando ${result.length} registros`);
-                Swal.fire({
-                    icon: "success",
-                    title: "Guardado Correctamente"
-                  });
-            }else{
-                console.log("error");
-            }
-        })
-    }
-    //const filtrados = datos.filter(item => item.estado !== 'A');
-} */
 
 const obtenerDatosPadron = () => {
     let fila = document.querySelector("#tablaPersonalBody").getElementsByTagName("tr"),
@@ -1436,7 +1285,6 @@ const obtenerReportePadron = async () => {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             datosReporte = data;
         })
 
@@ -1504,11 +1352,11 @@ const obtenerReportePadron = async () => {
             dato['ingreso'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.ingreso;
             dato['tipoPersonal'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.tipoPersonal ?? ''
             dato['procedencia'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].cod_pais == 144 ? datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.origen['prov'] :datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].pais;
+            dato['diasCampo'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.diasCampo
             DATOS.push(dato);
         }
 
     }
-    console.log(DATOS);
     await newPlantillaTareoExcel(JSON.stringify(DATOS), document.getElementById("fecha_proceso").value)
     Swal.close();
 }
@@ -1520,10 +1368,8 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
     });
 
     const datos = JSON.parse(padron);
-    console.log(datos)
     const nreg = datos.length;
     const groupByFase = _.groupBy(datos, item => item.codFase)
-    console.log(groupByFase)
 
     const arrayOrdenado = Object.entries(groupByFase)
   .sort(([claveA], [claveB]) => claveA.localeCompare(claveB)); // Ordenar por clave
@@ -1567,9 +1413,9 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
 
     const dataStyle = {
         alignment: {
-            horizontal: 'center',
+            //horizontal: 'center',
             vertical: 'middle',
-            wrapText: true
+            //wrapText: true
         }
     }
 
@@ -1659,7 +1505,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         { width: 15 },
     ];
 
-    const headersValue = ['ITEM', 'N°', 'CODIGO', 'DNI', 'APELLIDOS Y NOMBRES', 'PROCEDENCIA', 'F.INGRESO', 'TIPO', 'Último Ingreso a Obra', 'Dias 14*7 Laborados', 'CARGO', 'FASE ACTUAL', 'PROYECTO ACTUAL', 'UBICACIÓN', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', 'DA', 'DD', 'DF', 'DM', 'DV', 'DP', 'DT', 'Régimen', 'Mano de Obra']
+    const headersValue = ['ITEM', 'N°', 'CODIGO', 'DNI', 'APELLIDOS Y NOMBRES', 'PROCEDENCIA', 'F.INGRESO', 'TIPO', 'Último Ingreso a Obra', 'Dias en Campo', 'CARGO', 'FASE ACTUAL', 'PROYECTO ACTUAL', 'UBICACIÓN', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', 'DA', 'DD', 'DF', 'DM', 'DV', 'DP', 'DT', 'Régimen', 'Mano de Obra']
 
     const bgColorStatesValue = {
         'A': '92CDDC',
@@ -1752,6 +1598,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             worksheet.getCell(fila, 7).value = item.ingreso
             worksheet.getCell(fila, 8).value = item.tipoPersonal
             worksheet.getCell(fila, 9).value = item.ingresoObra
+            worksheet.getCell(fila, 10).value = item.diasCampo
 
             worksheet.getCell(fila, 12).value = item.fase
             worksheet.getCell(fila, 13).value = item.proyecto
@@ -1769,6 +1616,10 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
                     pattern: 'solid',
                     fgColor: { argb: color },
                     bgColor: { argb: color }
+                }
+                worksheet.getCell(fila, columna).alignment = {
+                    horizontal: 'center',
+                    vertical: 'middle'
                 }
             }
 
@@ -1832,7 +1683,6 @@ const generarReportePadron = async () => {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             dataReporte = data;
         })
 
@@ -1867,7 +1717,6 @@ const generarReportePadron = async () => {
         dato['manoObra'] = dataReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.mano_obra;
         datos.push(dato);
     })
-    console.log(datos);
     formData.append("padron", JSON.stringify(datos));
     formData.append("funcion", "plantillaTareoExcel");
 
@@ -1922,10 +1771,8 @@ const actualizarPadronExcel = (archivo) => {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 data.datos.forEach(function (valor, indice) {
                     const filaIndex = [...fila].findIndex(f => f.cells[2].innerHTML == valor.documento)
-                    console.log('filaIndex', [...fila])
                     if (fila[filaIndex].cells[2].innerHTML == valor.documento) {
                         /* fila[indice].cells[4].innerHTML = valor.ubicacion; */
                         fila[filaIndex].cells[5].children[0].value = valor.estado;
@@ -2028,7 +1875,6 @@ function grabarDatosMatrizTerceros() {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             if (data.success) {
                 Swal.fire({
                     icon: "success",
@@ -2065,7 +1911,6 @@ function getUbigeo() {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             document.getElementById("dist").value = data.ubigeo.dist;
             document.getElementById("dpto").value = data.ubigeo.dpto;
             document.getElementById("prov").value = data.ubigeo.prov;
@@ -2082,13 +1927,11 @@ function obtenerTercero(dni) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
         });
 }
 
 function deleteProyectoUsuario(e) {
     let id = e.getAttribute('id-reg');
-    console.log(`eliminando id: ${id}`)
     let formData = new FormData()
     formData.append("funcion", "actualizarAccesoProyecto");
     formData.append("idreg", id)
@@ -2116,7 +1959,6 @@ function deleteProyectoUsuario(e) {
 }
 
 function openCity(evt, cityName) {
-    console.log(cityName)
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {

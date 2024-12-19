@@ -478,10 +478,11 @@
             }
 
             $datosT = [];
-            $sqlData = "SELECT nddoc, t.fingreso , personal.cdescripcion as tipoPersonal, regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t 
-            LEFT JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03 
-            LEFT JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01
-            LEFT JOIN tb_parametros personal ON personal.idreg  = t.npersonal and personal.nclase = 02";
+            $sqlData = "SELECT nddoc, t.fingreso , sum(tareos.estado = 'A') as diasCampo, personal.cdescripcion as tipoPersonal, regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t 
+LEFT JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03 
+LEFT JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01
+LEFT JOIN tb_parametros personal ON personal.idreg  = t.npersonal and personal.nclase = 02
+left join tb_tareos tareos on tareos.nrodoc = t.nddoc group by nddoc ";
             $dataStatement = $pdo->prepare($sqlData);
             $dataStatement -> execute();
             while($rowData = $dataStatement->fetch(PDO::FETCH_ASSOC)){
