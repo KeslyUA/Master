@@ -11,6 +11,8 @@
             echo json_encode(grabarUsuario($pdo,$_POST));
         else if ($_POST['funcion'] == "grabarEstadosPersonal")
             echo json_encode(grabarEstadosPersonal($pdo,$_POST));
+        else if ($_POST['funcion'] == "grabarEstadosPersonalByFecha")
+            echo json_encode(grabarEstadosPersonalByFecha($pdo,$_POST));
         else if ($_POST['funcion'] == "actualizarEstadoPersonal")
             echo json_encode(actualizarEstadoPersonal($pdo,$_POST));
         else if ($_POST['funcion'] == "grabarDatosTerceros")
@@ -376,6 +378,47 @@
     }
 
     function grabarEstadosPersonal($pdo,$datos){
+        try {
+            $tareos         = json_decode($datos['datosTareo']);
+            $nreg           = count($tareos);
+            $fecha          = date("Y-m-D"); 
+
+            $fecha_actual = getdate();
+            $mes = $fecha_actual['mon'];
+            $anio = $fecha_actual['year'];
+
+            for ($i=0; $i < $nreg; $i++) { 
+                $sql = "INSERT INTO tb_tareos 
+                        SET tb_tareos.nrodoc = ?,
+                            tb_tareos.cproyecto = ?,
+                            tb_tareos.mes = ?,
+                            tb_tareos.anio = ?,
+                            tb_tareos.fecha = ?,
+                            tb_tareos.estado = ?,
+                            tb_tareos.cubicacion = ?,
+                            tb_tareos.fingreso = ?";
+                
+                $statement = $pdo->prepare($sql);
+                $statement -> execute(array($tareos[$i]->documento,
+                                            $datos['proyecto'],
+                                            $mes,
+                                            $anio,
+                                            $fecha,
+                                            $tareos[$i]->estado,
+                                            $tareos[$i]->ubicacion,
+                                            $tareos[$i]->fingreso));
+
+                /* var_dump($statement->errorInfo()); */
+            }
+
+            return array("registros"=>$nreg);
+            
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+            return false;
+        }
+    }
+    function grabarEstadosPersonalByFecha($pdo,$datos){
         try {
             $tareos         = json_decode($datos['datosTareo']);
             $nreg           = count($tareos);

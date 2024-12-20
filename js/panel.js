@@ -1088,6 +1088,7 @@ async function grabarDatosTareo(proyecto) {
     const fecha = new Date();
     const fechaFormateada = fecha.toLocaleDateString('en-CA');
     const fechaProceso = document.getElementById("fecha_proceso").value;
+    console.log(fechaProceso)
 
 
     let formData = new FormData();
@@ -1113,10 +1114,15 @@ async function grabarDatosTareo(proyecto) {
         listarPadron(cc.value); */
     } else {
         let tareosByFecha = await getTareosByFecha(proyecto, fechaProceso);
-        const listStatesChanged = obtenerEstadosCambiados(lisTable, tareosByFecha);
-        if (listStatesChanged.length > 0) {
-            actualizarDatosTareo(listStatesChanged);
+        if(tareosByFecha.length>0){
+            const listStatesChanged = obtenerEstadosCambiados(lisTable, tareosByFecha);
+            if (listStatesChanged.length > 0) {
+                actualizarDatosTareo(listStatesChanged);
+            }
+        }else {
+            console.log("crear")
         }
+        
     }
 
     function getDocumentosNoRegistrados(listaDeTareosDeHoy, listaTabla) {
@@ -1131,6 +1137,41 @@ async function grabarDatosTareo(proyecto) {
     }
 
     async function grabarNoRegistrados(NoRegistrados) {
+        formData.append("funcion", "grabarEstadosPersonal");
+        formData.append("proyecto", proyecto);
+        formData.append("datosTareo", JSON.stringify(NoRegistrados));
+        Swal.showLoading();
+        await fetch('../inc/grabar.inc.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Guardado Correctamente",
+                        text: "Se han guardado los registros exitosamente"
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: "Ha ocurrido un error"
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Ha ocurrido un error" + error
+                });
+            })
+
+    }
+
+    async function grabarNoRegistradosByFecha(NoRegistrados) {
         formData.append("funcion", "grabarEstadosPersonal");
         formData.append("proyecto", proyecto);
         formData.append("datosTareo", JSON.stringify(NoRegistrados));
@@ -1343,15 +1384,15 @@ const obtenerReportePadron = async () => {
                 (contador.P || 0);
             dato['dias'] = contador;
             dato['fechaProceso'] = document.getElementById("fecha_proceso").value
-            dato['fase'] = datosReporte.fases.find(fase => fase.nrodoc == dato['documento']).fase
-            dato['codFase'] = datosReporte.fases.find(fase => fase.nrodoc == dato['documento']).cfase
+            dato['fase'] = datosReporte.fases.find(fase => fase.nrodoc == dato['documento'])?.fase
+            dato['codFase'] = datosReporte.fases.find(fase => fase.nrodoc == dato['documento'])?.cfase
             dato['regimen'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.regimen ?? 'No Especificado'
             dato['manoObra'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.mano_obra ?? 'No Especificado'
             dato['cut'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.cut;
             dato['ingresoObra'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.fingreso ?? ''
             dato['ingreso'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.ingreso;
             dato['tipoPersonal'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.tipoPersonal ?? ''
-            dato['procedencia'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].cod_pais == 144 ? datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.origen['prov'] :datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].pais;
+            dato['procedencia'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].cod_pais == 144 ? datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.origen['dpto'] :datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].pais;
             dato['diasCampo'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.diasCampo
             DATOS.push(dato);
         }
@@ -1413,9 +1454,15 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
 
     const dataStyle = {
         alignment: {
-            //horizontal: 'center',
+            horizontal: 'center',
             vertical: 'middle',
             //wrapText: true
+        },
+        border: {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
         }
     }
 
@@ -1425,7 +1472,13 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             pattern: 'solid',
             fgColor: { argb: 'B6DDE8' },
             bgColor: { argb: 'B6DDE8' }
-        }
+        },
+        border: {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
+        },
     }
 
     const extraStyle = {
@@ -1455,14 +1508,14 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         { width: 15 },
         { width: 45 },
         { width: 15 },
-        { width: 11 },
+        { width: 12 },
         { width: 6 },
-        { width: 18 },
         { width: 14 },
+        { width: 8 },
         { width: 40 },
         { width: 18 },
-        { width: 50 },
-        { width: 11 },
+        { width: 25 },
+        { width: 15 },
         { width: 4 },
         { width: 4 },
         { width: 4 },
@@ -1507,7 +1560,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
 
     const headersValue = ['ITEM', 'N°', 'CODIGO', 'DNI', 'APELLIDOS Y NOMBRES', 'PROCEDENCIA', 'F.INGRESO', 'TIPO', 'Último Ingreso a Obra', 'Dias en Campo', 'CARGO', 'FASE ACTUAL', 'PROYECTO ACTUAL', 'UBICACIÓN', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', 'DA', 'DD', 'DF', 'DM', 'DV', 'DP', 'DT', 'Régimen', 'Mano de Obra']
 
-    const bgColorStatesValue = {
+    /* const bgColorStatesValue = {
         'A': '92CDDC',
         'D': 'FF0000',
         'TI': '7030A0',
@@ -1523,7 +1576,25 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         'L': '92D050',
         'TI-S': '7030A0',
         'TS-S': '0070C0'
-    }
+    } */
+
+        const bgColorStatesValue = {
+            'A': { label: 'ACTIVO', color: '92CDDC' },
+            'D': { label: 'DESCANSO', color: 'FF0000' },
+            'TI': { label: 'TRANSITO INGRESO LIMA-NUEVO MUNDO', color: '7030A0' },
+            'TS': { label: 'TRANSITO SALIDA NUEVO MUNDO - LIMA', color: '0070C0' },
+            'M': { label: 'DESCANSO MEDICO', color: 'F5B1DD' },
+            'LCG': { label: 'LICENCIA CON GOCE DE HABER', color: '00B0F0' },
+            'LSG': { label: 'LICENCIA SIN GOCE DE HABER', color: 'CCFFCC' },
+            'SUSP': { label: 'SUSPENDIDO', color: 'CCC0DA' },
+            'V': { label: 'VACACIONES', color: 'FFFF00' },
+            'TTR': { label: 'TELETRABAJO', color: 'FFC000' },
+            'PU': { label: 'PUCALLPA', color: 'CCC0DA' },
+            'PI': { label: 'PISCO', color: 'C5DEB5' },
+            'L': { label: 'LIMA', color: '92D050' },
+            'TI-S': { label: 'TRANSITO INGRESO - STAND BY', color: '7030A0' },
+            'TS-S': { label: 'TRANSITO SALIDA - STAND BY', color: '0070C0' }
+        };
 
     const bgColorStatesMap = new Map(Object.entries(bgColorStatesValue));
 
@@ -1561,10 +1632,19 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
     worksheet.getCell('BB6').style = extraStyle
 
 
-    let fila = 8;
+    let fila = 7;
     let indexItem = 1;
 
     for (const fase in groupByFaseOrdenado) {
+        worksheet.getCell(`BB${fila}`).value = ' '
+        worksheet.getRow(fila).eachCell({ includeEmpty: true },(cell) => {
+            cell.style = dataStyle
+        })
+        fila++
+        worksheet.getCell(`BB${fila}`).value = ' '
+        worksheet.getRow(fila).eachCell({ includeEmpty: true },(cell) => {
+            cell.style = dataStyle
+        })
         const dataByFase = groupByFaseOrdenado[fase]
         worksheet.getCell(`A${fila}`).style = faseStyle
         worksheet.getCell(`B${fila}`).style = faseStyle
@@ -1574,10 +1654,11 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
 
         worksheet.getCell(`A${fila}`).value = dataByFase[0].codFase
         worksheet.getCell(`B${fila}`).value = dataByFase[0].fase
+        
         fila++
         for (let i = 0; i < dataByFase.length; i++) {
-
-            worksheet.getRow(fila).style = dataStyle
+            /* worksheet.getRow(fila).style = dataStyle */
+            
             const item = dataByFase[i];
 
             /* // Insertar una nueva fila
@@ -1596,7 +1677,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             worksheet.getCell(fila, 5).value = item.nombres
             worksheet.getCell(fila, 6).value = item.procedencia
             worksheet.getCell(fila, 7).value = item.ingreso
-            worksheet.getCell(fila, 8).value = item.tipoPersonal
+            worksheet.getCell(fila, 8).value = item.tipoPersonal.substr(0,1)
             worksheet.getCell(fila, 9).value = item.ingresoObra
             worksheet.getCell(fila, 10).value = item.diasCampo
 
@@ -1605,23 +1686,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             worksheet.getCell(fila, 14).value = item.ubicacion
             worksheet.getCell(fila, 11).value = item.cargo
 
-            // Llenar las celdas para los estados por día
-            for (const dia in item.estadosDia) {
-                const estado = item.estadosDia[dia];
-                const color = bgColorStatesMap.get(estado)
-                const columna = 14 + parseInt(dia); // Ajustar columna según el día
-                worksheet.getCell(fila, columna).value = estado;
-                worksheet.getCell(fila, columna).fill = {
-                    type: 'pattern',
-                    pattern: 'solid',
-                    fgColor: { argb: color },
-                    bgColor: { argb: color }
-                }
-                worksheet.getCell(fila, columna).alignment = {
-                    horizontal: 'center',
-                    vertical: 'middle'
-                }
-            }
+            
 
             // Llenar celdas para los días (A, D, F, M, V, P, total)
             worksheet.getCell(`AT${fila}`).value = item.dias.A || 0;
@@ -1635,17 +1700,84 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             // Llenar celdas para régimen y mano de obra
             worksheet.getCell(`BA${fila}`).value = item.regimen || '';
             worksheet.getCell(`BB${fila}`).value = item.manoObra || '';
+            worksheet.getRow(fila).eachCell({includeEmpty: true},(cell) => {
+                cell.style = dataStyle
+            })
+            /* for (let index = 1; index <= 53; index++) {
+                worksheet.getCell(fila, index).style = dataStyle
+            } */
+
+            // Llenar las celdas para los estados por día
+            for (const dia in item.estadosDia) {
+                const estado = item.estadosDia[dia];
+                const color = bgColorStatesMap.get(estado).color
+                const columna = 14 + parseInt(dia); // Ajustar columna según el día
+                worksheet.getCell(fila, columna).value = estado;
+                worksheet.getCell(fila, columna). style = {
+                    fill : {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: { argb: color },
+                        bgColor: { argb: color }
+                    },
+                    alignment : {
+                        horizontal: 'center',
+                        vertical: 'middle'
+                    },
+                    border: {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' }
+                    }
+                }
+            }
             indexItem++;
             fila++; // Avanzar a la siguiente fila
         }
     }
+    
 
     /*  datos.forEach(dato => {
          const arrayData = Object.values(dato);
          worksheet.addRow(arrayData);
          fila++;
      }) */
-
+    const leyenda = Object.keys(bgColorStatesValue);
+    fila++
+    for (let index = 0; index < leyenda.length; index++) {
+        let leyendaItem = bgColorStatesValue[leyenda[index]]
+        worksheet.getCell(fila, 4).value = leyenda[index]
+        worksheet.getCell(fila, 5).value = leyendaItem.label
+        let color = leyendaItem.color
+        worksheet.getRow(fila).eachCell(cell => {
+            cell.style = {
+                fill : {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: color },
+                    bgColor: { argb: color }
+                },
+                alignment : {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                border: {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                },
+                font: {
+                    name: 'Arial',
+                    size: 10,
+                    color: { argb: '#000000' },
+                    bold: true
+                }
+            }
+        })
+        fila++
+    }
 
 
     const buffer = await workbook.xlsx.writeBuffer();

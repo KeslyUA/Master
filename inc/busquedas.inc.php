@@ -81,6 +81,26 @@
         }
     }
 
+    function ubigeoPadron($pdo, $doc){
+        try {
+            $url = "http://sicalsepcon.net/api/matrizworkerdataapi.php?documento=".$doc;
+            $api = file_get_contents($url);
+            $datos =  json_decode($api);
+
+            $ubicacion = $datos[0]->ubigeo;
+        
+            $ubigeo = "http://sicalsepcon.net/api/ubigeoapi.php?ubigeo=$ubicacion";
+            $apiUbigeo =  file_get_contents($ubigeo);
+            $datosUbigeo = json_decode($apiUbigeo);
+
+            return array("datos" => $datos,"origen"=>$datosUbigeo);
+
+        }  catch ( PDOException $e) {
+            echo "Error: " . $e->getMessage;
+            return false;
+        }
+    }
+
     function datosTareo($pdo,$doc){
         $docData = [];
 
@@ -452,7 +472,7 @@
             $colaboradoresProyecto =  json_decode($api);
 
             foreach($colaboradoresProyecto as $colab) {
-                $dataColab = buscarDatosColaborador($pdo,$colab->dni);
+                $dataColab = ubigeoPadron($pdo,$colab->dni);
                 $colab->dataColab = $dataColab;
             }
 
