@@ -16,6 +16,7 @@ export const buscarDatos = async (dni) =>{
         })
         .then(response => response.json())
         .then(async data => {
+            console.log(data)
             paterno.value           = data.datos[0]['paterno'];
             materno.value           = data.datos[0]['materno'];
             nombres.value           = data.datos[0]['nombres'];

@@ -186,7 +186,7 @@
                 </div>
                 <div class="dos_columnas">
                     <label for="ingreso_obra">Ingreso Obra :</label>
-                    <input type="date" name="ingreso_obra" id="ingreso_obra" value="<?php echo date("Y-m-d"); ?>" min="<?php echo date("Y-m-d"); ?>" form="data_matriz">
+                    <input type="date" name="ingreso_obra" id="ingreso_obra"  form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="salida_obra">Salida Obra :</label>

@@ -1120,7 +1120,11 @@ async function grabarDatosTareo(proyecto) {
                 actualizarDatosTareo(listStatesChanged);
             }
         }else {
-            console.log("crear")
+            const listNoRegistrado = getDocumentosNoRegistrados(tareosByFecha, lisTable);
+            if (listNoRegistrado.length > 0) {
+                grabarNoRegistradosByFecha(listNoRegistrado, fechaProceso)
+            }
+            
         }
         
     }
@@ -1171,9 +1175,10 @@ async function grabarDatosTareo(proyecto) {
 
     }
 
-    async function grabarNoRegistradosByFecha(NoRegistrados) {
-        formData.append("funcion", "grabarEstadosPersonal");
+    async function grabarNoRegistradosByFecha(NoRegistrados, fechaProceso) {
+        formData.append("funcion", "grabarEstadosPersonalByFecha");
         formData.append("proyecto", proyecto);
+        formData.append("fechaProceso", fechaProceso)
         formData.append("datosTareo", JSON.stringify(NoRegistrados));
         Swal.showLoading();
         await fetch('../inc/grabar.inc.php', {
@@ -1466,6 +1471,20 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         }
     }
 
+    const dataStyleSecondary = {
+        alignment: {
+            horizontal: 'left',
+            vertical: 'middle',
+            //wrapText: true
+        },
+        border: {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
+        }
+    }
+
     const faseStyle = {
         fill: {
             type: 'pattern',
@@ -1503,7 +1522,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
 
     const columns = [
         { width: 10 },
-        { width: 3 },
+        { width: 5 },
         { width: 8 },
         { width: 15 },
         { width: 45 },
@@ -1699,10 +1718,17 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
 
             // Llenar celdas para régimen y mano de obra
             worksheet.getCell(`BA${fila}`).value = item.regimen || '';
-            worksheet.getCell(`BB${fila}`).value = item.manoObra || '';
-            worksheet.getRow(fila).eachCell({includeEmpty: true},(cell) => {
+            worksheet.getCell(`BB${fila}`).value = toTitleCase(item.manoObra) || '';
+
+            setStyleInCells(fila, 1, 4, dataStyle)
+            setStyleInCells(fila, 5, 14, dataStyleSecondary)
+            setStyleInCells(fila, 15, 52, dataStyle)
+            setStyleInCells(fila, 7, 10, dataStyle)
+            setStyleInCells(fila, 53, 54, dataStyleSecondary)
+            
+            /* worksheet.getRow(fila).eachCell({includeEmpty: true},(cell) => {
                 cell.style = dataStyle
-            })
+            }) */
             /* for (let index = 1; index <= 53; index++) {
                 worksheet.getCell(fila, index).style = dataStyle
             } */
@@ -1734,6 +1760,11 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             }
             indexItem++;
             fila++; // Avanzar a la siguiente fila
+        }
+        function setStyleInCells(fila, columnaInicio, columnaFinal, estilo){
+            for (let index = columnaInicio; index <= columnaFinal; index++) {
+                worksheet.getCell(fila, index).style = estilo;
+            }
         }
     }
     
@@ -1791,6 +1822,20 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
     URL.revokeObjectURL(url);
 
 
+}
+
+function toTitleCase(str) {
+    return str
+        .toLowerCase()  // Convertimos todo el texto a minúsculas
+        .split(' ')  // Separamos el string en un array de palabras
+        .map((word, index) => {
+            // Capitalizamos la primera palabra, o cualquier palabra que no sea una excepción
+            if (index === 0) {
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }
+            return word;  // Si es una palabra de excepción, la dejamos en minúsculas
+        })
+        .join(' ');  // Unimos el array de nuevo en un string
 }
 
 const generarReportePadron = async () => {

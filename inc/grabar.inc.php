@@ -422,11 +422,11 @@
         try {
             $tareos         = json_decode($datos['datosTareo']);
             $nreg           = count($tareos);
-            $fecha          = date("Y-m-D"); 
+            $fecha          = $datos['fechaProceso'];
 
-            $fecha_actual = getdate();
-            $mes = $fecha_actual['mon'];
-            $anio = $fecha_actual['year'];
+            $fechaDate = new DateTime($fecha);
+            $mes = $fechaDate->format('m');
+            $anio = $fechaDate->format('Y');
 
             for ($i=0; $i < $nreg; $i++) { 
                 $sql = "INSERT INTO tb_tareos 
@@ -437,7 +437,8 @@
                             tb_tareos.fecha = ?,
                             tb_tareos.estado = ?,
                             tb_tareos.cubicacion = ?,
-                            tb_tareos.fingreso = ?";
+                            tb_tareos.fingreso = ?,
+                            tb_tareos.fregsys = ?";
                 
                 $statement = $pdo->prepare($sql);
                 $statement -> execute(array($tareos[$i]->documento,
@@ -447,7 +448,8 @@
                                             $fecha,
                                             $tareos[$i]->estado,
                                             $tareos[$i]->ubicacion,
-                                            $tareos[$i]->fingreso));
+                                            $tareos[$i]->fingreso,
+                                            $fecha));
 
                 /* var_dump($statement->errorInfo()); */
             }
