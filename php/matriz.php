@@ -139,7 +139,7 @@
                     <label for="personal">Tipo Personal :</label>
                     <select name="personal" id="personal" form="data_matriz">
                         <option value="-1">Seleccionar</option>
-                        <option value="9">Foreaneo</option>
+                        <option value="9">Foraneo</option>
                         <option value="10">Local</option>
                         <option value="11">Extranjero</option>
                     </select>

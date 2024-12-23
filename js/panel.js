@@ -1088,7 +1088,6 @@ async function grabarDatosTareo(proyecto) {
     const fecha = new Date();
     const fechaFormateada = fecha.toLocaleDateString('en-CA');
     const fechaProceso = document.getElementById("fecha_proceso").value;
-    console.log(fechaProceso)
 
 
     let formData = new FormData();
@@ -1344,20 +1343,7 @@ const obtenerReportePadron = async () => {
             dato['proyecto'] = fila[i].cells[3].innerHTML;
             dato['ubicacion'] = fila[i].cells[4].innerHTML;
             dato['cargo'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.cargo;
-            /* dato['tareos'] = datosReporte.tareos.filter(item => {
-                if(item.nrodoc == dato['documento']){
-                    return item.estados.split(',');
-                }
-            }).map(item => item.estados.split(',')) */
             dato['tareos'] = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.estados.split(','));
-            //dato['numDias'] = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.dias.split(','));
-
-            /* let diasTareo = {}
-            dato['numDias'].forEach((item, index) => {
-                diasTareo[item] = dato['tareos'][index];
-            })
-            dato['estadosDia'] = diasTareo;
-     */
             let tareosDatos = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']);
 
             // Crear las listas de 'tareos' y 'numDias' de una vez
@@ -1695,9 +1681,23 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             worksheet.getCell(fila, 4).value = item.documento
             worksheet.getCell(fila, 5).value = item.nombres
             worksheet.getCell(fila, 6).value = item.procedencia
-            worksheet.getCell(fila, 7).value = item.ingreso
+            let fechaIngreso = new Date(item.ingreso)
+            fechaIngreso.setDate(fechaIngreso.getDate()+1)
+            worksheet.getCell(fila, 7).value = !isNaN(fechaIngreso) ? fechaIngreso.toLocaleDateString('es-PE',{
+                timeZone: 'America/Lima',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }) : ''
             worksheet.getCell(fila, 8).value = item.tipoPersonal.substr(0,1)
-            worksheet.getCell(fila, 9).value = item.ingresoObra
+            let fechaIngresoObra = new Date(item.ingresoObra)
+            fechaIngresoObra.setDate(fechaIngresoObra.getDate()+1)
+            worksheet.getCell(fila, 9).value = !isNaN(fechaIngresoObra) ? fechaIngresoObra.toLocaleDateString('es-PE', {
+                timeZone: 'America/Lima',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }) : ''
             worksheet.getCell(fila, 10).value = item.diasCampo
 
             worksheet.getCell(fila, 12).value = item.fase
@@ -1725,18 +1725,11 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             setStyleInCells(fila, 15, 52, dataStyle)
             setStyleInCells(fila, 7, 10, dataStyle)
             setStyleInCells(fila, 53, 54, dataStyleSecondary)
-            
-            /* worksheet.getRow(fila).eachCell({includeEmpty: true},(cell) => {
-                cell.style = dataStyle
-            }) */
-            /* for (let index = 1; index <= 53; index++) {
-                worksheet.getCell(fila, index).style = dataStyle
-            } */
 
             // Llenar las celdas para los estados por día
             for (const dia in item.estadosDia) {
                 const estado = item.estadosDia[dia];
-                const color = bgColorStatesMap.get(estado).color
+                const color = bgColorStatesMap.get(estado)?.color
                 const columna = 14 + parseInt(dia); // Ajustar columna según el día
                 worksheet.getCell(fila, columna).value = estado;
                 worksheet.getCell(fila, columna). style = {
@@ -1761,52 +1754,60 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             indexItem++;
             fila++; // Avanzar a la siguiente fila
         }
-        function setStyleInCells(fila, columnaInicio, columnaFinal, estilo){
-            for (let index = columnaInicio; index <= columnaFinal; index++) {
-                worksheet.getCell(fila, index).style = estilo;
-            }
-        }
+
+        
     }
     
-
-    /*  datos.forEach(dato => {
-         const arrayData = Object.values(dato);
-         worksheet.addRow(arrayData);
-         fila++;
-     }) */
     const leyenda = Object.keys(bgColorStatesValue);
     fila++
+    const countByTipoPersonal = _.countBy(datos, dato => dato.tipoPersonal);
+    worksheet.getCell(fila, 7).value = 'Foraneos'
+    worksheet.getCell(fila, 8).value = countByTipoPersonal.FORANEO ?? 0 
+    worksheet.getCell(fila+1, 7).value = 'Extranjeros'
+    worksheet.getCell(fila+1, 8).value = countByTipoPersonal.EXTRANJERO ?? 0
+    worksheet.getCell(fila+2, 7).value = 'Locales'
+    worksheet.getCell(fila+2, 8).value = countByTipoPersonal.LOCAL ?? 0
+    worksheet.getCell(fila+3, 7).value = 'Total'
+    worksheet.getCell(fila+3, 8).value = datos.length
+    setStyleInCells(fila, 7, 8, dataStyle)
+    setStyleInCells(fila+1, 7, 8, dataStyle)
+    setStyleInCells(fila+2, 7, 8, dataStyle)
+    setStyleInCells(fila+3, 7, 8, dataStyle)
+
+    const contadorEstadosPorDia = contarEstadosPorDia(datos)
     for (let index = 0; index < leyenda.length; index++) {
         let leyendaItem = bgColorStatesValue[leyenda[index]]
         worksheet.getCell(fila, 4).value = leyenda[index]
         worksheet.getCell(fila, 5).value = leyendaItem.label
         let color = leyendaItem.color
-        worksheet.getRow(fila).eachCell(cell => {
-            cell.style = {
-                fill : {
-                    type: 'pattern',
-                    pattern: 'solid',
-                    fgColor: { argb: color },
-                    bgColor: { argb: color }
-                },
-                alignment : {
-                    horizontal: 'center',
-                    vertical: 'middle'
-                },
-                border: {
-                    top: { style: 'thin' },
-                    left: { style: 'thin' },
-                    bottom: { style: 'thin' },
-                    right: { style: 'thin' }
-                },
-                font: {
-                    name: 'Arial',
-                    size: 10,
-                    color: { argb: '#000000' },
-                    bold: true
-                }
+        setStyleInCells(fila, 4, 5, {
+            fill : {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: color },
+                bgColor: { argb: color }
+            },
+            alignment : {
+                horizontal: 'center',
+                vertical: 'middle'
+            },
+            border: {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            },
+            font: {
+                name: 'Arial',
+                size: 10,
+                color: { argb: '#000000' },
+                bold: true
             }
         })
+        for (const dia in contadorEstadosPorDia){
+            worksheet.getCell(fila, 14 + parseInt(dia)).value = contadorEstadosPorDia[dia][leyenda[index]] ?? 0
+            worksheet.getCell(fila, 14 + parseInt(dia)).style = dataStyle
+        }
         fila++
     }
 
@@ -1821,6 +1822,43 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
     a.click();
     URL.revokeObjectURL(url);
 
+    function setStyleInCells(fila, columnaInicio, columnaFinal, estilo){
+        for (let index = columnaInicio; index <= columnaFinal; index++) {
+            worksheet.getCell(fila, index).style = estilo;
+        }
+    }
+
+    function sumarEstados(array) {
+        const estados = {};
+      
+        array.forEach(objeto => {
+          for (const estado in objeto.dias) {
+            if (estado !== 'total') { // Ignoramos la propiedad 'total'
+              estados[estado] = (estados[estado] || 0) + objeto.dias[estado]; 
+            }
+          }
+        });
+      
+        return estados;
+    }
+
+    function contarEstadosPorDia(array) {
+        const resultado = {};
+      
+        array.forEach(objeto => {
+          for (const dia in objeto.estadosDia) {
+            const estado = objeto.estadosDia[dia];
+            
+            if (!resultado[dia]) {
+              resultado[dia] = {};
+            }
+      
+            resultado[dia][estado] = (resultado[dia][estado] || 0) + 1;
+          }
+        });
+      
+        return resultado;
+    }
 
 }
 
