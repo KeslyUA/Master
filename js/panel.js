@@ -1341,7 +1341,7 @@ const obtenerReportePadron = async () => {
             dato['nombres'] = fila[i].cells[1].innerHTML;
             dato['documento'] = fila[i].cells[2].innerHTML;
             dato['proyecto'] = fila[i].cells[3].innerHTML;
-            dato['ubicacion'] = fila[i].cells[4].innerHTML;
+            dato['ubicacion'] = fila[i].cells[4].innerHTML.trim();
             dato['cargo'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.cargo;
             dato['tareos'] = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.estados.split(','));
             let tareosDatos = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']);
@@ -1484,6 +1484,12 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             bottom: { style: 'thin' },
             right: { style: 'thin' }
         },
+        font: {
+            name: 'Arial',
+            size: 10,
+            color: { argb: '000000' },
+            bold: true
+        }
     }
 
     const extraStyle = {
@@ -1586,8 +1592,8 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         const bgColorStatesValue = {
             'A': { label: 'ACTIVO', color: '92CDDC' },
             'D': { label: 'DESCANSO', color: 'FF0000' },
-            'TI': { label: 'TRANSITO INGRESO LIMA-NUEVO MUNDO', color: '7030A0' },
-            'TS': { label: 'TRANSITO SALIDA NUEVO MUNDO - LIMA', color: '0070C0' },
+            'TI': { label: 'TRANSITO INGRESO A OBRA', color: '7030A0' },
+            'TS': { label: 'TRANSITO SALIDA DE OBRA', color: '0070C0' },
             'M': { label: 'DESCANSO MEDICO', color: 'F5B1DD' },
             'LCG': { label: 'LICENCIA CON GOCE DE HABER', color: '00B0F0' },
             'LSG': { label: 'LICENCIA SIN GOCE DE HABER', color: 'CCFFCC' },
@@ -1597,8 +1603,8 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             'PU': { label: 'PUCALLPA', color: 'CCC0DA' },
             'PI': { label: 'PISCO', color: 'C5DEB5' },
             'L': { label: 'LIMA', color: '92D050' },
-            'TI-S': { label: 'TRANSITO INGRESO - STAND BY', color: '7030A0' },
-            'TS-S': { label: 'TRANSITO SALIDA - STAND BY', color: '0070C0' }
+            'TI-S': { label: 'TRANSITO INGRESO A OBRA- STAND BY', color: '7030A0' },
+            'TS-S': { label: 'TRANSITO SALIDA DE OBRA- STAND BY', color: '0070C0' }
         };
 
     const bgColorStatesMap = new Map(Object.entries(bgColorStatesValue));
@@ -1761,6 +1767,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
     const leyenda = Object.keys(bgColorStatesValue);
     fila++
     const countByTipoPersonal = _.countBy(datos, dato => dato.tipoPersonal);
+    const countByUbicacion = _.countBy(datos, dato => dato.ubicacion);
     worksheet.getCell(fila, 7).value = 'Foraneos'
     worksheet.getCell(fila, 8).value = countByTipoPersonal.FORANEO ?? 0 
     worksheet.getCell(fila+1, 7).value = 'Extranjeros'
@@ -1807,6 +1814,48 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         for (const dia in contadorEstadosPorDia){
             worksheet.getCell(fila, 14 + parseInt(dia)).value = contadorEstadosPorDia[dia][leyenda[index]] ?? 0
             worksheet.getCell(fila, 14 + parseInt(dia)).style = dataStyle
+        }
+        fila++
+    }
+    fila++
+    for (const ubicacion in countByUbicacion){
+        worksheet.getCell(fila, 14).value = ubicacion
+        worksheet.getCell(fila, 14).style = {
+            fill: {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'D8E4BC' },
+                bgColor: { argb: 'D8E4BC' }
+            },
+            alignment: {
+                horizontal: 'left',
+                vertical: 'middle',
+            },
+            border: {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            }
+        }
+        worksheet.getCell(fila, 15).value = countByUbicacion[ubicacion]
+        worksheet.getCell(fila, 15).style = {
+            fill: {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'D8E4BC' },
+                bgColor: { argb: 'D8E4BC' }
+            },
+            alignment: {
+                horizontal: 'center',
+                vertical: 'middle',
+            },
+            border: {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            }
         }
         fila++
     }
