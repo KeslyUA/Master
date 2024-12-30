@@ -368,13 +368,13 @@ export const buscarDatosColaboradorTercero = (dni) =>{
 } */
 
     
-export const listarProyectos = (select) =>{
+export const listarProyectos = async (select) =>{
     const formData = new FormData();
         formData.append("funcion","obtenerProyectos");
         select.innerHTML = `<option value='-1'>Seleccionar</option>`;
 
         try {
-            fetch('../inc/busquedas.inc.php',{
+            await fetch('../inc/busquedas.inc.php',{
                 method: 'POST',
                 body: formData
             })

@@ -167,7 +167,7 @@ document.addEventListener('keypress', async (e) => {
     }
 })
 
-document.addEventListener('click', (e) => {
+document.addEventListener('click', async (e) => {
     if (e.target.matches(".opciones")) {
         e.preventDefault();
 
@@ -378,6 +378,103 @@ document.addEventListener('click', (e) => {
                 let formData = new FormData();
                 formData.append("funcion", "actualizarFase");
                 formData.append("fase", JSON.stringify({ nombre: cnombreFaseInput, descripcion: cdescripcionInput, idFase: idFase }))
+                try {
+                    fetch('../inc/grabar.inc.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                        })
+                } catch (error) {
+                    console.log(error.message);
+                }
+            }
+        } else if (e.target && e.target.id === 'editProyectoFase'){
+            e.preventDefault();
+
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Convertir las celdas editables en inputs
+                const fila = cells[0];
+                const cproyectoCell = cells[1];
+                const cfaseCell = cells[2];
+
+                const formData = new FormData();
+                let dataProyectoFaseById;
+                formData.append("funcion", "obtenerProyectosFasesById");
+                formData.append("id", row.getAttribute("data-id"));
+
+                try {
+                    await fetch('../inc/busquedas.inc.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                           dataProyectoFaseById = data;
+                        })
+                } catch (error) {
+                    console.log(error.message);
+                }
+
+                console.log(dataProyectoFaseById)
+
+                const cproyectoValue = cproyectoCell.textContent.trim();
+                const cfaseValue = cfaseCell.textContent.split(" ")[0].trim();
+
+                cproyectoCell.innerHTML = `<select name="select_proyectoFase" class="select_proyectoFase" data-id="proyecto-${fila}" style="width: 100%">
+                        <option value="-1">Seleccionar</option>
+                    </select>`;
+                cfaseCell.innerHTML = `<select name="select_fase" class="select_fase" data-id="fase-${fila}" style="width: 100%">
+                        <option value="-1">Seleccionar 1</option>
+                    </select>`;
+
+                const selectProyecto = document.querySelector(`.select_proyectoFase[data-id="proyecto-${fila}"]`);
+                const selectFase = document.querySelector(`.select_fase[data-id="fase-${fila}"]`);
+
+                await listarProyectos(selectProyecto);  
+                await listarFases(selectFase);
+                
+                selectProyecto.value = dataProyectoFaseById[0].codigoProyecto
+                selectFase.value = dataProyectoFaseById[0].idFase
+
+                const editButton = row.querySelector('#editProyectoFase');
+                editButton.innerHTML = `Guardar`;
+                editButton.id = 'saveProyectoFase';
+            }
+        } else if (e.target && e.target.id === 'saveProyectoFase'){
+            e.preventDefault();
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Obtener los valores de los selects
+                const cproyectoSelect = cells[1].querySelector('select');
+                const cfaseSelect = cells[2].querySelector('select');
+
+                const cproyectoText = cproyectoSelect.options[cproyectoSelect.selectedIndex].text.split(" ")[0].trim();
+                const cfaseText = cfaseSelect.options[cfaseSelect.selectedIndex].text.trim();
+
+                const cproyecto = cproyectoSelect.value;
+                const idFase = cfaseSelect.value;
+                const idProyectoFase = row.getAttribute("data-id")
+
+                // Reemplazar los inputs con los nuevos valores
+                cells[1].textContent = cproyectoText;
+                cells[2].textContent = cfaseText;
+
+                // Cambiar el icono de guardar a edición
+                const saveButton = row.querySelector('#saveProyectoFase');
+                saveButton.innerHTML = `Editar`;
+                saveButton.id = 'editProyectoFase'; // Cambiar el id para manejar la acción de edición
+                let formData = new FormData();
+                formData.append("funcion", "actualizarProyectoFase");
+                formData.append("fase", JSON.stringify({ proyecto: cproyecto, fase: idFase, idProyectoFase: idProyectoFase }))
                 try {
                     fetch('../inc/grabar.inc.php', {
                         method: 'POST',
@@ -1396,7 +1493,7 @@ const obtenerReportePadron = async () => {
 async function newPlantillaTareoExcel(padron, fechaProceso) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Tareo Reporte', {
-        views: [{ state: "frozen", xSplit: 5 }]
+        views: [{ state: "frozen", xSplit: 5, ySplit: 7 }]
     });
 
     const datos = JSON.parse(padron);

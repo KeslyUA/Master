@@ -48,6 +48,8 @@
             echo json_encode(obtenerEspecialidades(($pdo)));
         }else if ($_POST['funcion'] === "obtenerTodosDatosTareo"){
             echo json_encode(obtenerTodosDatosTareo($pdo));
+        }else if ($_POST['funcion'] === "obtenerProyectosFasesById"){
+            echo json_encode(obtenerProyectosFasesById($pdo, $_POST['id']));
         }
     }
  
@@ -498,17 +500,88 @@
             }
 
             $datosT = [];
-            $sqlData = "SELECT nddoc, t.fingreso , sum(tareos.estado = 'A' and tareos.fregsys >= t.fingreso) as diasCampo, personal.cdescripcion as tipoPersonal, regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t 
-LEFT JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03 
-LEFT JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01
-LEFT JOIN tb_parametros personal ON personal.idreg  = t.npersonal and personal.nclase = 02
-left join tb_tareos tareos on tareos.nrodoc = t.nddoc group by nddoc";
-            $dataStatement = $pdo->prepare($sqlData);
-            $dataStatement -> execute();
+            /* $sqlData = "SELECT nddoc, t.fingreso , sum(tareos.estado = 'A' and tareos.fregsys >= t.fingreso) as diasCampo, personal.cdescripcion as tipoPersonal, regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t 
+            LEFT JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03 
+            LEFT JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01
+            LEFT JOIN tb_parametros personal ON personal.idreg  = t.npersonal and personal.nclase = 02
+            left join tb_tareos tareos on tareos.nrodoc = t.nddoc group by nddoc"; */
+
+            //Eliminar tablas temporales (si existen)
+            $pdo->exec("DROP TEMPORARY TABLE IF EXISTS temp_tareo_resultados;");
+            $pdo->exec("DROP TEMPORARY TABLE IF EXISTS temp_tareo_validacion;");
+            $pdo->exec("DROP TEMPORARY TABLE IF EXISTS temp_tareo_data;");
+
+            //Crear tabla temp_tareo_resultados
+            $pdo->exec("
+            CREATE TEMPORARY TABLE temp_tareo_resultados AS 
+            SELECT 
+                nddoc, 
+                t.fingreso,  
+                personal.cdescripcion AS tipoPersonal, 
+                regimen.cdescripcion AS regimen, 
+                manoobra.cdescripcion AS mano_obra 
+            FROM tb_datostareo t 
+            LEFT JOIN tb_parametros regimen 
+                ON regimen.idreg = t.nregimen AND regimen.nclase = 03 
+            LEFT JOIN tb_parametros manoobra 
+                ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01
+            LEFT JOIN tb_parametros personal 
+                ON personal.idreg = t.npersonal AND personal.nclase = 02;
+            ");
+
+            //Crear tabla temp_tareo_validacion
+            $pdo->exec("
+            CREATE TEMPORARY TABLE temp_tareo_validacion AS 
+            SELECT 
+                DISTINCT 
+                t.nddoc, 
+                t.fingreso, 
+                tareos.estado, 
+                tareos.fregsys, 
+                (CASE 
+                    WHEN tareos.estado = 'A' AND DATE(tareos.fregsys) >= DATE(t.fingreso) THEN 1
+                    ELSE 0
+                END) AS cumple_condicion
+            FROM tb_datostareo t 
+            LEFT JOIN tb_tareos tareos 
+                ON tareos.nrodoc = t.nddoc
+            WHERE DATE(tareos.fregsys) >= DATE(t.fingreso);
+            ");
+
+            //Crear tabla temp_tareo_data con el resultado final
+            $pdo->exec("
+            CREATE TEMPORARY TABLE temp_tareo_data AS 
+            SELECT 
+                nddoc,
+                fingreso,
+                tipoPersonal,
+                regimen,
+                mano_obra,
+                SUM(cumple_condicion) AS diasCampo 
+            FROM (
+                SELECT DISTINCT 
+                    resultados.nddoc,
+                    resultados.fingreso,
+                    resultados.tipoPersonal,
+                    resultados.regimen,
+                    resultados.mano_obra,
+                    validacion.estado,
+                    validacion.fregsys,
+                    validacion.cumple_condicion
+                FROM temp_tareo_resultados resultados
+                LEFT JOIN temp_tareo_validacion validacion
+                ON resultados.nddoc = validacion.nddoc
+            ) AS table_tareos
+            GROUP BY nddoc;
+            ");
+
+            //Obtener los resultados de la tabla temporal
+            $dataStatement = $pdo->query("SELECT * FROM temp_tareo_data;");
             while($rowData = $dataStatement->fetch(PDO::FETCH_ASSOC)){
                 $datosT[] = $rowData;
             }
 
+            $datosFases = [];
             $sqlDataFases = "SELECT t.nrodoc, coalesce(td.cfase, 0) as idFase, coalesce(tf.cnombre,t.cproyecto) as cfase , coalesce(tf.cdescripcion, 'SIN FASE ASIGNADO') as fase
                             FROM tb_tareos t
                             left join tb_datostareo td on td.nddoc = t.nrodoc
@@ -643,6 +716,30 @@ left join tb_tareos tareos on tareos.nrodoc = t.nddoc group by nddoc";
         
         $statement = $pdo->prepare($sql);
         $statement -> execute();
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+
+    function obtenerProyectosFasesById($pdo, $id){
+        $docData = [];
+
+        $sql = "SELECT 
+                    tp.idproyectofase AS idProyectoFase, 
+                    tp.ccodigoproyecto AS codigoProyecto, 
+                    tf.idfase AS idFase, 
+                    tf.cnombre AS nombreFase,
+                    tf.cdescripcion as descripcionFase
+                FROM tb_proyectofases tp 
+                INNER JOIN tb_fases tf 
+                ON tf.idfase = tp.idfase
+                WHERE tp.idproyectofase = ?";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute(array($id));
 
         while($row = $statement->fetch(PDO::FETCH_ASSOC)){
             $docData[] = $row;

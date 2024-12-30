@@ -1,10 +1,10 @@
-export const listarFases = (select) =>{
+export const listarFases = async (select) =>{
     const formData = new FormData();
         formData.append("funcion","obtenerFases");
         select.innerHTML = `<option value='-1'>Seleccionar</option>`;
 
         try {
-            fetch('../inc/busquedas.inc.php',{
+            await fetch('../inc/busquedas.inc.php',{
                 method: 'POST',
                 body: formData
             })
@@ -13,7 +13,7 @@ export const listarFases = (select) =>{
                data.forEach(element => {
                     let option = document.createElement("option");
                     option.value = element.idfase;
-                    option.innerHTML = element.cnombre;
+                    option.innerHTML = element.cnombre+ " "+element.cdescripcion;
     
                     select.appendChild(option);
                })
@@ -100,10 +100,18 @@ export const listarProyectosFasesTable = () => {
         .then(response => response.json())
         .then(data => {
            data.forEach(element => {
-                let row = `<tr>
+                let row = `<tr data-id=${element.idProyectoFase}>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.codigoProyecto}</td>
                     <td class="texto_centro">${element.nombreFase} ${element.descripcionFase}</td>
+                    <td style="display: flex; justify-content: center; gap: 1rem">
+                        <a href="#" class="actions texto_centro" id="editProyectoFase" data-id=${element.idProyectoFase}>
+                            Editar
+                        </a>
+                        <a href="#" class="actions texto_centro" id="deleteProyectoFase" data-id=${element.idProyectoFase}>
+                            Eliminar
+                        </a>
+                    </td>
                 </tr>`;
 
                 cuerpo.insertRow(-1).outerHTML = row;

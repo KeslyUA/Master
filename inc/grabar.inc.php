@@ -37,6 +37,8 @@
             echo json_encode(grabarUbicacion($pdo, $_POST));
         }else if ($_POST['funcion'] == "grabarEspecialidad") {
             echo json_encode(grabarEspecialidad($pdo, $_POST));
+        }else if ($_POST['funcion'] == "actualizarProyectoFase"){
+            echo json_encode(actualizarProyectoFase($pdo,$_POST));
         }
     }
 
@@ -989,6 +991,38 @@
                     $statement -> execute(array($fase->nombre,
                         $fase->descripcion,
                         $fase->idFase));
+
+                    //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function actualizarProyectoFase($pdo, $datos) {
+        try {
+            $proyectofase = json_decode($datos['fase']);
+
+
+        
+                try {
+                    $sql = "UPDATE tb_proyectofases
+                            SET
+                            tb_proyectofases.ccodigoproyecto = ?,
+                            tb_proyectofases.idfase = ?
+                            WHERE tb_proyectofases.idproyectofase = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($proyectofase->proyecto,
+                        $proyectofase->fase,
+                        $proyectofase->idProyectoFase));
 
                     //var_dump($statement->errorInfo());
 
