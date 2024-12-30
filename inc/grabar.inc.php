@@ -39,6 +39,8 @@
             echo json_encode(grabarEspecialidad($pdo, $_POST));
         }else if ($_POST['funcion'] == "actualizarProyectoFase"){
             echo json_encode(actualizarProyectoFase($pdo,$_POST));
+        }else if ($_POST['funcion'] == "eliminarProyectoFase"){
+            echo json_encode(eliminarProyectoFase($pdo));
         }
     }
 
@@ -1023,6 +1025,29 @@
                     $statement -> execute(array($proyectofase->proyecto,
                         $proyectofase->fase,
                         $proyectofase->idProyectoFase));
+
+                    //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function eliminarProyectoFase($pdo) {
+        try {
+                try {
+                    $sql = "DELETE FROM tb_proyectofases
+                            WHERE tb_proyectofases.idproyectofase = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute();
 
                     //var_dump($statement->errorInfo());
 
