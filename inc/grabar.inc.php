@@ -40,7 +40,19 @@
         }else if ($_POST['funcion'] == "actualizarProyectoFase"){
             echo json_encode(actualizarProyectoFase($pdo,$_POST));
         }else if ($_POST['funcion'] == "eliminarProyectoFase"){
-            echo json_encode(eliminarProyectoFase($pdo));
+            echo json_encode(eliminarProyectoFase($pdo, $_POST));
+        }else if ($_POST['funcion'] == "actualizarEncargadoProyecto"){
+            echo json_encode(actualizarEncargadoProyecto($pdo,$_POST));
+        }else if ($_POST['funcion'] == "eliminarProyectoEncargado"){
+            echo json_encode(eliminarProyectoEncargado($pdo, $_POST));
+        }else if ($_POST['funcion'] == "actualizarEspecialidad"){
+            echo json_encode(actualizarEspecialidad($pdo,$_POST));
+        }else if ($_POST['funcion'] == "eliminarEspecialidad"){
+            echo json_encode(eliminarEspecialidad($pdo,$_POST));
+        }else if ($_POST['funcion'] == "actualizarUbicacion"){
+            echo json_encode(actualizarUbicacion($pdo,$_POST));
+        }else if ($_POST['funcion'] == "eliminarUbicacion"){
+            echo json_encode(eliminarUbicacion($pdo,$_POST));
         }
     }
 
@@ -1018,12 +1030,14 @@
                     $sql = "UPDATE tb_proyectofases
                             SET
                             tb_proyectofases.ccodigoproyecto = ?,
-                            tb_proyectofases.idfase = ?
+                            tb_proyectofases.idfase = ?,
+                            tb_proyectofases.updatedBy = ?
                             WHERE tb_proyectofases.idproyectofase = ?";
 
                     $statement = $pdo->prepare($sql);
                     $statement -> execute(array($proyectofase->proyecto,
                         $proyectofase->fase,
+                        $proyectofase->user,
                         $proyectofase->idProyectoFase));
 
                     //var_dump($statement->errorInfo());
@@ -1040,14 +1054,18 @@
         }
     }
 
-    function eliminarProyectoFase($pdo) {
+    function eliminarProyectoFase($pdo, $datos) {
         try {
+            $proyectofase = json_decode($datos['proyectoFase']);
                 try {
-                    $sql = "DELETE FROM tb_proyectofases
+                    $sql = "UPDATE tb_proyectofases
+                            SET tb_proyectofases.nflgactivo = 0,
+                            tb_proyectofases.updatedBy = ?
                             WHERE tb_proyectofases.idproyectofase = ?";
 
                     $statement = $pdo->prepare($sql);
-                    $statement -> execute();
+                    $statement -> execute(array($proyectofase->user,
+                                                $proyectofase->idProyectoFase));
 
                     //var_dump($statement->errorInfo());
 
@@ -1057,6 +1075,167 @@
                 }
 
             //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function actualizarEncargadoProyecto($pdo, $datos) {
+        try {
+            $proyectoEncargado = json_decode($datos['proyectoEncargado']);
+
+
+        
+                try {
+                    $sql = "UPDATE tb_encargadoproyectos
+                            SET
+                            tb_encargadoproyectos.ccodigoproyecto = ?,
+                            tb_encargadoproyectos.idencargado = ?,
+                            tb_encargadoproyectos.updatedBy = ?
+                            WHERE tb_encargadoproyectos.idencargadoproyecto = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($proyectoEncargado->proyecto,
+                        $proyectoEncargado->encargado,
+                        $proyectoEncargado->user,
+                        $proyectoEncargado->idProyectoEncargado));
+
+                    //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function eliminarProyectoEncargado($pdo, $datos) {
+        try {
+            $proyectoEncargado = json_decode($datos['proyectoEncargado']);
+                try {
+                    $sql = "UPDATE tb_encargadoproyectos
+                            SET tb_encargadoproyectos.nflgactivo = 0,
+                            tb_encargadoproyectos.updatedBy = ?
+                            WHERE tb_encargadoproyectos.idencargadoproyecto = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($proyectoEncargado->user,
+                                                $proyectoEncargado->idProyectoEncargado));
+
+                    //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function actualizarEspecialidad($pdo, $datos) {
+        try {
+            $especialidad = json_decode($datos['especialidad']);
+                try {
+                    $sql = "UPDATE tb_especialidad
+                            SET
+                            tb_especialidad.cespecialidad = ?,
+                            tb_especialidad.updatedBy = ?
+                            WHERE tb_especialidad.idEspecialidad = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($especialidad->cespecialidad,
+                        $especialidad->user,
+                        $especialidad->idEspecialidad));
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function eliminarEspecialidad($pdo, $datos) {
+        try {
+            $especialidad = json_decode($datos['especialidad']);
+                try {
+                    $sql = "UPDATE tb_especialidad
+                            SET
+                            tb_especialidad.nflgactivo = 0,
+                            tb_especialidad.updatedBy = ?
+                            WHERE tb_especialidad.idespecialidad = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array(
+                        $especialidad->user,
+                        $especialidad->idEspecialidad));
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function actualizarUbicacion($pdo, $datos) {
+        try {
+            $ubicacion = json_decode($datos['ubicacion']);
+                try {
+                    $sql = "UPDATE tb_ubicacion
+                            SET
+                            tb_ubicacion.cubicacion = ?,
+                            tb_ubicacion.updatedBy = ?
+                            WHERE tb_ubicacion.idubicacion = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array($ubicacion->cubicacion,
+                        $ubicacion->user,
+                        $ubicacion->idUbicacion));
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function eliminarUbicacion($pdo, $datos) {
+        try {
+            $ubicacion = json_decode($datos['ubicacion']);
+                try {
+                    $sql = "UPDATE tb_ubicacion
+                            SET
+                            tb_ubicacion.nflgactivo = 0,
+                            tb_ubicacion.updatedBy = ?
+                            WHERE tb_ubicacion.idubicacion = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array(
+                        $ubicacion->user,
+                        $ubicacion->idUbicacion));
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
 
         } catch (PDOException $th) {
             echo "Error: " . $th->getMessage;

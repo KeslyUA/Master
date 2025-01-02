@@ -50,6 +50,8 @@
             echo json_encode(obtenerTodosDatosTareo($pdo));
         }else if ($_POST['funcion'] === "obtenerProyectosFasesById"){
             echo json_encode(obtenerProyectosFasesById($pdo, $_POST['id']));
+        }else if ($_POST['funcion'] === "obtenerEncargadosProyectoById"){
+            echo json_encode(obtenerEncargadosProyectoById($pdo, $_POST['id']));
         }
     }
  
@@ -737,6 +739,28 @@
                 INNER JOIN tb_fases tf 
                 ON tf.idfase = tp.idfase
                 WHERE tp.idproyectofase = ?";
+        
+        $statement = $pdo->prepare($sql);
+        $statement -> execute(array($id));
+
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+
+    function obtenerEncargadosProyectoById($pdo, $id){
+        $docData = [];
+
+        $sql = "SELECT 
+                te.idencargadoproyecto idEncargadoProyecto,
+                te.ccodigoproyecto codigoProyecto,
+                te.idencargado idEncargado,
+                te2.cnombrecompleto nombreCompleto
+                FROM tb_encargadoproyectos te
+                INNER JOIN tb_encargados te2 ON te2.idencargado = te.idencargado 
+                WHERE te.idencargadoproyecto = ?";
         
         $statement = $pdo->prepare($sql);
         $statement -> execute(array($id));

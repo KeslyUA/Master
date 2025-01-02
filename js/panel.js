@@ -463,6 +463,7 @@ document.addEventListener('click', async (e) => {
                 const cproyecto = cproyectoSelect.value;
                 const idFase = cfaseSelect.value;
                 const idProyectoFase = row.getAttribute("data-id")
+                const user = localStorage.getItem('username')
 
                 // Reemplazar los inputs con los nuevos valores
                 cells[1].textContent = cproyectoText;
@@ -474,7 +475,7 @@ document.addEventListener('click', async (e) => {
                 saveButton.id = 'editProyectoFase'; // Cambiar el id para manejar la acción de edición
                 let formData = new FormData();
                 formData.append("funcion", "actualizarProyectoFase");
-                formData.append("fase", JSON.stringify({ proyecto: cproyecto, fase: idFase, idProyectoFase: idProyectoFase }))
+                formData.append("fase", JSON.stringify({ proyecto: cproyecto, fase: idFase, idProyectoFase: idProyectoFase, user: user }))
                 try {
                     fetch('../inc/grabar.inc.php', {
                         method: 'POST',
@@ -487,6 +488,376 @@ document.addEventListener('click', async (e) => {
                     console.log(error.message);
                 }
             }
+        } else if (e.target && e.target.id === 'deleteProyectoFase'){
+            e.preventDefault();
+            Swal.fire({
+                title: "¿Estás seguro de eliminar esta fase del proyecto?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, Eliminar!",
+                cancelButtonText: "No, Cancelar"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    const row = e.target.closest('tr');
+                    if (row) {
+                        const idProyectoFase = row.getAttribute("data-id")
+
+                        const user = localStorage.getItem('username')
+
+                        let formData = new FormData();
+                        formData.append("funcion", "eliminarProyectoFase");
+                        formData.append("proyectoFase", JSON.stringify({ user: user, idProyectoFase: idProyectoFase }))
+                        try {
+                            fetch('../inc/grabar.inc.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                })
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    }
+                  Swal.fire({
+                    title: "Eliminado!",
+                    text: "Haz eliminado esta fase del proyecto",
+                    icon: "success"
+                  });
+                }
+              });
+            
+        } else if (e.target && e.target.id === 'editEncargadoProyecto'){
+            e.preventDefault();
+
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Convertir las celdas editables en inputs
+                const fila = cells[0];
+                const cproyectoCell = cells[1];
+                const cencargadoCell = cells[2];
+
+                const formData = new FormData();
+                let dataEncargadoProyectoById;
+                formData.append("funcion", "obtenerEncargadosProyectoById");
+                formData.append("id", row.getAttribute("data-id"));
+
+                try {
+                    await fetch('../inc/busquedas.inc.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            dataEncargadoProyectoById = data;
+                        })
+                } catch (error) {
+                    console.log(error.message);
+                }
+
+                console.log(dataEncargadoProyectoById)
+
+                const cproyectoValue = cproyectoCell.textContent.trim();
+                const cencargadoValue = cencargadoCell.textContent.split(" ")[0].trim();
+
+                cproyectoCell.innerHTML = `<select name="select_proyectoEncargado" class="select_proyectoEncargado" data-id="proyecto-${fila}" style="width: 100%">
+                        <option value="-1">Seleccionar</option>
+                    </select>`;
+                cencargadoCell.innerHTML = `<select name="select_encargado" class="select_encargado" data-id="encargado-${fila}" style="width: 100%">
+                        <option value="-1">Seleccionar 1</option>
+                    </select>`;
+
+                const selectProyecto = document.querySelector(`.select_proyectoEncargado[data-id="proyecto-${fila}"]`);
+                const selectEncargado = document.querySelector(`.select_encargado[data-id="encargado-${fila}"]`);
+
+                console.log(selectProyecto)
+                console.log(selectEncargado)
+
+                await listarProyectos(selectProyecto);  
+                await listarEncargados(selectEncargado);
+                
+                selectProyecto.value = dataEncargadoProyectoById[0].codigoProyecto
+                selectEncargado.value = dataEncargadoProyectoById[0].idEncargado
+
+                const editButton = row.querySelector('#editEncargadoProyecto');
+                editButton.innerHTML = `Guardar`;
+                editButton.id = 'saveEncargadoProyecto';
+            }
+        }else if (e.target && e.target.id === 'saveEncargadoProyecto'){
+            e.preventDefault();
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Obtener los valores de los selects
+                const cproyectoSelect = cells[1].querySelector('select');
+                const cencargadoSelect = cells[2].querySelector('select');
+
+                const cproyectoText = cproyectoSelect.options[cproyectoSelect.selectedIndex].text.split(" ")[0].trim();
+                const cencargadoText = cencargadoSelect.options[cencargadoSelect.selectedIndex].text.trim();
+
+                const cproyecto = cproyectoSelect.value;
+                const idEncargado = cencargadoSelect.value;
+                const idEncargadoProyecto = row.getAttribute("data-id")
+                const user = localStorage.getItem('username')
+
+                // Reemplazar los inputs con los nuevos valores
+                cells[1].textContent = cproyectoText;
+                cells[2].textContent = cencargadoText;
+
+                // Cambiar el icono de guardar a edición
+                const saveButton = row.querySelector('#saveEncargadoProyecto');
+                saveButton.innerHTML = `Editar`;
+                saveButton.id = 'editEncargadoProyecto'; // Cambiar el id para manejar la acción de edición
+                let formData = new FormData();
+                formData.append("funcion", "actualizarEncargadoProyecto");
+                formData.append("proyectoEncargado", JSON.stringify({ proyecto: cproyecto, encargado: idEncargado, idProyectoEncargado: idEncargadoProyecto, user: user }))
+                try {
+                    fetch('../inc/grabar.inc.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                        })
+                } catch (error) {
+                    console.log(error.message);
+                }
+            }
+        }else if (e.target && e.target.id === 'deleteEncargadoProyecto'){
+            e.preventDefault();
+            Swal.fire({
+                title: "¿Estás seguro de eliminar este jefe inmediato del proyecto?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, Eliminar!",
+                cancelButtonText: "No, Cancelar"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    const row = e.target.closest('tr');
+                    if (row) {
+                        const idProyectoEncargado = row.getAttribute("data-id")
+
+                        const user = localStorage.getItem('username')
+
+                        let formData = new FormData();
+                        formData.append("funcion", "eliminarProyectoEncargado");
+                        formData.append("proyectoEncargado", JSON.stringify({ user: user, idProyectoEncargado: idProyectoEncargado }))
+                        try {
+                            fetch('../inc/grabar.inc.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                })
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    }
+                  Swal.fire({
+                    title: "Eliminado!",
+                    text: "Haz eliminado esta fase del proyecto",
+                    icon: "success"
+                  });
+                }
+            });
+        } else if (e.target && e.target.id === 'editEspecialidad'){
+            e.preventDefault();
+
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Convertir las celdas editables en inputs
+                const cespecialidadCell = cells[1];
+
+                const cespecialidadValue = cespecialidadCell.textContent.trim();
+
+                cespecialidadCell.innerHTML = `<input type="text" value="${cespecialidadValue}" class="edit-input" />`;
+
+                // Cambiar el icono de edición a guardar
+                const editButton = row.querySelector('#editEspecialidad');
+                editButton.innerHTML = `Guardar`;
+                editButton.id = 'saveEspecialidad'; // Cambiar el id para manejar la acción de guardar
+            }
+        }else if (e.target && e.target.id === 'saveEspecialidad') {
+            e.preventDefault();
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Obtener los valores de los inputs
+                const cespecialidadInput = cells[1].querySelector('input').value.trim();
+                const idEspecialidad = row.getAttribute("data-id")
+                const user = localStorage.getItem('username')
+
+                // Reemplazar los inputs con los nuevos valores
+                cells[1].textContent = cespecialidadInput;
+
+                // Cambiar el icono de guardar a edición
+                const saveButton = row.querySelector('#saveEspecialidad');
+                saveButton.innerHTML = `Editar`;
+                saveButton.id = 'editEspecialidad'; // Cambiar el id para manejar la acción de edición
+                let formData = new FormData();
+                formData.append("funcion", "actualizarEspecialidad");
+                formData.append("especialidad", JSON.stringify({ cespecialidad: cespecialidadInput, user: user, idEspecialidad: idEspecialidad }))
+                try {
+                    fetch('../inc/grabar.inc.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                        })
+                } catch (error) {
+                    console.log(error.message);
+                }
+            }
+        }else if (e.target && e.target.id === 'deleteEspecialidad'){
+            e.preventDefault();
+            Swal.fire({
+                title: "¿Estás seguro de eliminar esta especialidad?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, Eliminar!",
+                cancelButtonText: "No, Cancelar"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    const row = e.target.closest('tr');
+                    if (row) {
+                        const idEspecialidad = row.getAttribute("data-id")
+
+                        const user = localStorage.getItem('username')
+
+                        let formData = new FormData();
+                        formData.append("funcion", "eliminarEspecialidad");
+                        formData.append("especialidad", JSON.stringify({ user: user, idEspecialidad: idEspecialidad }))
+                        try {
+                            fetch('../inc/grabar.inc.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                })
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    }
+                  Swal.fire({
+                    title: "Eliminado!",
+                    text: "Haz eliminado esta fase del proyecto",
+                    icon: "success"
+                  });
+                }
+            });
+        }else if (e.target && e.target.id === 'editUbicacion'){
+            e.preventDefault();
+
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Convertir las celdas editables en inputs
+                const cespecialidadCell = cells[1];
+
+                const cespecialidadValue = cespecialidadCell.textContent.trim();
+
+                cespecialidadCell.innerHTML = `<input type="text" value="${cespecialidadValue}" class="edit-input" />`;
+
+                // Cambiar el icono de edición a guardar
+                const editButton = row.querySelector('#editUbicacion');
+                editButton.innerHTML = `Guardar`;
+                editButton.id = 'saveUbicacion'; // Cambiar el id para manejar la acción de guardar
+            }
+        }else if (e.target && e.target.id === 'saveUbicacion') {
+            e.preventDefault();
+            // Encontrar la fila a la que pertenece el botón
+            const row = e.target.closest('tr');
+            if (row) {
+                const cells = row.querySelectorAll('td');
+
+                // Obtener los valores de los inputs
+                const cubicacionInput = cells[1].querySelector('input').value.trim();
+                const idUbicacion = row.getAttribute("data-id")
+                const user = localStorage.getItem('username')
+
+                // Reemplazar los inputs con los nuevos valores
+                cells[1].textContent = cubicacionInput;
+
+                // Cambiar el icono de guardar a edición
+                const saveButton = row.querySelector('#saveUbicacion');
+                saveButton.innerHTML = `Editar`;
+                saveButton.id = 'editUbicacion'; // Cambiar el id para manejar la acción de edición
+                let formData = new FormData();
+                formData.append("funcion", "actualizarUbicacion");
+                formData.append("ubicacion", JSON.stringify({ cubicacion: cubicacionInput, user: user, idUbicacion: idUbicacion }))
+                try {
+                    fetch('../inc/grabar.inc.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                        })
+                } catch (error) {
+                    console.log(error.message);
+                }
+            }
+        }else if (e.target && e.target.id === 'deleteUbicacion'){
+            e.preventDefault();
+            Swal.fire({
+                title: "¿Estás seguro de eliminar esta especialidad?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, Eliminar!",
+                cancelButtonText: "No, Cancelar"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    const row = e.target.closest('tr');
+                    if (row) {
+                        const idUbicacion = row.getAttribute("data-id")
+
+                        const user = localStorage.getItem('username')
+
+                        let formData = new FormData();
+                        formData.append("funcion", "eliminarUbicacion");
+                        formData.append("ubicacion", JSON.stringify({ user: user, idUbicacion: idUbicacion }))
+                        try {
+                            fetch('../inc/grabar.inc.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                })
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    }
+                  Swal.fire({
+                    title: "Eliminado!",
+                    text: "Haz eliminado esta fase del proyecto",
+                    icon: "success"
+                  });
+                }
+            });
         }
     }
 })

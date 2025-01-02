@@ -14,12 +14,15 @@ export const listarEspecialidadesTable = () => {
         .then(response => response.json())
         .then(data => {
            data.forEach(element => {
-                let row = `<tr>
+                let row = `<tr data-id=${element.idespecialidad}>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.cespecialidad}</td>
-                    <td>
-                        <a href="#" class="actions texto_centro" id="editUbicacion" data-id=${element.idfase}>
+                    <td style="display: flex; justify-content: center; gap: 1rem">
+                        <a href="#" class="actions texto_centro" id="editEspecialidad" data-id=${element.idespecialidad}>
                             Editar
+                        </a>
+                        <a href="#" class="actions texto_centro" id="deleteEspecialidad" data-id=${element.idespecialidad}>
+                            Eliminar
                         </a>
                     </td>
                 </tr>`;

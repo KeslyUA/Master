@@ -14,12 +14,15 @@ export const listarUbicacionesTable = () => {
             .then(response => response.json())
             .then(data => {
                 data.forEach(element => {
-                    let row = `<tr>
+                    let row = `<tr data-id=${element.idubicacion}>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.cubicacion}</td>
-                    <td>
+                    <td style="display: flex; justify-content: center; gap: 1rem">
                         <a href="#" class="actions texto_centro" id="editUbicacion" data-id=${element.idubicacion}>
                             Editar
+                        </a>
+                        <a href="#" class="actions texto_centro" id="deleteUbicacion" data-id=${element.idubicacion}>
+                            Eliminar
                         </a>
                     </td>
                 </tr>`;

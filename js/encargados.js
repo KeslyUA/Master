@@ -51,10 +51,19 @@ export const listarEncargadosProyectoTable = () => {
         .then(response => response.json())
         .then(data => {
            data.forEach(element => {
-                let row = `<tr>
+                console.log(data)
+                let row = `<tr data-id=${element.idencargadoproyecto}>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.ccodigoproyecto}</td>
                     <td class="texto_centro">${element.nombreCompleto}</td>
+                    <td style="display: flex; justify-content: center; gap: 1rem">
+                        <a href="#" class="actions texto_centro" id="editEncargadoProyecto" data-id=${element.idencargadoproyecto}>
+                            Editar
+                        </a>
+                        <a href="#" class="actions texto_centro" id="deleteEncargadoProyecto" data-id=${element.idencargadoproyecto}>
+                            Eliminar
+                        </a>
+                    </td>
                 </tr>`;
 
                 cuerpo.insertRow(-1).outerHTML = row;
@@ -66,13 +75,13 @@ export const listarEncargadosProyectoTable = () => {
     }
 }
 
-export const listarEncargados = (select) =>{
+export const listarEncargados = async (select) =>{
     const formData = new FormData();
         formData.append("funcion","obtenerEncargados");
         select.innerHTML = `<option value='-1'>Seleccionar</option>`;
 
         try {
-            fetch('../inc/busquedas.inc.php',{
+            await fetch('../inc/busquedas.inc.php',{
                 method: 'POST',
                 body: formData
             })
