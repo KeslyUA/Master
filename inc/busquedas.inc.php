@@ -485,8 +485,9 @@
             /* $sql = "SELECT nrodoc, GROUP_CONCAT(estado ORDER BY estado SEPARATOR ',') AS estados FROM tb_tareos where cproyecto = ? GROUP BY nrodoc"; */
             $sql = "SELECT nrodoc, 
                     GROUP_CONCAT(estado ORDER BY fregsys SEPARATOR ',') AS estados,
-                    group_concat(day(fregsys) order by fregsys separator ',') as dias 
-                    FROM tb_tareos where cproyecto = ? and month(fregsys) = ?
+                    group_concat(day(fregsys) order by fregsys separator ',') as dias,
+                    group_concat(cubicacion order by fregsys separator ',') as ubicaiones 
+                    FROM tb_tareos where cproyecto = 390000 and month(fregsys) = 01
                     GROUP BY nrodoc";
             /* $sql = "SELECT t.nrodoc, td.cfase, concat(tf.cnombre,' ', tf.cdescripcion) as fase, GROUP_CONCAT(t.estado ORDER BY t.fregsys SEPARATOR ',') AS estados, group_concat(day(t.fregsys) order by t.fregsys separator ',') as dias 
                     FROM tb_tareos t

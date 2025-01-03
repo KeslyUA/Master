@@ -63,7 +63,8 @@ export const listarPadron = (cc) => {
                 }
                 return { ...item, estado: 'A' };
            })
-           data.datos.forEach(element => {
+           const filteredData = data.datos.filter(d => new Date(d.ingreso) <= new Date().setHours(0, 0, 0, 0))
+           filteredData.forEach(element => {
             const ubicacion = todosTareo.find(item => item.nddoc == element.dni)
                 let row = `<tr>
                     <td>${fila++}</td>
@@ -114,7 +115,8 @@ export const listarPadronByFecha = (cc, fecha) => {
                 }
                 return { ...item, estado: 'A' };
            })
-           data.datos.forEach(element => {
+           const filteredData = data.datos.filter(d => new Date(d.ingreso) <= new Date(fecha))
+            filteredData.forEach(element => {
                 let row = `<tr>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.paterno+ ' ' + element.materno + ' ' + element.nombres}</td>

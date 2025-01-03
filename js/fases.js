@@ -64,13 +64,16 @@ export const listarFasesTable = () => {
         .then(response => response.json())
         .then(data => {
            data.forEach(element => {
-                let row = `<tr>
+                let row = `<tr data-id=${element.idfase}>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.cnombre}</td>
                     <td class="texto_centro">${element.cdescripcion}</td>
-                    <td>
+                    <td style="display: flex; justify-content: center; gap: 1rem">
                         <a href="#" class="actions texto_centro" id="editFase" data-id=${element.idfase}>
                             Editar
+                        </a>
+                        <a href="#" class="actions texto_centro" id="deleteFase" data-id=${element.idfase}>
+                            Eliminar
                         </a>
                     </td>
                 </tr>`;

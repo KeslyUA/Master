@@ -14,13 +14,16 @@ export const listarEncargadosTable = () => {
         .then(response => response.json())
         .then(data => {
            data.forEach(element => {
-                let row = `<tr>
+                let row = `<tr data-id=${element.idencargado}>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.cnumdoc}</td>
                     <td class="texto_centro">${element.cnombrecompleto}</td>
-                    <td>
-                        <a href="#" class="actions texto_centro" id="editEncargado" data-id=${element.idencargado}>
+                    <td style="display: flex; justify-content: center; gap: 1rem">
+                        <a href="#" class="actions texto_centro" id="editEncargado" data-id=${element.idencargadoproyecto}>
                             Editar
+                        </a>
+                        <a href="#" class="actions texto_centro" id="deleteEncargado" data-id=${element.idencargadoproyecto}>
+                            Eliminar
                         </a>
                     </td>
                 </tr>`;

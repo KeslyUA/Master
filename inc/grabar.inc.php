@@ -31,8 +31,12 @@
             echo json_encode(grabarEncargadoProyecto($pdo, $_POST));
         }else if ($_POST['funcion'] == "actualizarEncargado") {
             echo json_encode((actualizarEncargado($pdo, $_POST)));
+        }else if ($_POST['funcion'] == "eliminarEncargado") {
+            echo json_encode((eliminarEncargado($pdo, $_POST)));
         }else if ($_POST['funcion'] == "actualizarFase") {
             echo json_encode(actualizarFase($pdo, $_POST));
+        }else if ($_POST['funcion'] == "eliminarFase") {
+            echo json_encode(eliminarFase($pdo, $_POST));
         }else if ($_POST['funcion'] == "grabarUbicacion") {
             echo json_encode(grabarUbicacion($pdo, $_POST));
         }else if ($_POST['funcion'] == "grabarEspecialidad") {
@@ -966,12 +970,46 @@
                     $sql = "UPDATE tb_encargados
                             SET
                             tb_encargados.cnombrecompleto = ?,
-                            tb_encargados.cnumdoc = ?
+                            tb_encargados.cnumdoc = ?,
+                            tb_encargados.updatedBy = ?
                             WHERE tb_encargados.idencargado = ?";
 
                     $statement = $pdo->prepare($sql);
                     $statement -> execute(array($encargados->nombres,
                         $encargados->numdoc,
+                        $encargados->user,
+                        $encargados->idEncargado));
+
+                    //var_dump($statement->errorInfo());
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
+
+            //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function eliminarEncargado($pdo, $datos) {
+        try {
+            $encargados = json_decode($datos['encargado']);
+
+
+        
+                try {
+                    $sql = "UPDATE tb_encargados
+                            SET
+                            tb_encargados.nflgactivo = 0,
+                            tb_encargados.updatedBy = ?
+                            WHERE tb_encargados.idencargado = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array(
+                        $encargados->user,
                         $encargados->idEncargado));
 
                     //var_dump($statement->errorInfo());
@@ -998,12 +1036,14 @@
                     $sql = "UPDATE tb_fases
                             SET
                             tb_fases.cnombre = ?,
-                            tb_fases.cdescripcion = ?
+                            tb_fases.cdescripcion = ?,
+                            tb_fases.updatedBy = ?
                             WHERE tb_fases.idfase = ?";
 
                     $statement = $pdo->prepare($sql);
                     $statement -> execute(array($fase->nombre,
                         $fase->descripcion,
+                        $fase->user,
                         $fase->idFase));
 
                     //var_dump($statement->errorInfo());
@@ -1014,6 +1054,31 @@
                 }
 
             //var_dump($proyectos[0]->codigo);
+
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+        }
+    }
+
+    function eliminarFase($pdo, $datos) {
+        try {
+            $fase = json_decode($datos['fase']);
+                try {
+                    $sql = "UPDATE tb_fases
+                            SET
+                            tb_fases.nflgactivo = 0,
+                            tb_fases.updatedBy = ?
+                            WHERE tb_fases.idfase = ?";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement -> execute(array(
+                        $fase->user,
+                        $fase->idFase));
+
+                } catch (PDOException $th) {
+                    echo "Error: " . $th->getMessage;
+                    return false;
+                }
 
         } catch (PDOException $th) {
             echo "Error: " . $th->getMessage;

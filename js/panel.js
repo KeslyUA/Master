@@ -307,7 +307,8 @@ document.addEventListener('click', async (e) => {
                 // Obtener los valores de los inputs
                 const cnumdocInput = cells[1].querySelector('input').value.trim();
                 const cnombrecompletoInput = cells[2].querySelector('input').value.trim();
-                const idEncargado = document.getElementById("saveEncargado").getAttribute("data-id")
+                const idEncargado = row.getAttribute("data-id")
+                const user = localStorage.getItem('username')
 
                 // Reemplazar los inputs con los nuevos valores
                 cells[1].textContent = cnumdocInput;
@@ -319,7 +320,7 @@ document.addEventListener('click', async (e) => {
                 saveButton.id = 'editEncargado'; // Cambiar el id para manejar la acción de edición
                 let formData = new FormData();
                 formData.append("funcion", "actualizarEncargado");
-                formData.append("encargado", JSON.stringify({ nombres: cnombrecompletoInput, numdoc: cnumdocInput, idEncargado: idEncargado }))
+                formData.append("encargado", JSON.stringify({ nombres: cnombrecompletoInput, numdoc: cnumdocInput, idEncargado: idEncargado, user: user }))
                 try {
                     fetch('../inc/grabar.inc.php', {
                         method: 'POST',
@@ -332,7 +333,47 @@ document.addEventListener('click', async (e) => {
                     console.log(error.message);
                 }
             }
-        } if (e.target && e.target.id === 'editFase') {
+        } else if (e.target && e.target.id === 'deleteEncargado'){
+            e.preventDefault();
+            Swal.fire({
+                title: "¿Estás seguro de eliminar este jefe inmediato?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, Eliminar!",
+                cancelButtonText: "No, Cancelar"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    const row = e.target.closest('tr');
+                    if (row) {
+                        const idEncargado = row.getAttribute("data-id")
+
+                        const user = localStorage.getItem('username')
+
+                        let formData = new FormData();
+                        formData.append("funcion", "eliminarEncargado");
+                        formData.append("encargado", JSON.stringify({ user: user, idEncargado: idEncargado }))
+                        try {
+                            fetch('../inc/grabar.inc.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                })
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    }
+                  Swal.fire({
+                    title: "Eliminado!",
+                    text: "Haz eliminado esta fase del proyecto",
+                    icon: "success"
+                  });
+                }
+              });
+        } else if (e.target && e.target.id === 'editFase') {
             e.preventDefault();
 
             // Encontrar la fila a la que pertenece el botón
@@ -366,6 +407,7 @@ document.addEventListener('click', async (e) => {
                 const cnombreFaseInput = cells[1].querySelector('input').value.trim();
                 const cdescripcionInput = cells[2].querySelector('input').value.trim();
                 const idFase = document.getElementById("saveFase").getAttribute("data-id")
+                const user = localStorage.getItem('username')
 
                 // Reemplazar los inputs con los nuevos valores
                 cells[1].textContent = cnombreFaseInput;
@@ -377,7 +419,7 @@ document.addEventListener('click', async (e) => {
                 saveButton.id = 'editFase'; // Cambiar el id para manejar la acción de edición
                 let formData = new FormData();
                 formData.append("funcion", "actualizarFase");
-                formData.append("fase", JSON.stringify({ nombre: cnombreFaseInput, descripcion: cdescripcionInput, idFase: idFase }))
+                formData.append("fase", JSON.stringify({ nombre: cnombreFaseInput, descripcion: cdescripcionInput, idFase: idFase, user: user }))
                 try {
                     fetch('../inc/grabar.inc.php', {
                         method: 'POST',
@@ -390,6 +432,46 @@ document.addEventListener('click', async (e) => {
                     console.log(error.message);
                 }
             }
+        } else if (e.target && e.target.id === 'deleteFase') {
+            e.preventDefault();
+            Swal.fire({
+                title: "¿Estás seguro de eliminar esta fase?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, Eliminar!",
+                cancelButtonText: "No, Cancelar"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    const row = e.target.closest('tr');
+                    if (row) {
+                        const idFase = row.getAttribute("data-id")
+
+                        const user = localStorage.getItem('username')
+
+                        let formData = new FormData();
+                        formData.append("funcion", "eliminarFase");
+                        formData.append("fase", JSON.stringify({ user: user, idFase: idFase }))
+                        try {
+                            fetch('../inc/grabar.inc.php', {
+                                method: 'POST',
+                                body: formData
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                })
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    }
+                  Swal.fire({
+                    title: "Eliminado!",
+                    text: "Haz eliminado esta fase del proyecto",
+                    icon: "success"
+                  });
+                }
+              });
         } else if (e.target && e.target.id === 'editProyectoFase'){
             e.preventDefault();
 
@@ -421,7 +503,6 @@ document.addEventListener('click', async (e) => {
                     console.log(error.message);
                 }
 
-                console.log(dataProyectoFaseById)
 
                 const cproyectoValue = cproyectoCell.textContent.trim();
                 const cfaseValue = cfaseCell.textContent.split(" ")[0].trim();
@@ -560,8 +641,6 @@ document.addEventListener('click', async (e) => {
                     console.log(error.message);
                 }
 
-                console.log(dataEncargadoProyectoById)
-
                 const cproyectoValue = cproyectoCell.textContent.trim();
                 const cencargadoValue = cencargadoCell.textContent.split(" ")[0].trim();
 
@@ -574,9 +653,6 @@ document.addEventListener('click', async (e) => {
 
                 const selectProyecto = document.querySelector(`.select_proyectoEncargado[data-id="proyecto-${fila}"]`);
                 const selectEncargado = document.querySelector(`.select_encargado[data-id="encargado-${fila}"]`);
-
-                console.log(selectProyecto)
-                console.log(selectEncargado)
 
                 await listarProyectos(selectProyecto);  
                 await listarEncargados(selectEncargado);
@@ -1827,6 +1903,16 @@ const obtenerReportePadron = async () => {
 
             // Asignar la estructura de 'estadosDia'
             dato['estadosDia'] = diasTareo;
+            let diasUbicacion = {};
+            tareosDatos.forEach(item => {
+                let dias = item.dias.split(',');
+                let ubicaciones = item.ubicaiones.split(',');
+                dias.forEach((dia, index) => {
+                    diasUbicacion[dia] = ubicaciones[index];
+                })
+            })
+            dato['ubicacionesDia'] = diasUbicacion;
+
             let contador = {};
             dato['tareos'].forEach(item => {
                 if (contador[item]) {
@@ -1857,11 +1943,13 @@ const obtenerReportePadron = async () => {
         }
 
     }
-    await newPlantillaTareoExcel(JSON.stringify(DATOS), document.getElementById("fecha_proceso").value)
+    //const filtradoPorFechaIngreso = DATOS.filter(d => new Date(d.ingreso) <= new Date().setHours(0, 0, 0, 0))
+    //console.log(filtradoPorFechaIngreso)
+    await PlantillaTareoExcel(JSON.stringify(DATOS), document.getElementById("fecha_proceso").value)
     Swal.close();
 }
 
-async function newPlantillaTareoExcel(padron, fechaProceso) {
+async function PlantillaTareoExcel(padron, fechaProceso) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Tareo Reporte', {
         views: [{ state: "frozen", xSplit: 5, ySplit: 7 }]
@@ -2250,6 +2338,15 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
     setStyleInCells(fila+3, 7, 8, dataStyle)
 
     const contadorEstadosPorDia = contarEstadosPorDia(datos)
+    const contadorUbicacionesPorDia = contarUbicacionesPorDia(datos)
+    const ubicacionesSet = new Set();
+    for (const ubicacion in contadorUbicacionesPorDia){
+        const ubicaciones = Object.keys(contadorUbicacionesPorDia[ubicacion])
+        ubicaciones.forEach(u => {
+            ubicacionesSet.add(u);
+        })
+    }
+    const ubicacionesArray =Array.from(ubicacionesSet);
     for (let index = 0; index < leyenda.length; index++) {
         let leyendaItem = bgColorStatesValue[leyenda[index]]
         worksheet.getCell(fila, 4).value = leyenda[index]
@@ -2286,7 +2383,51 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
         fila++
     }
     fila++
-    for (const ubicacion in countByUbicacion){
+    ubicacionesArray.forEach((ubicacion, index) => {
+        worksheet.getCell(fila+index, 14).value = ubicacion
+        worksheet.getCell(fila+index, 14).style = {
+            fill: {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'D8E4BC' },
+                bgColor: { argb: 'D8E4BC' }
+            },
+            alignment: {
+                horizontal: 'left',
+                vertical: 'middle',
+            },
+            border: {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            }
+        }
+    })
+    for (const dia in contadorEstadosPorDia){
+        ubicacionesArray.forEach((ubicacion, index) => {
+            worksheet.getCell(fila+index, 14+parseInt(dia)).value = contadorUbicacionesPorDia[dia][ubicacion]??0
+            worksheet.getCell(fila+index, 14+parseInt(dia)).style = {
+                fill: {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'D8E4BC' },
+                    bgColor: { argb: 'D8E4BC' }
+                },
+                alignment: {
+                    horizontal: 'center',
+                    vertical: 'middle',
+                },
+                border: {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                }
+            }
+        })
+    }
+    /* for (const ubicacion in countByUbicacion){
         worksheet.getCell(fila, 14).value = ubicacion
         worksheet.getCell(fila, 14).style = {
             fill: {
@@ -2326,7 +2467,7 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
             }
         }
         fila++
-    }
+    } */
 
 
     const buffer = await workbook.xlsx.writeBuffer();
@@ -2374,6 +2515,23 @@ async function newPlantillaTareoExcel(padron, fechaProceso) {
           }
         });
       
+        return resultado;
+    }
+
+    function contarUbicacionesPorDia(array) {
+        const resultado = {};
+      
+        array.forEach(objeto => {
+          for (const dia in objeto.ubicacionesDia) {
+            const ubicacion = objeto.ubicacionesDia[dia].trim();
+            
+            if (!resultado[dia]) {
+              resultado[dia] = {};
+            }
+      
+            resultado[dia][ubicacion] = (resultado[dia][ubicacion] || 0) + 1;
+          }
+        });
         return resultado;
     }
 
