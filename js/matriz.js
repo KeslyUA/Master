@@ -43,12 +43,14 @@ export const buscarDatos = async (dni) =>{
             await listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
             await listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value)
             if (data.datosTareo.length > 0) {
-                encargado.value = data.datosTareo[0]['cencargado'];
                 condicion.value = data.datosTareo[0]['ncondicion'];
                 personal.value = data.datosTareo[0]['npersonal'];;
                 especialidad.value = data.datosTareo[0]['cespecialidad'];
                 manoobra.value = data.datosTareo[0]['nmanoobra'];
                 proyecto_actual.value = data.datosTareo[0]['cproyecto'];
+                await listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
+                await listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value)
+                encargado.value = data.datosTareo[0]['cencargado'];    
                 fase_actual.value = data.datosTareo[0]['cfase'];
                 ubicacion.value = data.datosTareo[0]['cubicacion'];
                 regimen_trabajo.value = data.datosTareo[0]['cregimen'];
