@@ -56,7 +56,7 @@ const observaciones = document.getElementById("observaciones");
 const motivo_descanso = document.getElementById("motivo_descanso");
 const fecha_cese = document.getElementById("fecha_cese");
 const motivo_cese = document.getElementById("motivo_cese");
-
+const turno_dia = document.getElementById("turno_dia");
 const menuList = document.getElementById("menuList");
 const opcionesMenu = menuList.querySelectorAll('li');
 
@@ -1415,6 +1415,7 @@ function agregaUbicacion() {
             </tr>`;
 
     cuerpo.insertRow(-1).outerHTML = row;
+    //remover fila
     document.getElementById("tablaUbicacionesBody");
     tablaUbicacionesBody.addEventListener('click', eliminarFila);
 }
@@ -2189,7 +2190,7 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
     worksheet.columns = columns;
 
     worksheet.getCell('A2').value = `SEPCON S.A.C`
-    worksheet.getCell('A3').value = `TAREOS - CONTROL DE ASISTENCIA REPORTE ${datos[0].proyecto} ${fechaProceso}`;
+    worksheet.getCell('A3').value = `TAREOS - CONTROL DE ASISTENCIA REPORTE ${datos[0].proyecto}`;
     worksheet.getCell('A2').style = titleStyle
     worksheet.getCell('A3').style = titleStyle
 
@@ -2200,11 +2201,13 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
     worksheet.mergeCells('AT5:AZ5')
     worksheet.mergeCells('BA5:BA6')
     worksheet.mergeCells('BB5:BB6')
+    worksheet.mergecells('BC5')
 
     worksheet.getCell('C5').value = 'DATOS PERSONALES'
     worksheet.getCell('L5').value = 'MAQUINARIA Y EQUIPOS'
     worksheet.getCell('O5').value = 'CONTROL DE ASISTENCIA'
     worksheet.getCell('AT5').value = 'TOTALES'
+    worksheet.getCell('BC5').value = 'TURNO'
 
     worksheet.getRow(5).eachCell({ includeEmpty: true }, (cell) => {
         cell.style = headerStyle;
@@ -2302,6 +2305,7 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
             // Llenar celdas para régimen y mano de obra
             worksheet.getCell(`BA${fila}`).value = item.regimen || '';
             worksheet.getCell(`BB${fila}`).value = toTitleCase(item.manoObra) || '';
+            worksheet.getCell(`BC${fila}`).value = item.turno_dia;
 
             setStyleInCells(fila, 1, 4, dataStyle)
             setStyleInCells(fila, 5, 14, dataStyleSecondary)

@@ -264,6 +264,15 @@
                         <option value="19">Indirecto</option>
                     </select>
                 </div>
+                <div class="dos_columnas">
+                    <label for="turno">Turno :</label>
+                    <select name="turno" id="turno" form="data_matriz">
+                        <option value="-1">Seleccionar</option>
+                        <option value="20">Noche</option>
+                        <option value="20">Dia</option>
+                        
+                    </select>
+                </div>
                 <div class="ocho_columnas" style="height: 100px;" >
                     <label for="observaciones">Observaciones :</label>
                     <textarea name="observaciones" id="observaciones" form="data_matriz" style="height: 100px;"></textarea>
