@@ -99,7 +99,8 @@
                                                   tb_datostareo.fcese = ?,
                                                   tb_datostareo.cmotivocese = ?,
                                                   tb_datostareo.nregimen = ?,
-                                                  tb_datostareo.nespecificacion = ?";
+                                                  tb_datostareo.nespecificacion = ?,
+                                                  tb_datostareo.createdBy = ?";
             
             $statement = $pdo->prepare($sql);
             $nddoc = isset($datos['documento']) ? $datos['documento'] : (isset($datos['documento_tercero']) ? $datos['documento_tercero'] : null);
@@ -126,7 +127,8 @@
                                         $datos['fecha_cese'],
                                         $datos['motivo_cese'],
                                         $datos['regimen'],
-                                        $datos['especificacion_contrato']));
+                                        $datos['especificacion_contrato'],
+                                        $datos['user']));
 
             $results = $statement ->fetchAll();
             $rowaffect = $statement->rowCount($sql);
@@ -168,7 +170,9 @@
                                                   tb_datostareo.fcese = ?,
                                                   tb_datostareo.cmotivocese = ?,
                                                   tb_datostareo.nregimen = ?,
-                                                  tb_datostareo.nespecificacion = ?
+                                                  tb_datostareo.nespecificacion = ?,
+                                                  tb_datostareo.updatedBy = ?,
+                                                  tb_datostareo.fmodificacion = current_timestamp()
                         WHERE tb_datostareo.nddoc = ?";
             
             $statement = $pdo->prepare($sql);
@@ -198,6 +202,7 @@
                                         $datos['motivo_cese'],
                                         $datos['regimen'],
                                         $datos['especificacion_contrato'],
+                                        $datos['user'],
                                         $nddoc
                                        ));
 

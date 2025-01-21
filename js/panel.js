@@ -964,14 +964,16 @@ document.addEventListener('change', async (e) => {
             listarPadronByFecha(codigo_costos.value, e.target.value);
             document.getElementById("fecha_text").textContent = 'Fecha de Proceso: ' + e.target.value;
         }
-    }
-    if (e.target.id == "ingreso_obra" || e.target.id == "salida_obra") {
-        const inicio = new Date(document.getElementById("ingreso_obra").value);
-        const fin = new Date(document.getElementById("salida_obra").value);
+    } //calcula dias de campo
+    if (e.target.id == "salida_obra") {
+        const ultimoDiaIngreso = new Date(document.getElementById("salida_obra").value);
+        const hoy = new Date();
 
-        const diferenciaEnMilisegundos = fin - inicio;
+        const diferenciaEnMilisegundos = hoy - ultimoDiaIngreso;
+        ultimoDiaIngreso.setHours(0, 0, 0, 0);
+        hoy.setHours(0, 0, 0, 0);
 
-        const diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
+        const diferenciaEnDias = Math.round(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
 
         document.getElementById("dias_campo").value = diferenciaEnDias;
 
@@ -983,6 +985,7 @@ document.addEventListener('change', async (e) => {
         if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
             const resultado = numerador / denominador;
             document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value / resultado);
+            document.getElementById("")
         }
 
         const retorno = new Date(document.getElementById("salida_obra").value);
@@ -1037,7 +1040,7 @@ function grabarDatosMatriz() {
     //serializar los formulario en javascript
     const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
     datos.append("funcion", "grabar");
-
+    datos.append("user", localStorage.getItem("username"));
     fetch('../inc/grabar.inc.php', {
         method: 'POST',
         body: datos
@@ -1412,6 +1415,12 @@ function agregaUbicacion() {
             </tr>`;
 
     cuerpo.insertRow(-1).outerHTML = row;
+    document.getElementById("tablaUbicacionesBody");
+    tablaUbicacionesBody.addEventListener('click', eliminarFila);
+}
+function eliminarFila(event) {
+    const fila = event.target.closest('tr');
+    fila.remove();
 }
 
 function agregaEspecialidad() {
@@ -1424,10 +1433,22 @@ function agregaEspecialidad() {
                 <td>
                     <input type="text">
                 </td>
-                <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
+                <td><a href="#" class="item_click_remove texto_centro" id="eliminarFila"  ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
 
     cuerpo.insertRow(-1).outerHTML = row;
+    const deleteButton = row.querySelector(".eliminarFila");
+    deleteButton.addEventListener("click", () => eliminar(deleteButton));
+}
+
+function eliminar(button) {
+    
+    const row = button.closest("tr");
+
+   
+    if (row) {
+        row.remove();
+    }
 }
 
 function LoadElement(page) {
@@ -1813,7 +1834,7 @@ async function grabarDatosTareo(proyecto) {
     }
 }
 
-const obtenerDatosPadron = () => {
+const  obtenerDatosPadron = () => {
     let fila = document.querySelector("#tablaPersonalBody").getElementsByTagName("tr"),
         nreg = fila.length,
         formData = new FormData();
@@ -2207,7 +2228,7 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
         worksheet.getRow(fila).eachCell({ includeEmpty: true },(cell) => {
             cell.style = dataStyle
         })
-        fila++
+        /* fila++ */
         worksheet.getCell(`BB${fila}`).value = ' '
         worksheet.getRow(fila).eachCell({ includeEmpty: true },(cell) => {
             cell.style = dataStyle
