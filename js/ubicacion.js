@@ -13,7 +13,6 @@ export const listarUbicacionesTable = () => {
         })
             .then(response => response.json())
             .then(data => {
-                data.sort((a, b) => a.cubicacion.localeCompare(b.cubicacion));
                 data.forEach(element => {
                     let row = `<tr data-id=${element.idubicacion}>
                     <td>${fila++}</td>
@@ -27,7 +26,6 @@ export const listarUbicacionesTable = () => {
                         </a>
                     </td>
                 </tr>`;
-               
 
                     cuerpo.insertRow(-1).outerHTML = row;
                 })

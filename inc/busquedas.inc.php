@@ -130,6 +130,7 @@
                             tb_datostareo.cdescanso,
                             tb_datostareo.fcese,
                             tb_datostareo.cmotivocese,
+                            tb_datostareo.turno,
                             tb_datostareo.nregimen,
                             tb_datostareo.nespecificacion,
                             tb_datostareo.fregsys 
@@ -522,7 +523,8 @@
                 t.fingreso,  
                 personal.cdescripcion AS tipoPersonal, 
                 regimen.cdescripcion AS regimen, 
-                manoobra.cdescripcion AS mano_obra 
+                manoobra.cdescripcion AS mano_obra,
+                turno 
             FROM tb_datostareo t 
             LEFT JOIN tb_parametros regimen 
                 ON regimen.idreg = t.nregimen AND regimen.nclase = 03 
@@ -560,6 +562,7 @@
                 tipoPersonal,
                 regimen,
                 mano_obra,
+                turno,
                 SUM(cumple_condicion) AS diasCampo 
             FROM (
                 SELECT DISTINCT 
@@ -570,6 +573,7 @@
                     resultados.mano_obra,
                     validacion.estado,
                     validacion.fregsys,
+                    resultados.turno,
                     validacion.cumple_condicion
                 FROM temp_tareo_resultados resultados
                 LEFT JOIN temp_tareo_validacion validacion

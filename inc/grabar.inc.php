@@ -98,6 +98,7 @@
                                                   tb_datostareo.cdescanso = ?,
                                                   tb_datostareo.fcese = ?,
                                                   tb_datostareo.cmotivocese = ?,
+                                                  tb_datostareo.turno = ?,
                                                   tb_datostareo.nregimen = ?,
                                                   tb_datostareo.nespecificacion = ?,
                                                   tb_datostareo.createdBy = ?";
@@ -126,6 +127,7 @@
                                         $datos['motivo_descanso'],
                                         $datos['fecha_cese'],
                                         $datos['motivo_cese'],
+                                        $datos['turnodia'],
                                         $datos['regimen'],
                                         $datos['especificacion_contrato'],
                                         $datos['user']));
@@ -171,8 +173,9 @@
                                                   tb_datostareo.cmotivocese = ?,
                                                   tb_datostareo.nregimen = ?,
                                                   tb_datostareo.nespecificacion = ?,
-                                                  tb_datostareo.updatedBy = ?,
-                                                  tb_datostareo.fmodificacion = current_timestamp()
+                                                  tb_datostareo.turno = ?
+                                                  /* tb_datostareo.updatedBy = ?,
+                                                  tb_datostareo.fmodificacion = current_timestamp() */
                         WHERE tb_datostareo.nddoc = ?";
             
             $statement = $pdo->prepare($sql);
@@ -202,7 +205,8 @@
                                         $datos['motivo_cese'],
                                         $datos['regimen'],
                                         $datos['especificacion_contrato'],
-                                        $datos['user'],
+                                        $datos['turnodia'],
+                                       /*  $datos['user'], */
                                         $nddoc
                                        ));
 
@@ -258,7 +262,9 @@
                                            tb_tareo.d28 = ?,
                                            tb_tareo.d29 = ?,
                                            tb_tareo.d30 = ?,
-                                           tb_tareo.d31 = ?" ;
+                                           tb_tareo.d31 = ?,
+                                           tb_tareo.d32 = ?"
+                                            ;
                                            
             $statement = $pdo->prepare($sql);
             $statement -> execute(array($datos['documento'],
@@ -294,7 +300,9 @@
                                         $datos['p28'],
                                         $datos['p29'],
                                         $datos['p30'],
-                                        $datos['p31']));
+                                        $datos['p31'],
+                                        $datos['p32']
+                                    ));
 
             $results = $statement ->fetchAll();
             $rowaffect = $statement->rowCount($sql);
@@ -580,6 +588,7 @@
                                                   tb_datostareo_historico.cdescanso = ?,
                                                   tb_datostareo_historico.fcese = ?,
                                                   tb_datostareo_historico.cmotivocese = ?,
+                                                  tb_datostareo_historico.turno = ?,
                                                   tb_datostareo_historico.nregimen = ?,
                                                   tb_datostareo_historico.nespecificacion = ?";
             
@@ -607,6 +616,7 @@
                                         $datos['motivo_descanso'],
                                         $datos['fecha_cese'],
                                         $datos['motivo_cese'],
+                                        $datos['turnodia'],
                                         $datos['regimen'],
                                         $datos['especificacion_contrato']));
 

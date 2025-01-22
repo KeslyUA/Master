@@ -55,8 +55,10 @@ const dias_reales = document.getElementById("dias_reales");
 const observaciones = document.getElementById("observaciones");
 const motivo_descanso = document.getElementById("motivo_descanso");
 const fecha_cese = document.getElementById("fecha_cese");
+//1
+const turnodia = document.getElementById("turnodia");
 const motivo_cese = document.getElementById("motivo_cese");
-const turno_dia = document.getElementById("turno_dia");
+
 const menuList = document.getElementById("menuList");
 const opcionesMenu = menuList.querySelectorAll('li');
 
@@ -1415,7 +1417,6 @@ function agregaUbicacion() {
             </tr>`;
 
     cuerpo.insertRow(-1).outerHTML = row;
-    //remover fila
     document.getElementById("tablaUbicacionesBody");
     tablaUbicacionesBody.addEventListener('click', eliminarFila);
 }
@@ -1961,6 +1962,7 @@ const obtenerReportePadron = async () => {
             dato['tipoPersonal'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.tipoPersonal ?? ''
             dato['procedencia'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].cod_pais == 144 ? datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.origen['dpto'] :datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].pais;
             dato['diasCampo'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.diasCampo
+            dato['turno'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.turno
             DATOS.push(dato);
         }
 
@@ -2145,9 +2147,10 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
         { width: 4 },
         { width: 15 },
         { width: 15 },
+        { width: 10 }
     ];
 
-    const headersValue = ['ITEM', 'N°', 'CODIGO', 'DNI', 'APELLIDOS Y NOMBRES', 'PROCEDENCIA', 'F.INGRESO', 'TIPO', 'Último Ingreso a Obra', 'Dias en Campo', 'CARGO', 'FASE ACTUAL', 'PROYECTO ACTUAL', 'UBICACIÓN', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', 'DA', 'DD', 'DF', 'DM', 'DV', 'DP', 'DT', 'Régimen', 'Mano de Obra']
+    const headersValue = ['ITEM', 'N°', 'CODIGO', 'DNI', 'APELLIDOS Y NOMBRES', 'PROCEDENCIA', 'F.INGRESO', 'TIPO', 'Último Ingreso a Obra', 'Dias en Campo', 'CARGO', 'FASE ACTUAL', 'PROYECTO ACTUAL', 'UBICACIÓN', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', 'DA', 'DD', 'DF', 'DM', 'DV', 'DP', 'DT', 'Régimen', 'Mano de Obra','Turno']
 
     /* const bgColorStatesValue = {
         'A': '92CDDC',
@@ -2201,13 +2204,11 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
     worksheet.mergeCells('AT5:AZ5')
     worksheet.mergeCells('BA5:BA6')
     worksheet.mergeCells('BB5:BB6')
-    worksheet.mergecells('BC5')
 
     worksheet.getCell('C5').value = 'DATOS PERSONALES'
     worksheet.getCell('L5').value = 'MAQUINARIA Y EQUIPOS'
     worksheet.getCell('O5').value = 'CONTROL DE ASISTENCIA'
     worksheet.getCell('AT5').value = 'TOTALES'
-    worksheet.getCell('BC5').value = 'TURNO'
 
     worksheet.getRow(5).eachCell({ includeEmpty: true }, (cell) => {
         cell.style = headerStyle;
@@ -2290,7 +2291,7 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
             worksheet.getCell(fila, 13).value = item.proyecto
             worksheet.getCell(fila, 14).value = item.ubicacion
             worksheet.getCell(fila, 11).value = item.cargo
-
+            worksheet.getCell(fila, 55).value = item.turno
             
 
             // Llenar celdas para los días (A, D, F, M, V, P, total)
@@ -2305,7 +2306,6 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
             // Llenar celdas para régimen y mano de obra
             worksheet.getCell(`BA${fila}`).value = item.regimen || '';
             worksheet.getCell(`BB${fila}`).value = toTitleCase(item.manoObra) || '';
-            worksheet.getCell(`BC${fila}`).value = item.turno_dia;
 
             setStyleInCells(fila, 1, 4, dataStyle)
             setStyleInCells(fila, 5, 14, dataStyleSecondary)

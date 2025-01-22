@@ -265,12 +265,11 @@
                     </select>
                 </div>
                 <div class="dos_columnas">
-                    <label for="turno">Turno :</label>
-                    <select name="turno" id="turno" form="data_matriz">
+                    <label for="turnodia">Turno :</label>
+                    <select name="turnodia" id="turnodia" form="data_matriz">
                         <option value="-1">Seleccionar</option>
-                        <option value="20">Noche</option>
-                        <option value="20">Dia</option>
-                        
+                        <option value="1">Día</option>
+                        <option value="2">Noche</option>
                     </select>
                 </div>
                 <div class="ocho_columnas" style="height: 100px;" >

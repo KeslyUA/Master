@@ -65,6 +65,8 @@ export const buscarDatos = async (dni) =>{
                 motivo_descanso.value = data.datosTareo[0]['cdescanso'];
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
+                //2
+                turnodia.value = data.datosTareo[0]['turnodia'];
                 regimen.value = data.datosTareo[0]['nregimen'];
                 especificacion_contrato.value = data.datosTareo[0]['nespecificacion']
                 document.getElementById("existe").value = 1;
@@ -89,6 +91,8 @@ export const buscarDatos = async (dni) =>{
                 observaciones.value = '';
                 motivo_descanso.value = -1;
                 motivo_cese.value = -1;
+                //3
+                turnodia.value  = -1;
                 fecha_cese.value = null;
                 regimen.value = -1;
                 especificacion_contrato.value = -1;
@@ -222,6 +226,8 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 motivo_descanso.value = data.datosTareo[0]['cdescanso'];
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
+                //4
+                turnodia.value = data.datosTareo[0]['turnodia'];
                 regimen.value       = data.datosTareo[0]['nregimen'];
                 especificacion_contrato.value = data.datosTareo[0]['nespecificacion'];
                 document.getElementById("existeTerceroTareoData").value = "1";
@@ -249,6 +255,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 especificacion_contrato.value = -1;
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = '';
+                turnodia.value=-1;
                 document.getElementById("existeTerceroTareoData").value = 0;
             }
             let valor,index = 1,activos = 0,descanso = 0,medico = 0,color_fondo;
