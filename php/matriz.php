@@ -110,6 +110,7 @@
                 </div>
                 <!-- <div class="cuatro_columnas" id="foto_personal" style="height: 150px; width: 150px; background-size: 100% 100%;">
                 </div> -->
+                
                 <div class="foto_personal" id="foto_personal">
                 </div>
             </div>

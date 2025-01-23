@@ -488,7 +488,7 @@
                     GROUP_CONCAT(estado ORDER BY fregsys SEPARATOR ',') AS estados,
                     group_concat(day(fregsys) order by fregsys separator ',') as dias,
                     group_concat(cubicacion order by fregsys separator ',') as ubicaiones 
-                    FROM tb_tareos where cproyecto = 390000 and month(fregsys) = 01
+                    FROM tb_tareos where cproyecto = ? and month(fregsys) = ?
                     GROUP BY nrodoc";
             /* $sql = "SELECT t.nrodoc, td.cfase, concat(tf.cnombre,' ', tf.cdescripcion) as fase, GROUP_CONCAT(t.estado ORDER BY t.fregsys SEPARATOR ',') AS estados, group_concat(day(t.fregsys) order by t.fregsys separator ',') as dias 
                     FROM tb_tareos t
@@ -782,7 +782,8 @@
 
         /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
         $sql = "SELECT te.idencargado, te.cnumdoc, te.cnombres, te.capellidopat, te.capellidomat, te.cnombrecompleto 
-        FROM tb_encargados te WHERE te.nflgactivo=1";
+        FROM tb_encargados te WHERE te.nflgactivo=1 order by te.cnombrecompleto";
+        
         
         $statement = $pdo->prepare($sql);
         $statement -> execute();
@@ -798,7 +799,7 @@
         $docData = [];
 
         /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
-        $sql = "SELECT idubicacion, cubicacion, fregesys, nflgactivo FROM tb_ubicacion where  nflgactivo = 1;";
+        $sql = "SELECT idubicacion, cubicacion, fregesys, nflgactivo FROM tb_ubicacion where  nflgactivo = 1 ORDER BY cubicacion;";
         
         $statement = $pdo->prepare($sql);
         $statement -> execute();
@@ -814,7 +815,7 @@
         $docData = [];
 
         /* $sql = "SELECT * FROM tb_tareos WHERE DATE(fregsys) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)"; */
-        $sql = "SELECT idespecialidad, cespecialidad, fregsys, nflgactivo FROM tb_especialidad where  nflgactivo = 1";
+        $sql = "SELECT idespecialidad, cespecialidad, fregsys, nflgactivo FROM tb_especialidad where  nflgactivo = 1 ORDER BY cespecialidad";
         
         $statement = $pdo->prepare($sql);
         $statement -> execute();
@@ -840,7 +841,7 @@
                 INNER JOIN 
                     tb_encargados te
                 ON te.idencargado = tep.idencargado
-                WHERE tep.nflgactivo = 1";
+                WHERE tep.nflgactivo = 1 ORDER BY cnombrecompleto";
         
         $statement = $pdo->prepare($sql);
         $statement -> execute();
