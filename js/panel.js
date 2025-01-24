@@ -56,7 +56,7 @@ const observaciones = document.getElementById("observaciones");
 const motivo_descanso = document.getElementById("motivo_descanso");
 const fecha_cese = document.getElementById("fecha_cese");
 //1
-const turnodia = document.getElementById("turnodia");
+const turnodia = document.getElementById("turno");
 const motivo_cese = document.getElementById("motivo_cese");
 
 const menuList = document.getElementById("menuList");
@@ -124,7 +124,11 @@ document.addEventListener('focusin', (e) => {
         listarProyectos(e.target);
     }
 })
-
+/* document.addEventListener('keypress',async (e)=>{
+    if (e.target.id == 'ubicacion_padron') {
+        buscarJefeInmediato(document.getElementById(e.target.id).value);}
+})
+ */
 document.addEventListener('keypress', async (e) => {
     if (e.target.id == 'documento') {
         if (e.keyCode === 13) {
@@ -132,7 +136,13 @@ document.addEventListener('keypress', async (e) => {
             /* listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
             listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value) */
         }
-    } else if (e.target.id == 'regimen_trabajo') {
+    } //peticion busqueda de datos por apellido paterno
+    else if(e.target.id =='paterno' ){
+        if(e.keyCode === 13){
+            await buscarDatosNombre(e.target.value);
+        }
+    }
+    else if (e.target.id == 'regimen_trabajo') {
         if (e.keyCode === 13) {
             const regimen = e.target.value.split('/');
 
@@ -157,7 +167,15 @@ document.addEventListener('keypress', async (e) => {
         }
     } else if (e.target.id == 'ubicacion_padron') {
         buscar(document.getElementById(e.target.id).value);
-    } else if (e.target.id == 'documento_tercero') {
+    }
+    else if (e.target.id =='ubicacion_encargados'){
+        buscarJefeInmediato(document.getElementById(e.target.id).value);
+    }
+    else if(e.target.id =='ubicacion_JefesProyecto'){
+        buscarJefeProyecto(document.getElementById(e.target.id).value);
+    }
+
+     else if (e.target.id == 'documento_tercero') {
         if (e.keyCode === 13) {
             /* buscarDatosTerceros(e.target.value); */
             /* let datoTercero = await buscarDatosTerceroDB(e.target.value);
@@ -979,6 +997,15 @@ document.addEventListener('change', async (e) => {
 
         document.getElementById("dias_campo").value = diferenciaEnDias;
 
+        /* if (e.target.id == "ingreso_obra" || e.target.id == "salida_obra") {
+            const inicio = new Date(document.getElementById("ingreso_obra").value);
+            const fin = new Date(document.getElementById("salida_obra").value);
+
+            const diferenciaEnMilisegundos = fin - inicio;
+            const diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
+            document.getElementById("dias_campo").value = diferenciaEnDias; */
+
+        
         const partes = document.getElementById("regimen_trabajo").value.split(/[/xX]/);
         const numerador = parseInt(partes[0].trim());
         const denominador = parseInt(partes[1].trim());
@@ -987,7 +1014,7 @@ document.addEventListener('change', async (e) => {
         if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
             const resultado = numerador / denominador;
             document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value / resultado);
-            document.getElementById("")
+            /* document.getElementById("") */
         }
 
         const retorno = new Date(document.getElementById("salida_obra").value);
@@ -2718,6 +2745,53 @@ const buscar = (texto) => {
     for (i = 0; i < tr.length; i++) {
         visible = false;
         /* Obtenemos todas las celdas de la fila, no sólo la primera */
+        td = tr[i].getElementsByTagName("td");
+        for (j = 0; j < td.length; j++) {
+            if (td[j] && td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                visible = true;
+            }
+        }
+        if (visible === true) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+const buscarJefeInmediato = () =>{
+    let input, filter, table, tr, td, i, j, visible;
+
+    input = document.getElementById("ubicacion_encargados");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("tablaEncargadosBody");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        visible = false;
+        td = tr[i].getElementsByTagName("td");
+        for (j = 0; j < td.length; j++) {
+            if (td[j] && td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                visible = true;
+            }
+        }
+        if (visible === true) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+
+const buscarJefeProyecto = () =>{
+    let input, filter, table, tr, td, i, j, visible;
+
+    input = document.getElementById("ubicacion_JefesProyecto");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("tablaEncargadosProyectoBody");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        visible = false;
         td = tr[i].getElementsByTagName("td");
         for (j = 0; j < td.length; j++) {
             if (td[j] && td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {

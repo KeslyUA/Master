@@ -57,7 +57,10 @@
                                 </a>
                             </div>
                         </div>
-
+                        <div class="cuatro_columnas">
+                            <label for="ubicacion_encargados">Filtro:</label>
+                            <input type="text" id="ubicacion_encargados" name="ubicacion_encargados">
+                        </div>
 
                         <div class="cuerpo_tabla">
                             <table id="tablaEncargados">
@@ -88,7 +91,10 @@
                                 </a>
                             </div>
                         </div>
-
+                        <div class="cuatro_columnas">
+                            <label for="ubicacion_JefesProyecto">Filtro:</label>
+                            <input type="text" id="ubicacion_JefesProyecto" name="ubicacion_JefesProyecto">
+                        </div>
 
                         <div class="cuerpo_tabla">
                             <table id="tablaEncargadosProyecto">
