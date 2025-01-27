@@ -17,6 +17,7 @@ export const buscarDatos = async (dni) =>{
         .then(response => response.json())
         .then(async data => {
             console.log(data)
+            documento.value         =data.datos[0]['dni'];
             paterno.value           = data.datos[0]['paterno'];
             materno.value           = data.datos[0]['materno'];
             nombres.value           = data.datos[0]['nombres'];
@@ -66,7 +67,7 @@ export const buscarDatos = async (dni) =>{
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
                 //2
-                turnodia.value = data.datosTareo[0]['turno'];
+                turnodia.value = data.datosTareo[0]['turnodia'];
                 regimen.value = data.datosTareo[0]['nregimen'];
                 especificacion_contrato.value = data.datosTareo[0]['nespecificacion']
                 document.getElementById("existe").value = 1;
@@ -124,6 +125,132 @@ export const buscarDatos = async (dni) =>{
 
     return true;
 }
+
+
+/* 
+export const buscarDatosApellido = async (dni) =>{
+    let formData = new FormData();
+    
+    formData.append('funcion','buscarDatosColaborador');
+    formData.append('dni',dni);
+
+    try {
+        await fetch('../inc/busquedas.inc.php',{
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(async data => {
+            console.log(data)
+            documento.value           = data.datos[0]['dni'];
+            document.getElementById("paterno").value       =data.datos[0]['paterno'];
+            materno.value           = data.datos[0]['materno'];
+            nombres.value           = data.datos[0]['nombres'];
+            cargo.value             = data.datos[0]['cargo'];
+            correo.value            = data.datos[0]['correo'];
+            codigo.value            = data.datos[0]['cut'];
+            nacimiento.value        = data.datos[0]['nacimiento'];
+            direccion.value         = data.datos[0]['direccion'];
+            fecha_ingreso.value     = data.datos[0]['ingreso'];
+            estado.value            = data.datos[0]['estado'];
+            grupo.value             = data.datos[0]['sangre'];
+            planilla.value          = data.datos[0]['regimen'];
+            nacionalidad.value      = data.datos[0]['pais'];
+            telefono.value          = data.datos[0]['telefono'];
+            proyecto.value          = data.datos[0]['proyecto'];
+            proyecto_actual.value   = data.datos[0]['proyecto'].split(" ")[0];
+
+            dpto.value          = data.ubigeo['dpto'];
+            prov.value          = data.ubigeo['prov'];
+            dist.value          = data.ubigeo['dist'];
+
+            procedencia.value   = data.datos[0]['cod_pais'] == 144 ? data.origen['dpto'] : data.datos[0]['pais'];
+            document.getElementById("foto_personal").style.backgroundImage = `url("https://rrhhperu.sepcon.net/postulanterrhh/documentos/jpg/${data.foto.data}")`
+            await listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
+            await listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value)
+            if (data.datosTareo.length > 0) {
+                condicion.value = data.datosTareo[0]['ncondicion'];
+                personal.value = data.datosTareo[0]['npersonal'];;
+                especialidad.value = data.datosTareo[0]['cespecialidad'];
+                manoobra.value = data.datosTareo[0]['nmanoobra'];
+                proyecto_actual.value = data.datosTareo[0]['cproyecto'];
+                await listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
+                await listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value)
+                encargado.value = data.datosTareo[0]['cencargado'];    
+                fase_actual.value = data.datosTareo[0]['cfase'];
+                ubicacion.value = data.datosTareo[0]['cubicacion'];
+                regimen_trabajo.value = data.datosTareo[0]['cregimen'];
+                ingreso_obra.value = data.datosTareo[0]['fingreso'];
+                salida_obra.value = data.datosTareo[0]['fsalida'];
+                retorno_programado.value = data.datosTareo[0]['fretorno'];
+                dias_goce.value = data.datosTareo[0]['dgoce'];
+                dias_libre.value = data.datosTareo[0]['dlibre'];
+                dias_campo.value = data.datosTareo[0]['dcampo'];
+                dias_reales.value = data.datosTareo[0]['dreales'];
+                observaciones.value = data.datosTareo[0]['cobservaciones'];
+                motivo_descanso.value = data.datosTareo[0]['cdescanso'];
+                //fecha_cese.value = data.datosTareo[0]['fcese'];
+                motivo_cese.value = data.datosTareo[0]['cmotivocese'];
+                //2
+                turnodia.value = data.datosTareo[0]['turnodia'];
+                regimen.value = data.datosTareo[0]['nregimen'];
+                especificacion_contrato.value = data.datosTareo[0]['nespecificacion']
+                document.getElementById("existe").value = 1;
+            }else{
+                
+                encargado.value = -1;
+                condicion.value = -1;
+                personal.value = -1;
+                especialidad.value = -1;
+                manoobra.value = -1;
+                
+                fase_actual.value = -1;
+                ubicacion.value = -1;
+                regimen_trabajo.value = '';
+                ingreso_obra.value = null;
+                salida_obra.value = null;
+                retorno_programado.value = null;
+                dias_goce.value = '';
+                dias_libre.value = '';
+                dias_campo.value = '';
+                dias_reales.value = '';
+                observaciones.value = '';
+                motivo_descanso.value = -1;
+                motivo_cese.value = -1;
+                //3
+                turnodia.value  = '';
+                fecha_cese.value = null;
+                regimen.value = -1;
+                especificacion_contrato.value = -1;
+
+                document.getElementById("existe").value = 0;
+            }
+
+            let valor,index = 1,activos = 0,descanso = 0,medico = 0,color_fondo;
+
+            data.tareo.forEach(element =>{
+                color_fondo = "#fff";
+
+                if (element.estado == 'A'){
+                    activos++;
+                    color_fondo = "#92CDDC"
+                }
+
+                valor = "p"+element.dia;
+                document.getElementById(valor).value = element.estado;
+                document.getElementById(valor).style.backgroundColor = color_fondo;
+            })
+
+            document.getElementById('activo').value = activos;
+        }) 
+    } catch (error) {
+        console.log(error.message);
+    }
+    
+
+    return true;
+} */
+    
 
 export const buscarDatosTerceros = (dni) =>{
     let formData = new FormData();
@@ -226,7 +353,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 motivo_descanso.value = data.datosTareo[0]['cdescanso'];
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
-                turnodia.value = data.datosTareo[0]['turno'];
+                turnodia.value = data.datosTareo[0]['turnodia'];
                 regimen.value       = data.datosTareo[0]['nregimen'];
                 especificacion_contrato.value = data.datosTareo[0]['nespecificacion'];
                 document.getElementById("existeTerceroTareoData").value = "1";

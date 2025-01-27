@@ -56,7 +56,7 @@ const observaciones = document.getElementById("observaciones");
 const motivo_descanso = document.getElementById("motivo_descanso");
 const fecha_cese = document.getElementById("fecha_cese");
 //1
-const turnodia = document.getElementById("turno");
+const turnodia = document.getElementById("turnodia");
 const motivo_cese = document.getElementById("motivo_cese");
 
 const menuList = document.getElementById("menuList");
@@ -67,6 +67,7 @@ const fileUpload = document.getElementById("fileUpload");
 
 const modalHojaSalida = document.getElementById("hojaSalidaModal");
 const vistaPreliminarHojaSalida = document.getElementById("vistaPreliminarHojaSalida");
+const buscarDatosEmpleados=document.getElementById("sugerencia");
 
 const p1 = document.getElementById("p1");
 const p2 = document.getElementById("p2");
@@ -136,12 +137,8 @@ document.addEventListener('keypress', async (e) => {
             /* listarFasesByProyecto(document.getElementById("fase_actual"), document.getElementById("proyecto_actual").value)
             listarEncargadosByProyecto(document.getElementById("encargado"), document.getElementById("proyecto_actual").value) */
         }
-    } //peticion busqueda de datos por apellido paterno
-    else if(e.target.id =='paterno' ){
-        if(e.keyCode === 13){
-            await buscarDatosNombre(e.target.value);
-        }
-    }
+    } 
+    
     else if (e.target.id == 'regimen_trabajo') {
         if (e.keyCode === 13) {
             const regimen = e.target.value.split('/');
@@ -1068,8 +1065,18 @@ function reporteMatriz() {
 function grabarDatosMatriz() {
     //serializar los formulario en javascript
     const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
+    /* const form = document.getElementById('data_matriz');
+    const datos = new FormData(form); */
     datos.append("funcion", "grabar");
     datos.append("user", localStorage.getItem("username"));
+    /* datos.append("turno",document.getElementById("turnodia").value);
+    datos.append("encargado",document.getElementById("encargado").value); */
+    /* const form = $.querySelector('#datos_entidad')
+      const datos = new FormData(form); */
+
+    /* const datos=new FormData(form); */
+    /* datos.append("funcion", "grabar"); */
+    /* datos.append("user", localStorage.getItem("username")); */
     fetch('../inc/grabar.inc.php', {
         method: 'POST',
         body: datos
@@ -1989,7 +1996,7 @@ const obtenerReportePadron = async () => {
             dato['tipoPersonal'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.tipoPersonal ?? ''
             dato['procedencia'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].cod_pais == 144 ? datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.origen['dpto'] :datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].pais;
             dato['diasCampo'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.diasCampo
-            dato['turno'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.turno
+            dato['turnodia'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.turno
             DATOS.push(dato);
         }
 
@@ -2318,7 +2325,7 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
             worksheet.getCell(fila, 13).value = item.proyecto
             worksheet.getCell(fila, 14).value = item.ubicacion
             worksheet.getCell(fila, 11).value = item.cargo
-            worksheet.getCell(fila, 55).value = item.turno
+            worksheet.getCell(fila, 55).value = item.turnodia
             
 
             // Llenar celdas para los días (A, D, F, M, V, P, total)
@@ -2969,3 +2976,83 @@ function openCity(evt, cityName) {
         document.getElementById("function").value = "grabarEncargadoProyecto"
     }
 }
+
+document.getElementById("paterno").addEventListener("keyup", () => {
+    try {
+      const datos = new FormData(); 
+      const paterno = document.getElementById("paterno").value;
+  
+      const sugerencia = document.getElementById("sugerencia");
+
+   
+    if (!paterno) {
+      sugerencia.style.display = "none";
+      return; 
+    }
+  
+      datos.append("funcion", "buscarEmpleados"); 
+      datos.append("paterno", paterno); 
+  
+      fetch("../inc/busquedas.inc.php", {
+        method: "POST",
+        body: datos,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          const sugerencia = document.getElementById("sugerencia");
+          sugerencia.style.display = "block";
+          sugerencia.innerHTML = ""; 
+          data.datos.forEach((item) => {
+            const div = document.createElement("div");
+            div.id=item.dni
+            div.textContent = `${item.paterno} ${item.materno} ${item.nombres}`; 
+            div.classList.add("sugerencia-item");
+            sugerencia.appendChild(div);
+
+            div.addEventListener('click', () => {
+                sugerencia.style.display = "none"; 
+                /* buscarDatosApellido(item.dni); */
+                buscarDatos(item.dni)
+          });
+         
+        });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {
+      mostrarMensaje(error.message, "msj_error");
+    }
+  });
+  
+/* export function buscarDatosempleados(query) {
+    const suggestions = document.getElementById("sugerencia");
+
+    if (query.length === 0) {
+        suggestions.style.display = "none";
+        suggestions.innerHTML = "";
+        return;
+    }
+
+    // Reemplazar espacios por "%20" en la consulta (esto es opcional dependiendo de cómo esté estructurada la API)
+    const nombres = encodeURIComponent(query);
+
+    fetch(`http://sicalsepcon.net/api/nombresApi.php?nombres=${nombres}`)
+        .then(response => response.json())
+        .then(data => {
+            suggestions.style.display = "block";
+            if (data.datos) {
+                // Mostrar las sugerencias si los datos existen
+                suggestions.innerHTML = data.datos.map(item => `<div class="suggestion-item">${item.nombre}</div>`).join('');
+            } else {
+                suggestions.innerHTML = '<div>No se encontraron resultados.</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            suggestions.innerHTML = '<div>Error al obtener los datos.</div>';
+        });
+} */
+
+// Opcional: Escuchar clics en las sugerencias

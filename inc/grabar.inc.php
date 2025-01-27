@@ -127,7 +127,7 @@
                                         $datos['motivo_descanso'],
                                         $datos['fecha_cese'],
                                         $datos['motivo_cese'],
-                                        $datos['turno'],
+                                        $datos['turnodia'],
                                         $datos['regimen'],
                                         $datos['especificacion_contrato'],
                                         $datos['user']));
@@ -205,7 +205,7 @@
                                         $datos['motivo_cese'],
                                         $datos['regimen'],
                                         $datos['especificacion_contrato'],
-                                        $datos['turno'],
+                                        $datos['turnodia'],
                                        /*  $datos['user'], */
                                         $nddoc
                                        ));
@@ -616,7 +616,7 @@
                                         $datos['motivo_descanso'],
                                         $datos['fecha_cese'],
                                         $datos['motivo_cese'],
-                                        $datos['turno'],
+                                        $datos['turnodia'],
                                         $datos['regimen'],
                                         $datos['especificacion_contrato']));
 

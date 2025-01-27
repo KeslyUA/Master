@@ -59,7 +59,7 @@
                         </div>
                         <div class="cuatro_columnas">
                             <label for="ubicacion_encargados">Filtro:</label>
-                            <input type="text" id="ubicacion_encargados" name="ubicacion_encargados">
+                            <input type="text" id="ubicacion_encargados" name="ubicacion_encargados" class="ubicacion_encargados"><i class="fas fa-search" style=" color: #777;padding: 10px;"></i>
                         </div>
 
                         <div class="cuerpo_tabla">
@@ -93,7 +93,7 @@
                         </div>
                         <div class="cuatro_columnas">
                             <label for="ubicacion_JefesProyecto">Filtro:</label>
-                            <input type="text" id="ubicacion_JefesProyecto" name="ubicacion_JefesProyecto">
+                            <input type="text" id="ubicacion_JefesProyecto" name="ubicacion_JefesProyecto" class="ubicacion_JefesProyecto"><i class="fas fa-search" style=" color: #777;padding: 10px;"></i>
                         </div>
 
                         <div class="cuerpo_tabla">
@@ -115,7 +115,6 @@
                 </div>
             </div>
         </div>
-
     </section>
 </body>
 

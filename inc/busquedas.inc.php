@@ -4,6 +4,8 @@
     if ( isset( $_POST )) {
         if ($_POST['funcion'] === "buscarDatosColaborador") {
             echo json_encode(buscarDatosColaborador($pdo,$_POST['dni'])); 
+        } else if ($_POST['funcion'] === "buscarEmpleados") {
+            echo json_encode(buscarEmpleados($pdo,$_POST['paterno']));
         }else if ($_POST['funcion'] === "existeDatosColaborador") {
             echo json_encode(existeDatosColaborador($pdo,$_POST['dni'])); 
         }else if ($_POST['funcion'] === "buscarDatosUsuarioSistema") {
@@ -84,6 +86,31 @@
             return false;
         }
     }
+     function buscarEmpleados($pdo,$doc){
+        try{
+            $nombres = str_replace(" ","%20",$doc);
+            $url = "http://sicalsepcon.net/api/nombresApipadron.php?nombres=".$nombres;
+            $json_data = file_get_contents($url);
+            $datos = json_decode($json_data);
+
+            $nreg = count($datos);
+
+            $existe = $nreg >= 1 ? true : false;
+            if($existe){
+
+                return array(
+                    "datos"=>$datos,
+                    "existe"=>$existe
+                );
+            }else {
+                return array("existe" => $existe);
+              }
+         
+        }catch (PDOException $th) {
+            echo "Error: " . $th->getMessage();
+            return false;
+        }
+    }  
 
     function ubigeoPadron($pdo, $doc){
         try {
@@ -196,6 +223,7 @@
                                     tb_tareo.d29,
                                     tb_tareo.d30,
                                     tb_tareo.d31,
+                                    tb_tareo.d32,
                                     tb_tareo.fregsys 
                                 FROM
                                     tb_tareo 
@@ -504,14 +532,23 @@
             }
 
             $datosT = [];
-            /* $sqlData = "SELECT nddoc, t.fingreso , sum(tareos.estado = 'A' and tareos.fregsys >= t.fingreso) as diasCampo, personal.cdescripcion as tipoPersonal, regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t 
-            LEFT JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03 
-            LEFT JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01
-            LEFT JOIN tb_parametros personal ON personal.idreg  = t.npersonal and personal.nclase = 02
-            left join tb_tareos tareos on tareos.nrodoc = t.nddoc group by nddoc"; */
+            $sqlData = "SELECT nddoc, t.fingreso,t.dcampo as diasCampo,t.turno , personal.cdescripcion as tipoPersonal, 
+            regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t LEFT JOIN tb_parametros regimen 
+            ON regimen.idreg = t.nregimen AND regimen.nclase = 03 LEFT JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra 
+            AND manoobra.nclase = 01 LEFT JOIN tb_parametros personal ON personal.idreg = t.npersonal and personal.nclase = 02 left join tb_tareos tareos on tareos.nrodoc = t.nddoc group by nddoc;";  
+            //kes
+           /*  $sqlData =" SELECT 
+                t.fsalida, 
+                DATEDIFF(t.fsalida, CURDATE()) AS dcampo,
+             SUM(CASE WHEN t.fsalida = 'A' AND DATEDIFF(t.fsalida, CURDATE()) >= 0 THEN 1 ELSE 0 END) AS suma_condiciones
+            FROM 
+                tb_datostareo t 
+            GROUP BY 
+                t.fsalida, dcampo"
+            ;   */
 
-            //Eliminar tablas temporales (si existen)
-            $pdo->exec("DROP TEMPORARY TABLE IF EXISTS temp_tareo_resultados;");
+             //Eliminar tablas temporales (si existen) */
+           /*  $pdo->exec("DROP TEMPORARY TABLE IF EXISTS temp_tareo_resultados;");
             $pdo->exec("DROP TEMPORARY TABLE IF EXISTS temp_tareo_validacion;");
             $pdo->exec("DROP TEMPORARY TABLE IF EXISTS temp_tareo_data;");
 
@@ -580,10 +617,12 @@
                 ON resultados.nddoc = validacion.nddoc
             ) AS table_tareos
             GROUP BY nddoc;
-            ");
-
+            "); 
+ */
             //Obtener los resultados de la tabla temporal
-            $dataStatement = $pdo->query("SELECT * FROM temp_tareo_data;");
+            /* $dataStatement = $pdo->query("SELECT * FROM temp_tareo_data;"); */
+            $dataStatement=$pdo->prepare($sqlData);
+            $dataStatement->execute();
             while($rowData = $dataStatement->fetch(PDO::FETCH_ASSOC)){
                 $datosT[] = $rowData;
             }
@@ -868,4 +907,14 @@
 
         return array("datos" => $docData);
     }
-?>
+    // Recibir la consulta del usuario
+/* $query = $_POST['query'] ?? '';
+
+// Buscar datos en la base de datos
+$stmt = $pdo->prepare("SELECT nombre FROM tu_tabla WHERE nombre LIKE :query LIMIT 10");
+$stmt->execute(['query' => "%$query%"]);
+$resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Enviar resultados como JSON
+echo json_encode(array_column($resultados, 'nombre'));
+?> */
