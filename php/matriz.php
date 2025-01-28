@@ -26,7 +26,7 @@
                 </div>
                 <div class="dos_columnas" style="position: relative;">
                     <label for="paterno">Ap.Paterno:</label>
-                    <input type="text" name="paterno" id="paterno" form="data_matriz" style="box-sizing: border-box;">
+                    <input type="text" name="paterno" id="paterno" form="data_matriz" style="box-sizing: border-box;" autocomplete="off">
                     <div id="sugerencia" style="border: 1px solid #ddd; display: none; max-height: 300px; overflow-y: auto;position: relative;background-color: white;z-index: 999;overflow: hidden;position: absolute;width: 60%;top: 100%;left: 0;box-sizing: border-box;"></div>
                 </div>
                <div class="dos_columnas">

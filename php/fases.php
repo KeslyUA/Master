@@ -56,9 +56,11 @@
                                     <p>Agregar<br>Fases</p>
                                 </a>
                             </div>
+                            
                         </div>
-
-
+                        <label for="ubicacion_fases">Filtro:</label>
+                        <input type="text" id="ubicacion_fases" name="ubicacion_fases" class="ubicacion_fases"><i class="fas fa-search" style=" color: #777;padding: 10px;"></i>
+                        
                         <div class="cuerpo_tabla">
                             <table id="tablaFases">
                                 <thead>
@@ -89,7 +91,9 @@
                             </div>
                         </div>
 
-
+                        <label for="ubicacion_Proyectosfases">Filtro:</label>
+                        <input type="text" id="ubicacion_Proyectosfases" name="ubicacion_Proyectosfases" class="ubicacion_Proyectosfases"><i class="fas fa-search" style=" color: #777;padding: 10px;"></i>
+                        
                         <div class="cuerpo_tabla">
                             <table id="tablaProyectosFases">
                                 <thead>

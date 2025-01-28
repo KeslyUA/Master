@@ -171,7 +171,12 @@ document.addEventListener('keypress', async (e) => {
     else if(e.target.id =='ubicacion_JefesProyecto'){
         buscarJefeProyecto(document.getElementById(e.target.id).value);
     }
-
+    else if(e.target.id =='ubicacion_fases'){
+        buscarFases(document.getElementById(e.target.id).value);
+    }
+    else if(e.target.id =='ubicacion_Proyectosfases'){
+        buscarProyectosyFases(document.getElementById(e.target.id).value);
+    }
      else if (e.target.id == 'documento_tercero') {
         if (e.keyCode === 13) {
             /* buscarDatosTerceros(e.target.value); */
@@ -982,11 +987,11 @@ document.addEventListener('change', async (e) => {
             document.getElementById("fecha_text").textContent = 'Fecha de Proceso: ' + e.target.value;
         }
     } //calcula dias de campo
-    if (e.target.id == "salida_obra") {
-        const ultimoDiaIngreso = new Date(document.getElementById("salida_obra").value);
+    if (e.target.id == "ingreso_obra") {
+        const ultimoDiaIngreso = new Date(document.getElementById("ingreso_obra").value);
         const hoy = new Date();
 
-        const diferenciaEnMilisegundos = hoy - ultimoDiaIngreso;
+        const diferenciaEnMilisegundos = ((hoy - ultimoDiaIngreso)+1);
         ultimoDiaIngreso.setHours(0, 0, 0, 0);
         hoy.setHours(0, 0, 0, 0);
 
@@ -2795,6 +2800,52 @@ const buscarJefeProyecto = () =>{
     input = document.getElementById("ubicacion_JefesProyecto");
     filter = input.value.toUpperCase();
     table = document.getElementById("tablaEncargadosProyectoBody");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        visible = false;
+        td = tr[i].getElementsByTagName("td");
+        for (j = 0; j < td.length; j++) {
+            if (td[j] && td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                visible = true;
+            }
+        }
+        if (visible === true) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+const buscarFases = () =>{
+    let input, filter, table, tr, td, i, j, visible;
+
+    input = document.getElementById("ubicacion_fases");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("tablaFasesBody");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        visible = false;
+        td = tr[i].getElementsByTagName("td");
+        for (j = 0; j < td.length; j++) {
+            if (td[j] && td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                visible = true;
+            }
+        }
+        if (visible === true) {
+            tr[i].style.display = "";
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
+}
+const buscarProyectosyFases = () =>{
+    let input, filter, table, tr, td, i, j, visible;
+
+    input = document.getElementById("ubicacion_Proyectosfases");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("tablaProyectosFasesBody");
     tr = table.getElementsByTagName("tr");
 
     for (i = 0; i < tr.length; i++) {
