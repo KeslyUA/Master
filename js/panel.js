@@ -2271,7 +2271,7 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
         worksheet.getRow(fila).eachCell({ includeEmpty: true },(cell) => {
             cell.style = dataStyle
         })
-        /* fila++ */
+        fila++
         worksheet.getCell(`BB${fila}`).value = ' '
         worksheet.getRow(fila).eachCell({ includeEmpty: true },(cell) => {
             cell.style = dataStyle
