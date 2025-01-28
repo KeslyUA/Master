@@ -2870,10 +2870,16 @@ const hojaSalida = (proyecto) => {
         if (documento.value == "") throw new Error("Escribe el nro. de documento");
 
         const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
+        const jsubicacion= document.getElementById('ubicacion').options[document.getElementById('ubicacion').selectedIndex].text;
+        const frentetrabajo=document.getElementById('fase_actual').options[document.getElementById('fase_actual').selectedIndex].text;
+        const motivocs=document.getElementById('motivo_cese').options[document.getElementById('motivo_cese').selectedIndex].text;
 
         datos.append("funcion", "hojaSalida");
         datos.append("proyecto", proyecto);
-
+        datos.append("jsubicacion",jsubicacion);
+        datos.append("frentetrabajo",frentetrabajo);
+        datos.append("motivocs",motivocs);
+        
         fetch('../inc/reportes.inc.php', {
             method: 'POST',
             body: datos

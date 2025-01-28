@@ -192,8 +192,8 @@
 
         $archivo = $datos['documento']."-".date('d-m-Y').'.pdf';
         $ruta = '../documentos/hojasalida/';
+        
         $nombre = $datos['paterno']." ".$datos['materno']." ".$datos['nombres'];
-
         $fecha = strftime('%A %e de %B de %Y');
 
         $pdf = new FPDF();
@@ -212,7 +212,7 @@
         $pdf->Ln(2);
 
         $pdf->Cell(40,5,utf8_decode("LUGAR Y FECHA:"),0,0,"L");
-        $pdf->Cell(80,5,utf8_decode($datos['ubicacion']),0,0,"L");
+        $pdf->Cell(80,5,utf8_decode($datos['jsubicacion']),0,0,"L");
         $pdf->Cell(40,5,$fecha,0,1,"L");
         $pdf->Ln(2);
 
@@ -229,7 +229,7 @@
         $pdf->Ln(1);
 
         $pdf->Cell(40,5,utf8_decode("FRENTE DE TRABAJO :"),0,0,"L");
-        $pdf->Cell(80,5,utf8_decode($datos['fase_actual']),0,0,"L");
+        $pdf->Cell(80,5,utf8_decode($datos['frentetrabajo']),0,0,"L");
         $pdf->Cell(40,5,utf8_decode("FECHA DE CESE :"),0,0,"L");
         $pdf->Cell(80,5,utf8_decode($datos['fecha_cese']),0,1,"L");
         $pdf->Ln(1);
@@ -273,7 +273,7 @@
 
         $pdf->Cell(20,5,utf8_decode("MOTIVO DE CESE :"),0,1,"L");
         $pdf->SetX(35);
-        $pdf->Multicell(170,5,$datos['motivo_cese']);
+        $pdf->Multicell(170,5,$datos['motivocs']);
         $pdf->Ln(2);
 
         $pdf->Cell(40,5,utf8_decode("OBSERVACIONES :"),0,1,"L");
