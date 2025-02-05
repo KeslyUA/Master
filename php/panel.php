@@ -36,6 +36,9 @@
             <div class="img_user">
                 
             </div>
+            <div>
+            <i class="fas fa-sign-out-alt  fa-2x" style="color:white;" title="cerrar sesión" id="cerrar-Sesion"></i>
+            </div>
         </div>
         <div id="menu" class="menu">
             <a href="#" id="toggleMenu"><i class="fas fa-bars"></i></a>

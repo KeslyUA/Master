@@ -101,7 +101,9 @@
                                                   tb_datostareo.turno = ?,
                                                   tb_datostareo.nregimen = ?,
                                                   tb_datostareo.nespecificacion = ?,
-                                                  tb_datostareo.createdBy = ?";
+                                                  tb_datostareo.createdBy = ?,
+                                                  tb_datostareo.transitoingreso = ?,
+                                                  tb_datostareo.transitosalida= ?";
             
             $statement = $pdo->prepare($sql);
             $nddoc = isset($datos['documento']) ? $datos['documento'] : (isset($datos['documento_tercero']) ? $datos['documento_tercero'] : null);
@@ -130,7 +132,10 @@
                                         $datos['turnodia'],
                                         $datos['regimen'],
                                         $datos['especificacion_contrato'],
-                                        $datos['user']));
+                                        $datos['user'],
+                                        $datos['transito_ingreso'],
+                                        $datos['transito_salida']
+                                    ));
 
             $results = $statement ->fetchAll();
             $rowaffect = $statement->rowCount($sql);
@@ -173,7 +178,9 @@
                                                   tb_datostareo.cmotivocese = ?,
                                                   tb_datostareo.nregimen = ?,
                                                   tb_datostareo.nespecificacion = ?,
-                                                  tb_datostareo.turno = ?
+                                                  tb_datostareo.turno = ?,
+                                                  tb_datostareo.transitoingreso = ?,
+                                                  tb_datostareo.transitosalida = ?
                                                   /* tb_datostareo.updatedBy = ?,
                                                   tb_datostareo.fmodificacion = current_timestamp() */
                         WHERE tb_datostareo.nddoc = ?";
@@ -206,6 +213,8 @@
                                         $datos['regimen'],
                                         $datos['especificacion_contrato'],
                                         $datos['turnodia'],
+                                        $datos['transito_ingreso'],
+                                        $datos['transito_salida'],
                                        /*  $datos['user'], */
                                         $nddoc
                                        ));

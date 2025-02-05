@@ -54,6 +54,8 @@
             echo json_encode(obtenerProyectosFasesById($pdo, $_POST['id']));
         }else if ($_POST['funcion'] === "obtenerEncargadosProyectoById"){
             echo json_encode(obtenerEncargadosProyectoById($pdo, $_POST['id']));
+        }else if($_POST['funcion']==="obtenerRegimen"){
+            echo json_encode(obtenerRegimen($pdo));
         }
     }
  
@@ -160,7 +162,10 @@
                             tb_datostareo.turno,
                             tb_datostareo.nregimen,
                             tb_datostareo.nespecificacion,
-                            tb_datostareo.fregsys 
+                            tb_datostareo.fregsys,
+                            tb_datostareo.transitoingreso,
+                            tb_datostareo.transitosalida
+
                         FROM
                             tb_datostareo 
                         WHERE
@@ -224,6 +229,8 @@
                                     tb_tareo.d30,
                                     tb_tareo.d31,
                                     tb_tareo.d32,
+                                    tb_tareo.d33,
+                                    tb_tareo.d34,
                                     tb_tareo.fregsys 
                                 FROM
                                     tb_tareo 
@@ -693,6 +700,21 @@
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         return $result;
     }
+    function obtenerRegimen($pdo){
+        $docData=[];
+        $sql="SELECT cdescrip,idreg,diasgoce,periodo from regimen";
+        $statement = $pdo->prepare($sql);
+        $statement -> execute();
+        while($row = $statement->fetch(PDO::FETCH_ASSOC)){
+            $docData[] = $row;
+        }
+
+        return $docData;
+    }
+    
+    /* function obtenerDiasGoce($pdo){
+        
+    } */
 
     function buscarDatosColaboradorTercero ($pdo,$dni){
         $tercero = obtenerTercero($pdo, $dni);

@@ -34,6 +34,7 @@ export const buscarDatos = async (dni) =>{
             telefono.value          = data.datos[0]['telefono'];
             proyecto.value          = data.datos[0]['proyecto'];
             proyecto_actual.value   = data.datos[0]['proyecto'].split(" ")[0];
+            regimen_trabajo.value   =data.datos[0]['regimen'].split("")[0];
 
             dpto.value          = data.ubigeo['dpto'];
             prov.value          = data.ubigeo['prov'];
@@ -54,7 +55,7 @@ export const buscarDatos = async (dni) =>{
                 encargado.value = data.datosTareo[0]['cencargado'];    
                 fase_actual.value = data.datosTareo[0]['cfase'];
                 ubicacion.value = data.datosTareo[0]['cubicacion'];
-                regimen_trabajo.value = data.datosTareo[0]['cregimen'];
+                regimen_trabajo.value = data.datosTareo[0]['cregimen']; 
                 ingreso_obra.value = data.datosTareo[0]['fingreso'];
                 salida_obra.value = data.datosTareo[0]['fsalida'];
                 retorno_programado.value = data.datosTareo[0]['fretorno'];
@@ -68,6 +69,8 @@ export const buscarDatos = async (dni) =>{
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
                 //2
                 turnodia.value = data.datosTareo[0]['turnodia'];
+                transito_ingreso=data.datosTareo[0]['transitoin'];
+                transito_salida = data.datosTareo[0]['transitosal'];
                 regimen.value = data.datosTareo[0]['nregimen'];
                 especificacion_contrato.value = data.datosTareo[0]['nespecificacion']
                 document.getElementById("existe").value = 1;
@@ -81,15 +84,17 @@ export const buscarDatos = async (dni) =>{
                 /* proyecto_actual.value = ''; */
                 fase_actual.value = -1;
                 ubicacion.value = -1;
-                regimen_trabajo.value = '';
+                /* regimen_trabajo.value = -1; */
                 ingreso_obra.value = null;
                 salida_obra.value = null;
                 retorno_programado.value = null;
-                dias_goce.value = '';
+                dias_goce.value = ''; 
                 dias_libre.value = '';
                 dias_campo.value = '';
                 dias_reales.value = '';
                 observaciones.value = '';
+                transito_ingreso.value = '';
+                transito_salida.value = '';
                 motivo_descanso.value = -1;
                 motivo_cese.value = -1;
                 //3
@@ -354,7 +359,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
                 turnodia.value = data.datosTareo[0]['turnodia'];
-                regimen.value       = data.datosTareo[0]['nregimen'];
+                regimen.value       = data.datosTareo[0]['nregimen']; 
                 especificacion_contrato.value = data.datosTareo[0]['nespecificacion'];
                 document.getElementById("existeTerceroTareoData").value = "1";
             }else{
@@ -367,17 +372,17 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 /* proyecto_actual.value = -1; */
                 fase_actual.value = '';
                 ubicacion.value = '';
-                regimen_trabajo.value = '';
+               /*  regimen_trabajo.value = -1; */
                 ingreso_obra.value = '';
                 salida_obra.value = '';
                 retorno_programado.value = '';
-                dias_goce.value = '';
+                 dias_goce.value = ''; 
                 dias_libre.value = '';
                 dias_campo.value = '';
                 dias_reales.value = '';
                 observaciones.value = '';
                 motivo_descanso.value = '';
-                regimen.value = -1;
+                regimen.value = -1; 
                 especificacion_contrato.value = -1;
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = '';
@@ -532,3 +537,55 @@ export const listarProyectos = async (select) =>{
             console.log(error.message);
         }
 }
+export const listarRegimen = async (select) =>{
+    const formData = new FormData();
+        formData.append("funcion","obtenerRegimen");
+        select.innerHTML = `<option value='-1'>Seleccionar</option>`;
+
+        try {
+            await fetch('../inc/busquedas.inc.php',{
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                
+               data.forEach(element => {
+                    let option = document.createElement("option");
+                     option.value = element.idreg; 
+                     option.dataset.diasgoce=element.diasgoce; 
+                     option.dataset.periodo=element.periodo;
+                    option.innerHTML = element.cdescrip;
+
+                    select.appendChild(option);
+
+               });
+               select.addEventListener('change',async ()=>{
+                const selectgoce = select.options[select.selectedIndex];
+                const diasgoce = selectgoce.dataset.diasgoce || "";
+                const diacampo = selectgoce.dataset.periodo || "";
+                document.getElementById("dias_goce").value = diasgoce;
+                document.getElementById("dias_campo").value = diacampo;
+               })
+               })
+               /* selectRegimen.addEventListener("change", (e) => {
+                const selectRegimen = data.find(item => item.idreg == e.target.value);
+                if (selectRegimen) {
+                    iDiasGoce.value = selectRegimen.diasgoce;  // Asigna el valor al input de texto
+                } else {
+                    iDiasGoce.value = ""; // Si no hay selección válida, limpiar el campo
+                }
+              /*  let option = document.createElement("option");
+                     option.value = ""; 
+                    option.innerHTML = "2x1";
+    
+                )    select.appendChild(option); 
+            }); */
+        } catch (error) {
+            console.log(error.message);
+        }
+}
+
+
+
+

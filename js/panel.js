@@ -1,4 +1,4 @@
-import { buscarDatosColaboradorTercero, buscarDatos, buscarDatosTerceroDB, buscarDatosTerceros, listarProyectos } from "./matriz.js";
+import { buscarDatosColaboradorTercero, buscarDatos, buscarDatosTerceroDB, buscarDatosTerceros, listarProyectos, listarRegimen } from "./matriz.js";
 import { calcularfechas, mostrarMensaje } from "./funciones.js";
 import { buscarDatosUsuarios } from "./usuarios.js";
 import { buscarProyectos, getColaboradorRegistro, getTareo, getTareosByFecha, listarPadron, listarPadronByFecha, listarPadronTerceros, listarPadronTercerosByFecha } from "./padron.js";
@@ -113,6 +113,10 @@ if (!(username == "admin" || username == "adminrrhh")) {
     document.getElementById("usuarios").style.display = 'none';
 }
 listarProyectos(document.getElementById("proyecto_actual"));
+/* const selectRegimen = document.getElementById("regimen_trabajo");
+const iDiasGoce = document.getElementById("dias_goce"); */
+/* listarRegimen(selectRegimen,iDiasGoce); */
+listarRegimen(document.getElementById("regimen_trabajo"))
 listarUbicaciones(document.getElementById("ubicacion"));
 listarEspecialidades(document.getElementById("especialidad"));
 
@@ -139,7 +143,7 @@ document.addEventListener('keypress', async (e) => {
         }
     } 
     
-    else if (e.target.id == 'regimen_trabajo') {
+    /* else if (e.target.id == 'regimen_trabajo') {
         if (e.keyCode === 13) {
             const regimen = e.target.value.split('/');
 
@@ -149,7 +153,7 @@ document.addEventListener('keypress', async (e) => {
             document.getElementById('salida_obra').value = salida_de_obra;
             document.getElementById('retorno_programado').value = retorno_programado;
         }
-    } else if (e.target.id == 'dias_goce') {
+    } */ else if (e.target.id == 'dias_goce') {
         if (e.keyCode === 13) {
             const valor = parseInt(e.target.value);
 
@@ -187,6 +191,31 @@ document.addEventListener('keypress', async (e) => {
             buscarDatosColaboradorTercero(e.target.value);
         }
     }
+    else if(e.target.id =='documentos'){
+        if(e.keyCode ===13){
+            const dni = event.target.value; // Captura el valor del documento ingresado
+
+        const formData = new FormData();
+        formData.append("funcion", "buscarDatosColaborador");
+        formData.append("dni", dni);
+
+        // Realiza la petición fetch al backend
+        fetch('../inc/busquedas.inc.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.exist) {
+                // Encuentra la fila correspondiente y actualiza la celda 'nomc'
+                const row = event.target.closest('tr'); // Encuentra la fila
+                const nomcCell = row.querySelector('#nomc');
+                nomcCell.textContent = `${data.datos.nombres} ${data.datos.paterno} ${data.datos.materno}`;
+            }
+        });
+
+        }
+    }
 })
 
 document.addEventListener('click', async (e) => {
@@ -215,6 +244,11 @@ document.addEventListener('click', async (e) => {
                 listarEncargados(document.getElementById("encargado"));
                 listarUbicaciones(document.getElementById("ubicacion"));
                 listarEspecialidades(document.getElementById("especialidad"));
+                listarRegimen(document.getElementById("regimen_trabajo"));
+                /* const selectRegimen = document.getElementById("regimen_trabajo");
+                const iDiasGoce = document.getElementById("dias_goce"); */
+                /* listarRegimen(selectRegimen,iDiasGoce); */
+                 
             }, 100);
         } else if (e.target.id == "ubicaciones") {
             setTimeout(() => {
@@ -986,72 +1020,57 @@ document.addEventListener('change', async (e) => {
             listarPadronByFecha(codigo_costos.value, e.target.value);
             document.getElementById("fecha_text").textContent = 'Fecha de Proceso: ' + e.target.value;
         }
-    } //calcula dias de campo
-    if (e.target.id == "ingreso_obra") {
-        const ultimoDiaIngreso = new Date(document.getElementById("ingreso_obra").value);
-        const hoy = new Date();
-
-        const diferenciaEnMilisegundos = ((hoy - ultimoDiaIngreso)+1);
-        ultimoDiaIngreso.setHours(0, 0, 0, 0);
-        hoy.setHours(0, 0, 0, 0);
-
-        const diferenciaEnDias = Math.round(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
-
-        document.getElementById("dias_campo").value = diferenciaEnDias;
-
-        /* if (e.target.id == "ingreso_obra" || e.target.id == "salida_obra") {
-            const inicio = new Date(document.getElementById("ingreso_obra").value);
-            const fin = new Date(document.getElementById("salida_obra").value);
-
-            const diferenciaEnMilisegundos = fin - inicio;
-            const diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
-            document.getElementById("dias_campo").value = diferenciaEnDias; */
-
-        
-        const partes = document.getElementById("regimen_trabajo").value.split(/[/xX]/);
-        const numerador = parseInt(partes[0].trim());
-        const denominador = parseInt(partes[1].trim());
-
-        // Verificar que ambos sean números y el denominador no sea cero
-        if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
-            const resultado = numerador / denominador;
-            document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value / resultado);
-            /* document.getElementById("") */
-        }
-
-        const retorno = new Date(document.getElementById("salida_obra").value);
-
-        retorno.setDate(retorno.getDate() + parseInt(document.getElementById("dias_goce").value) + 1)
-
-        const anio = retorno.getFullYear();
-        const mes = (retorno.getMonth() + 1).toString().padStart(2, '0'); // Mes con dos dígitos
-        const dia = retorno.getDate().toString().padStart(2, '0'); // Día con dos dígitos
-
-        document.getElementById("retorno_programado").value = `${anio}-${mes}-${dia}`;
-    }
-    if (e.target.id == "regimen_trabajo") {
-        const partes = e.target.value.split(/[/xX]/)
-        const numerador = parseInt(partes[0].trim());
-        const denominador = parseInt(partes[1].trim());
-
-        // Verificar que ambos sean números y el denominador no sea cero
-        if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
-            const resultado = numerador / denominador;
-            document.getElementById("dias_goce").value = parseInt(document.getElementById("dias_campo").value / resultado);
-        }
-    }
-    if (e.target.id == "dias_campo") {
-        const partes = document.getElementById("regimen_trabajo").value.split(/[/xX]/);
-        const numerador = parseInt(partes[0].trim());
-        const denominador = parseInt(partes[1].trim());
-
-        // Verificar que ambos sean números y el denominador no sea cero
-        if (!isNaN(numerador) && !isNaN(denominador) && denominador !== 0) {
-            const resultado = numerador / denominador;
-            document.getElementById("dias_goce").value = parseInt(e.target.value / resultado);
-        }
-    }
+    } 
 })
+function calcularFechas() {
+    const ingresoStr = document.getElementById("ingreso_obra").value;
+    const diasCampo = parseInt(document.getElementById("dias_campo").value) || 0;
+    const diasGoce = parseInt(document.getElementById("dias_goce").value) || 0;
+    const transitoIngreso = parseInt(document.getElementById("transito_ingreso").value) || 0;
+    const transitoSalida = parseInt(document.getElementById("transito_salida").value) || 0;
+
+    let ingreso = new Date(ingresoStr);
+
+    // Calcular fecha de salida obra
+    let salidaObra = new Date(ingreso); 
+    salidaObra.setDate(salidaObra.getDate() + diasCampo);
+
+    const anioSalida = salidaObra.getFullYear();
+    const mesSalida = (salidaObra.getMonth() + 1).toString().padStart(2, '0');
+    const diaSalida = salidaObra.getDate().toString().padStart(2, '0');
+
+    document.getElementById("salida_obra").value = `${anioSalida}-${mesSalida}-${diaSalida}`;
+
+    let retornoProgramado = new Date(salidaObra); 
+    retornoProgramado.setDate(retornoProgramado.getDate() + diasGoce + transitoIngreso + transitoSalida + 1);
+
+    const anioRetorno = retornoProgramado.getFullYear();
+    const mesRetorno = (retornoProgramado.getMonth() + 1).toString().padStart(2, '0');
+    const diaRetorno = retornoProgramado.getDate().toString().padStart(2, '0');
+
+    document.getElementById("retorno_programado").value = `${anioRetorno}-${mesRetorno}-${diaRetorno}`;
+
+    document.getElementById("dias_reales").value = diasGoce;
+}
+
+
+document.getElementById("ingreso_obra").addEventListener("change", calcularFechas);
+document.getElementById("dias_campo").addEventListener("change", calcularFechas);
+document.getElementById("dias_goce").addEventListener("change", calcularFechas);
+document.getElementById("transito_ingreso").addEventListener("change", calcularFechas);
+document.getElementById("transito_salida").addEventListener("change", calcularFechas);
+
+document.getElementById("regimen_trabajo").addEventListener("change", function() {
+    // borra los campos al cambiar el regimen
+    document.getElementById("salida_obra").value = "";
+    document.getElementById("retorno_programado").value = "";
+    document.getElementById("dias_goce").value = "";
+    document.getElementById("dias_reales").value = ""; 
+    document.getElementById("transito_ingreso").value = ""; 
+    document.getElementById("transito_salida").value = ""; 
+    document.getElementById("dias_campo").value = ""; 
+    document.getElementById("ingreso_obra").value = ""; 
+});
 
 function reporteMatriz() {
     let formData = new FormData();
@@ -1402,15 +1421,44 @@ function agregaEncargado() {
     let row = `<tr data-grabado="0">
                 <td>${fila++}</td>
                 <td>
-                    <input type="text">
+                    <input type="text" class="ndoc">
                 </td>
-                <td>
-                    <input type="text">
+                <td class="nombre">
+                    <input type="text" class="nombre">
                 </td>
                 <td><a href="#" class="item_click_remove texto_centro" ><i class="fas fa-trash-alt"></i></a></td>
             </tr>`;
 
     cuerpo.insertRow(-1).outerHTML = row;
+    const documentosElements = document.querySelectorAll('.ndoc');
+    console.log(documentosElements)
+    documentosElements.forEach(element => {
+    element.addEventListener('keypress', (e) => {
+        
+    if (e.key === 'Enter') {
+        const dni = e.target.value; 
+
+        const formData = new FormData();
+        formData.append("funcion", "buscarDatosColaborador");
+        formData.append("dni", dni);
+
+        fetch('../inc/busquedas.inc.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                const colaborador = data.datos[0];
+               
+                const row = e.target.closest('tr'); 
+                const nomcCell = row.querySelector('.nombre input');
+                nomcCell.value = `${colaborador.paterno} ${colaborador.materno} ${colaborador.nombres}`;
+            } 
+        });
+    }
+});
+});
 }
 
 function agregaEncargadoProyectos() {
@@ -2871,15 +2919,23 @@ const hojaSalida = (proyecto) => {
 
         const datos = new URLSearchParams(new FormData(document.getElementById("data_matriz")));
         const jsubicacion= document.getElementById('ubicacion').options[document.getElementById('ubicacion').selectedIndex].text;
-        const frentetrabajo=document.getElementById('fase_actual').options[document.getElementById('fase_actual').selectedIndex].text;
+        const frentetra=document.getElementById('fase_actual').options[document.getElementById('fase_actual').selectedIndex].text;
         const motivocs=document.getElementById('motivo_cese').options[document.getElementById('motivo_cese').selectedIndex].text;
-
+        const proyect=document.getElementById('proyecto_actual').options[document.getElementById('proyecto_actual').selectedIndex].text;
+        const fechaingreso=document.getElementById('fecha_ingreso').value;
+        const proy = proyect.replace(/^\d+\s*/, "");
+        const frentetrabajo = frentetra.replace(/^\d+\s*/, "");
+         /*  const motivodesc=document.getElementById('motivo_descanso').options[document.getElementById('motivo_descanso').selectedIndex].text;
+ */
         datos.append("funcion", "hojaSalida");
         datos.append("proyecto", proyecto);
         datos.append("jsubicacion",jsubicacion);
         datos.append("frentetrabajo",frentetrabajo);
         datos.append("motivocs",motivocs);
-        
+        datos.append("proy",proy);
+        datos.append("fechaingreso",fechaingreso);
+        /* datos.append("motivodesc",motivodesc);
+         */
         fetch('../inc/reportes.inc.php', {
             method: 'POST',
             body: datos
@@ -3082,6 +3138,40 @@ document.getElementById("paterno").addEventListener("keyup", () => {
       mostrarMensaje(error.message, "msj_error");
     }
   });
+  //cerrar sesion
+
+  document.getElementById("cerrar-Sesion").addEventListener("click", function() {
+    
+    localStorage.removeItem('username');  
+    localStorage.removeItem('documento'); 
+
+    window.location.href = "../index.php"; 
+});
+/* 
+  document.querySelector('#tablaEncargadosBody').addEventListener('keypress', function(event) {
+    if (event.target && event.target.id.contains('documentos') && event.key === 'Enter') {
+        const dni = event.target.value; // Captura el valor del documento ingresado
+
+        const formData = new FormData();
+        formData.append("funcion", "buscarDatosColaborador");
+        formData.append("dni", dni);
+
+        // Realiza la petición fetch al backend
+        fetch('../inc/busquedas.inc.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.exist) {
+                // Encuentra la fila correspondiente y actualiza la celda 'nomc'
+                const row = event.target.closest('tr'); // Encuentra la fila
+                const nomcCell = row.querySelector('#nomc');
+                nomcCell.textContent = `${data.datos.nombres} ${data.datos.paterno} ${data.datos.materno}`;
+            }
+        });
+    }
+}); */
   
 /* export function buscarDatosempleados(query) {
     const suggestions = document.getElementById("sugerencia");

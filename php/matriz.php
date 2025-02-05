@@ -184,7 +184,9 @@
                 </div>
                 <div class="dos_columnas">
                     <label for="regimen_trabajo">Regimen Trabajo:</label>
-                    <input type="text" name="regimen_trabajo" id="regimen_trabajo" form="data_matriz">
+                    <select name="regimen_trabajo" id="regimen_trabajo" form="data_matriz">
+                        <option value="-1">Seleccionar</option>
+                    </select>
                 </div>
                 <div class="dos_columnas">
                     <label for="ingreso_obra">Ingreso Obra :</label>
@@ -221,12 +223,20 @@
                 <div class="dos_columnas">
                     <label for="motivo_cese">Motivo Cese :</label>
                     <select name="motivo_cese" id="motivo_cese" form="data_matriz">
-                        <option value="-1">Seleccionar</option>
-                        <option value="29">Renuncia Voluntario</option>
-                        <option value="30">Termino de Obra</option>
+                        <option value="-1"></option>
+                        <option value="29">Renuncia Voluntaria</option>
+                        <option value="30">Termino de Obra o servicio</option>
                         <option value="31">Termino de Contrato</option>
                         <option value="32">Termino de Fase</option>
-                        <option value="33">Abandono de  Trabajo</option>
+                        <option value="33">Termino de periodo de prueba</option>
+                        <option value="34">Abandono de  Trabajo</option>
+                        <option value="35">Despido o destitucion</option>
+                        <option value="36">Fallecimiento</option>
+                        <option value="37">Falta grabe</option>
+                        <option value="38">Invalidez absoluta permanente</option>
+                        <option value="39">Jubilacion</option>
+                        <option value="40">Mutuo Disenson</option>
+                    
                     </select>
                 </div>
 
@@ -273,6 +283,14 @@
                         <option value="1">Día</option>
                         <option value="2">Noche</option>
                     </select>
+                </div>
+                <div>
+                    <label for="transito_ingreso">Dias Transito Ingreso:</label>
+                    <input type="number" name="transito_ingreso" id="transito_ingreso" form="data_matriz">
+                </div>
+                <div>
+                    <label for="transito_salida">Dias Transito Salida:</label>
+                    <input type="number" name="transito_salida" id="transito_salida" form="data_matriz">
                 </div>
                 <div class="ocho_columnas" style="height: 100px;" >
                     <label for="observaciones">Observaciones :</label>

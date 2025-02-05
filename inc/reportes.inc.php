@@ -195,6 +195,10 @@
         
         $nombre = $datos['paterno']." ".$datos['materno']." ".$datos['nombres'];
         $fecha = strftime('%A %e de %B de %Y');
+        $motivoSeleccionado = isset($_POST["motivo_descanso"]) ? $_POST["motivo_descanso"] : "-1";
+        function marcarSiSeleccionado($valor, $motivoSeleccionado) {
+            return $valor == $motivoSeleccionado ? "X" : "";
+        }
 
         $pdf = new FPDF();
         $pdf->AddPage();
@@ -208,7 +212,7 @@
 
         $pdf->SetXY(10,30);
         $pdf->Cell(13,5,utf8_decode("SEPCON PERÚ"),0,1,"L");
-        $pdf->Cell(13,5,utf8_decode($datos['proyecto']),0,1,"L");
+        $pdf->Cell(13,5,utf8_decode($datos['proy']),0,1,"L");
         $pdf->Ln(2);
 
         $pdf->Cell(40,5,utf8_decode("LUGAR Y FECHA:"),0,0,"L");
@@ -225,7 +229,7 @@
         $pdf->Cell(40,5,utf8_decode("CARGO :"),0,0,"L");
         $pdf->Cell(80,5,utf8_decode($datos['cargo']),0,0,"L");
         $pdf->Cell(40,5,utf8_decode("FECHA DE INGRESO:"),0,0,"L");
-        $pdf->Cell(80,5,utf8_decode($datos['ingreso_obra']),0,1,"L");
+        $pdf->Cell(80,5,utf8_decode(date("d-m-y",strtotime($datos['fechaingreso']))),0,1,"L");
         $pdf->Ln(1);
 
         $pdf->Cell(40,5,utf8_decode("FRENTE DE TRABAJO :"),0,0,"L");
@@ -235,40 +239,40 @@
         $pdf->Ln(1);
 
         $pdf->Cell(40,5,utf8_decode("SALIDA A PARTIR DEL :"),0,0,"L");
-        $pdf->Cell(80,5,utf8_decode($datos['salida_obra']),0,0,"L");
+        $pdf->Cell(80,5,utf8_decode(date("d-m-y",strtotime($datos['salida_obra']))),0,0,"L");
         $pdf->Cell(40,5,utf8_decode("FECHA DE RETORNO :"),0,0,"L");
-        $pdf->Cell(80,5,utf8_decode($datos['retorno_programado']),0,1,"L");
+        $pdf->Cell(80,5,utf8_decode(date("d-m-y",strtotime($datos['retorno_programado']))),0,1,"L");
         $pdf->Ln(1);
 
         $pdf->Cell(40,5,utf8_decode("MOTIVO"),0,1,"L");
         $pdf->Ln(2);
 
         $pdf->Cell(40,5,utf8_decode("INGRESO :"),0,0,"L");
-        $pdf->Cell(20,5,utf8_decode(""),1,0,"L");
+        $pdf->Cell(20,5,utf8_decode(marcarSiSeleccionado(21, $motivoSeleccionado)),1,0,"L");
         $pdf->SetX(100);
         $pdf->Cell(40,5,utf8_decode("CESE :"),0,0,"L");
-        $pdf->Cell(20,5,utf8_decode(""),1,1,"L");
+        $pdf->Cell(20,5,utf8_decode(marcarSiSeleccionado(25, $motivoSeleccionado)),1,1,"L");
         $pdf->Ln(2);
 
         $pdf->Cell(40,5,utf8_decode("PERMISO :"),0,0,"L");
-        $pdf->Cell(20,5,utf8_decode(""),1,0,"L");
+        $pdf->Cell(20,5,utf8_decode(marcarSiSeleccionado(22, $motivoSeleccionado)),1,0,"L");
         $pdf->SetX(100);
         $pdf->Cell(40,5,utf8_decode("AMONESTACION :"),0,0,"L");
-        $pdf->Cell(20,5,utf8_decode(""),1,1,"L");
+        $pdf->Cell(20,5,utf8_decode(marcarSiSeleccionado(26, $motivoSeleccionado)),1,1,"L");
         $pdf->Ln(2);
 
         $pdf->Cell(40,5,utf8_decode("DESCANSO MEDICO :"),0,0,"L");
-        $pdf->Cell(20,5,utf8_decode(""),1,0,"L");
+        $pdf->Cell(20,5,utf8_decode(marcarSiSeleccionado(23, $motivoSeleccionado)),1,0,"L");
         $pdf->SetX(100);
         $pdf->Cell(40,5,utf8_decode("VACACIONES :"),0,0,"L");
-        $pdf->Cell(20,5,utf8_decode(""),1,1,"L");
+        $pdf->Cell(20,5,utf8_decode(marcarSiSeleccionado(27, $motivoSeleccionado)),1,1,"L");
         $pdf->Ln(2);
 
         $pdf->Cell(40,5,utf8_decode("BAJADA PROGRAMADA :"),0,0,"L");
-        $pdf->Cell(20,5,utf8_decode(""),1,0,"L");
+        $pdf->Cell(20,5,utf8_decode(marcarSiSeleccionado(24, $motivoSeleccionado)),1,0,"L");
         $pdf->SetX(100);
         $pdf->Cell(40,5,utf8_decode("OTROS :"),0,0,"L");
-        $pdf->Cell(20,5,utf8_decode(""),1,1,"L");
+        $pdf->Cell(20,5,utf8_decode(marcarSiSeleccionado(28, $motivoSeleccionado)),1,1,"L");
         $pdf->Ln(2);
 
         $pdf->Cell(20,5,utf8_decode("MOTIVO DE CESE :"),0,1,"L");
@@ -303,7 +307,7 @@
         $pdf->Cell(80,5,utf8_decode($nombre),0,1,"C");
 
         $pdf->SetX(20);
-        $pdf->Cell(80,5,utf8_decode($datos["proyecto"]),0,0,"C");
+        $pdf->Cell(80,5,utf8_decode($datos["proy"]),0,0,"C");
         $pdf->SetX(120);
         $pdf->Cell(80,5,"D.N.I: ".$datos['documento'],0,1,"C");
         $pdf->SetX(120);
