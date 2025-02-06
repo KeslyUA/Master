@@ -539,12 +539,20 @@
             }
 
             $datosT = [];
-            $sqlData = "SELECT nddoc, t.fingreso,t.dcampo as diasCampo,t.turno , personal.cdescripcion as tipoPersonal, 
+            $sqlData = "SELECT t.nddoc, MAX(t.fingreso) AS fingreso, DATEDIFF(NOW(), MAX(t.fingreso)) + 1 AS diasCampo, MAX(t.turno) 
+            AS turno, MAX(personal.cdescripcion) AS tipoPersonal, MAX(regimen.cdescripcion) AS regimen, MAX(manoobra.cdescripcion)
+             AS mano_obra FROM tb_datostareo t LEFT JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03
+              LEFT JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01 LEFT JOIN tb_parametros personal 
+              ON personal.idreg = t.npersonal AND personal.nclase = 02 LEFT JOIN tb_tareos tareos ON tareos.nrodoc = t.nddoc GROUP BY t.nddoc; ";  
+            //kes
+
+           /*  SELECT nddoc, t.fingreso,t.dcampo as diasCampo,t.turno , personal.cdescripcion as tipoPersonal, 
             regimen.cdescripcion AS regimen, manoobra.cdescripcion AS mano_obra FROM tb_datostareo t LEFT JOIN tb_parametros regimen 
             ON regimen.idreg = t.nregimen AND regimen.nclase = 03 LEFT JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra 
-            AND manoobra.nclase = 01 LEFT JOIN tb_parametros personal ON personal.idreg = t.npersonal and personal.nclase = 02 left join tb_tareos tareos on tareos.nrodoc = t.nddoc group by nddoc;";  
-            //kes
-           /*  $sqlData =" SELECT 
+            AND manoobra.nclase = 01 LEFT JOIN tb_parametros personal ON personal.idreg = t.npersonal and personal.nclase = 02 left join tb_tareos tareos on tareos.nrodoc = t.nddoc group by nddoc;
+            */
+            
+            /*  $sqlData =" SELECT 
                 t.fsalida, 
                 DATEDIFF(t.fsalida, CURDATE()) AS dcampo,
              SUM(CASE WHEN t.fsalida = 'A' AND DATEDIFF(t.fsalida, CURDATE()) >= 0 THEN 1 ELSE 0 END) AS suma_condiciones
@@ -702,7 +710,7 @@
     }
     function obtenerRegimen($pdo){
         $docData=[];
-        $sql="SELECT cdescrip,idreg,diasgoce,periodo from regimen";
+        $sql="SELECT cdescrip,idreg,diasgoce,periodo,transito from regimen";
         $statement = $pdo->prepare($sql);
         $statement -> execute();
         while($row = $statement->fetch(PDO::FETCH_ASSOC)){

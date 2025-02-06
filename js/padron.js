@@ -37,7 +37,7 @@ export const listarPadron = (cc) => {
     const cuerpo = document.getElementById("tablaPersonalBody");
     let fila = 1;
 
-    cuerpo.innerHTML = "";
+    cuerpo.innerHTML = ""; 
     let estadosTareo
     getTareoMaxFecha(cc).then(data => {
         estadosTareo = data;
@@ -65,7 +65,7 @@ export const listarPadron = (cc) => {
            })
            const filteredData = data.datos.filter(d => new Date(d.ingreso) <= new Date().setHours(0, 0, 0, 0))
            filteredData.forEach(element => {
-            const ubicacion = todosTareo.find(item => item.nddoc == element.dni)
+            const ubicacion = todosTareo.find(item => item.nddoc == element.dni);
                 let row = `<tr>
                     <td>${fila++}</td>
                     <td class="padding20left">${element.paterno+ ' ' + element.materno + ' ' + element.nombres}</td>

@@ -1,7 +1,6 @@
 import { listarEncargadosByProyecto } from "../js/encargados.js";
 import { listarFasesByProyecto } from "../js/fases.js";
 
-const ingreso_obra = document.getElementById("ingreso_obra");
 
 export const buscarDatos = async (dni) =>{
     let formData = new FormData();
@@ -69,8 +68,8 @@ export const buscarDatos = async (dni) =>{
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
                 //2
                 turnodia.value = data.datosTareo[0]['turnodia'];
-                transito_ingreso=data.datosTareo[0]['transitoin'];
-                transito_salida = data.datosTareo[0]['transitosal'];
+                transito_ingreso.value = data.datosTareo[0]['transitoingreso'];
+                transito_salida.value = data.datosTareo[0]['transitosalida'];
                 regimen.value = data.datosTareo[0]['nregimen'];
                 especificacion_contrato.value = data.datosTareo[0]['nespecificacion']
                 document.getElementById("existe").value = 1;
@@ -556,6 +555,7 @@ export const listarRegimen = async (select) =>{
                      option.dataset.diasgoce=element.diasgoce; 
                      option.dataset.periodo=element.periodo;
                     option.innerHTML = element.cdescrip;
+                    option.dataset.transito=element.transito;
 
                     select.appendChild(option);
 
@@ -564,6 +564,7 @@ export const listarRegimen = async (select) =>{
                 const selectgoce = select.options[select.selectedIndex];
                 const diasgoce = selectgoce.dataset.diasgoce || "";
                 const diacampo = selectgoce.dataset.periodo || "";
+                selectgoce.dataset.transito || ""; 
                 document.getElementById("dias_goce").value = diasgoce;
                 document.getElementById("dias_campo").value = diacampo;
                })

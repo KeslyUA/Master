@@ -58,7 +58,8 @@ const fecha_cese = document.getElementById("fecha_cese");
 //1
 const turnodia = document.getElementById("turnodia");
 const motivo_cese = document.getElementById("motivo_cese");
-
+const transito_ingreso=document.getElementById("transito_ingreso");
+const transito_salida=document.getElementById("transito_salida");
 const menuList = document.getElementById("menuList");
 const opcionesMenu = menuList.querySelectorAll('li');
 
@@ -116,7 +117,7 @@ listarProyectos(document.getElementById("proyecto_actual"));
 /* const selectRegimen = document.getElementById("regimen_trabajo");
 const iDiasGoce = document.getElementById("dias_goce"); */
 /* listarRegimen(selectRegimen,iDiasGoce); */
-listarRegimen(document.getElementById("regimen_trabajo"))
+listarRegimen(document.getElementById("regimen_trabajo"));
 listarUbicaciones(document.getElementById("ubicacion"));
 listarEspecialidades(document.getElementById("especialidad"));
 
@@ -996,7 +997,10 @@ document.addEventListener('click', async (e) => {
 
 document.addEventListener('change', async (e) => {
     if (e.target.matches(".select") && e.target.id === "select_proyectos") {
+        /* let selectedOptions = Array.from(e.target.selectedOptions).map(opt => opt.value);
+        listarPadron(selectedOptions); */
         listarPadron(e.target.value);
+
     } if (e.target.matches(".select") && e.target.id === "select_proyectos_terceros") {
         let selectedText = e.target.options[e.target.selectedIndex].text;
         listarPadronTerceros(e.target.value, selectedText);
@@ -1028,12 +1032,14 @@ function calcularFechas() {
     const diasGoce = parseInt(document.getElementById("dias_goce").value) || 0;
     const transitoIngreso = parseInt(document.getElementById("transito_ingreso").value) || 0;
     const transitoSalida = parseInt(document.getElementById("transito_salida").value) || 0;
-
+    const select =document.getElementById("regimen_trabajo");
+    const selectgoce = select.options[select.selectedIndex];
+    const transito = parseInt(selectgoce.dataset.transito) || 0;
     let ingreso = new Date(ingresoStr);
-
+    console.log(transito)
     // Calcular fecha de salida obra
     let salidaObra = new Date(ingreso); 
-    salidaObra.setDate(salidaObra.getDate() + diasCampo);
+    salidaObra.setDate(salidaObra.getDate() + diasCampo + transito);
 
     const anioSalida = salidaObra.getFullYear();
     const mesSalida = (salidaObra.getMonth() + 1).toString().padStart(2, '0');
@@ -1043,6 +1049,9 @@ function calcularFechas() {
 
     let retornoProgramado = new Date(salidaObra); 
     retornoProgramado.setDate(retornoProgramado.getDate() + diasGoce + transitoIngreso + transitoSalida + 1);
+    if (transito === 1) {
+        retornoProgramado.setDate(retornoProgramado.getDate() - 1);
+    }
 
     const anioRetorno = retornoProgramado.getFullYear();
     const mesRetorno = (retornoProgramado.getMonth() + 1).toString().padStart(2, '0');
