@@ -997,9 +997,13 @@ document.addEventListener('click', async (e) => {
 
 document.addEventListener('change', async (e) => {
     if (e.target.matches(".select") && e.target.id === "select_proyectos") {
-        /* let selectedOptions = Array.from(e.target.selectedOptions).map(opt => opt.value);
-        listarPadron(selectedOptions); */
-        listarPadron(e.target.value);
+        let selectedOptions = Array.from(new Set(Array.from(e.target.selectedOptions).map(opt => opt.value)));
+         Array.from(e.target.options).forEach(option => {
+            if (selectedOptions.includes(option.value)) {
+                option.disabled = true; 
+            }
+        }); 
+        listarPadron(selectedOptions);
 
     } if (e.target.matches(".select") && e.target.id === "select_proyectos_terceros") {
         let selectedText = e.target.options[e.target.selectedIndex].text;
@@ -1036,7 +1040,7 @@ function calcularFechas() {
     const selectgoce = select.options[select.selectedIndex];
     const transito = parseInt(selectgoce.dataset.transito) || 0;
     let ingreso = new Date(ingresoStr);
-    console.log(transito)
+    
     // Calcular fecha de salida obra
     let salidaObra = new Date(ingreso); 
     salidaObra.setDate(salidaObra.getDate() + diasCampo + transito);
@@ -1918,7 +1922,7 @@ async function grabarDatosTareo(proyecto) {
         const result = tareosDeHoy.filter(item2 => {
             const match = listaTabla.find(item1 => item1.documento === item2.nrodoc);
             if (match != undefined) {
-                match.fingreso = match.fingreso.trim() === '' ? null : match.fingreso;
+                match.fingreso = match.fingreso && typeof match.fingreso === 'string' ? match.fingreso.trim() : null;
                 return match && (match.estado !== item2.estado || match.fingreso != item2.fingreso); // Devolver solo si el estado es diferente
             }
 

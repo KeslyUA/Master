@@ -22,10 +22,10 @@
                     <a href="#" id="descargarReporteTareo"><i class="fas fa-download botones"></i><p class="botones">Descargar Reporte de Tareos</p></a>
                 </div>
             </div>
-            <div class="cuerpo">
-                <div class="cuatro_columnas contenedor_proyectos">
+            <div class="cuerpo" style="height: 100px;" >
+                <div class=" contenedor_proyectos">
                     <label for="select_proyectos">Proyecto :</label>
-                    <select name="select_proyectos" id="select_proyectos" class="select">
+                    <select name="select_proyectos" id="select_proyectos" class="select" multiple style="height: 70px;" >
                         <option value="-1">Seleccionar</option>
                     </select>
                 </div>

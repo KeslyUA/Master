@@ -37,7 +37,7 @@ export const listarPadron = (cc) => {
     const cuerpo = document.getElementById("tablaPersonalBody");
     let fila = 1;
 
-    cuerpo.innerHTML = ""; 
+    /* cuerpo.innerHTML = "";  */
     let estadosTareo
     getTareoMaxFecha(cc).then(data => {
         estadosTareo = data;
@@ -63,8 +63,10 @@ export const listarPadron = (cc) => {
                 }
                 return { ...item, estado: 'A' };
            })
+           
            const filteredData = data.datos.filter(d => new Date(d.ingreso) <= new Date().setHours(0, 0, 0, 0))
            filteredData.forEach(element => {
+           
             const ubicacion = todosTareo.find(item => item.nddoc == element.dni);
                 let row = `<tr>
                     <td>${fila++}</td>
@@ -77,7 +79,9 @@ export const listarPadron = (cc) => {
                     <td><input type="text" class="texto_centro" value="${element.fingreso != null ? element.fingreso : ''}"></td>
                 </tr>`;
 
-                cuerpo.insertRow(-1).outerHTML = row;
+                /* cuerpo.insertRow(-1).outerHTML = row; */
+                cuerpo.insertAdjacentHTML('beforeend',row);
+            
            })
         })
     } catch (error) {
