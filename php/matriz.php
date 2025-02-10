@@ -224,18 +224,19 @@
                     <label for="motivo_cese">Motivo Cese :</label>
                     <select name="motivo_cese" id="motivo_cese" form="data_matriz">
                         <option value="-1"></option>
-                        <option value="29">Renuncia Voluntaria</option>
-                        <option value="30">Termino de Obra o servicio</option>
-                        <option value="31">Termino de Contrato</option>
-                        <option value="32">Termino de Fase</option>
-                        <option value="33">Termino de periodo de prueba</option>
-                        <option value="34">Abandono de  Trabajo</option>
-                        <option value="35">Despido o destitucion</option>
-                        <option value="36">Fallecimiento</option>
-                        <option value="37">Falta grabe</option>
-                        <option value="38">Invalidez absoluta permanente</option>
-                        <option value="39">Jubilacion</option>
-                        <option value="40">Mutuo Disenson</option>
+                        <option value="29">Abandono de  Trabajo</option>
+                        <option value="30">Despido o destitucion</option>
+                        <option value="31">Fallecimiento</option>
+                        <option value="32">Falta grave</option>
+                        <option value="33">Invalidez absoluta permanente</option>
+                        <option value="34">Jubilacion</option>
+                        <option value="35">Mutuo Disenso</option>
+                        <option value="36">Renuncia Voluntaria</option>
+                        <option value="37">Termino de Contrato</option>
+                        <option value="38">Termino de Fase</option>
+                        <option value="39">Termino de Obra o servicio</option>
+                        <option value="40">Termino de periodo de prueba</option>
+                        
                     
                     </select>
                 </div>
