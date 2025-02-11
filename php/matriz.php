@@ -285,11 +285,11 @@
                         <option value="2">Noche</option>
                     </select>
                 </div>
-                <div>
+                <div class="dos_columnas">
                     <label for="transito_ingreso">Dias Transito Ingreso:</label>
                     <input type="number" name="transito_ingreso" id="transito_ingreso" form="data_matriz">
                 </div>
-                <div>
+                <div class="dos_columnas">
                     <label for="transito_salida">Dias Transito Salida:</label>
                     <input type="number" name="transito_salida" id="transito_salida" form="data_matriz">
                 </div>

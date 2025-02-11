@@ -1030,6 +1030,8 @@ document.addEventListener('change', async (e) => {
         }
     } 
 })
+let datos = [];
+
 function calcularFechas() {
     const ingresoStr = document.getElementById("ingreso_obra").value;
     const diasCampo = parseInt(document.getElementById("dias_campo").value) || 0;
@@ -1041,7 +1043,7 @@ function calcularFechas() {
     const transito = parseInt(selectgoce.dataset.transito) || 0;
     let ingreso = new Date(ingresoStr);
     
-    // Calcular fecha de salida obra
+    
     let salidaObra = new Date(ingreso); 
     salidaObra.setDate(salidaObra.getDate() + diasCampo + transito);
 
@@ -1062,10 +1064,36 @@ function calcularFechas() {
     const diaRetorno = retornoProgramado.getDate().toString().padStart(2, '0');
 
     document.getElementById("retorno_programado").value = `${anioRetorno}-${mesRetorno}-${diaRetorno}`;
+    
 
     document.getElementById("dias_reales").value = diasGoce;
+    guardarDatos(); 
 }
+//para guardar ultimo dato de matriz
+function guardarDatos() {
+    const regimenTrabajo = document.getElementById("regimen_trabajo").value;
+    const ingresoObra = document.getElementById("ingreso_obra").value;
+    const salidaObra = document.getElementById("salida_obra").value;
 
+    const ultimoDato = {
+        regimen: regimenTrabajo,
+        ingreso: ingresoObra,
+        salida: salidaObra
+    };
+
+    
+    datos[0] = ultimoDato;
+
+    console.log(datos); 
+}
+window.addEventListener('DOMContentLoaded', calcularFechas);
+
+const enlaceHojaSalida = document.getElementById("hojaSalida");
+
+enlaceHojaSalida.addEventListener("click", function(event) {
+    event.preventDefault(); 
+    guardarDatos(); 
+});
 
 document.getElementById("ingreso_obra").addEventListener("change", calcularFechas);
 document.getElementById("dias_campo").addEventListener("change", calcularFechas);
