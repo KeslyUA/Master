@@ -152,6 +152,89 @@
         }
     }
 
+
+    //grabar terceros
+    function grabarDatosTareoTerceros($pdo,$datos){
+        try {
+            $resultado = false;
+
+            $sql = "INSERT INTO tb_datostareo SET tb_datostareo.nddoc = ?,
+                                                  tb_datostareo.cencargado = ?,
+                                                  tb_datostareo.ncondicion = ?,
+                                                  tb_datostareo.npersonal = ?,
+                                                  tb_datostareo.cespecialidad = ?,
+                                                  tb_datostareo.nmanoobra = ?,
+                                                  tb_datostareo.cproyecto = ?,
+                                                  tb_datostareo.cfase = ?,
+                                                  tb_datostareo.cubicacion = ?,
+                                                  tb_datostareo.cregimen = ?,
+                                                  tb_datostareo.fingreso = ?,
+                                                  tb_datostareo.fsalida = ?,
+                                                  tb_datostareo.fretorno = ?,
+                                                  tb_datostareo.dgoce = ?,
+                                                  tb_datostareo.dlibre = ?,
+                                                  tb_datostareo.dcampo = ?,
+                                                  tb_datostareo.dreales = ?,
+                                                  tb_datostareo.cobservaciones = ?,
+                                                  tb_datostareo.cdescanso = ?,
+                                                  tb_datostareo.fcese = ?,
+                                                  tb_datostareo.cmotivocese = ?,
+                                               /*  tb_datostareo.turnodia = ?, */
+                                                  tb_datostareo.nregimen = ?,
+                                                  tb_datostareo.nespecificacion = ?
+                                                  /* tb_datostareo.createdBy = ? */
+                                                  /* tb_datostareo.transitoingreso = ?,
+                                                  tb_datostareo.transitosalida= ? */";
+            
+            $statement = $pdo->prepare($sql);
+            $nddoc = isset($datos['documento']) ? $datos['documento'] : (isset($datos['documento_tercero']) ? $datos['documento_tercero'] : null);
+
+            $statement -> execute(array($nddoc,
+                                        $datos['encargado'],
+                                        $datos['condicion'],
+                                        $datos['personal'],
+                                        $datos['especialidad'],
+                                        $datos['manoobra'],
+                                        $datos['proyecto_actual'],
+                                        $datos['fase_actual'],
+                                        $datos['ubicacion'],
+                                        $datos['regimen_trabajo'],
+                                        $datos['ingreso_obra'],
+                                        $datos['salida_obra'],
+                                        $datos['retorno_programado'],
+                                        $datos['dias_goce'],
+                                        $datos['dias_libre'],
+                                        $datos['dias_campo'],
+                                        $datos['dias_reales'],
+                                        $datos['observaciones'],
+                                        $datos['motivo_descanso'],
+                                        $datos['fecha_cese'],
+                                        $datos['motivo_cese'],
+                                       /*  $datos['turnodia'],  */
+                                        $datos['regimen'],
+                                        $datos['especificacion_contrato']
+                                        /* $datos['user']   */
+                                        /* $datos['transito_ingreso'],
+                                        $datos['transito_salida'] */
+                                    ));
+
+            $results = $statement ->fetchAll();
+            $rowaffect = $statement->rowCount($sql);
+
+            if ($rowaffect > 0) {
+                return true;
+            }
+
+            return $resultado;
+
+        }  catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+            return false;
+        }
+    }
+
+
+
     function actualizarDatosTareo($pdo, $datos){
         try {
             $resultado = false;
@@ -233,6 +316,86 @@
             return false;
         }
     }
+
+    //actualizar tercero
+    function actualizarDatosTareoTercero($pdo, $datos){
+        try {
+            $resultado = false;
+
+            $sql = "UPDATE tb_datostareo SET tb_datostareo.cencargado = ?,
+                                                  tb_datostareo.ncondicion = ?,
+                                                  tb_datostareo.npersonal = ?,
+                                                  tb_datostareo.cespecialidad = ?,
+                                                  tb_datostareo.nmanoobra = ?,
+                                                  tb_datostareo.cproyecto = ?,
+                                                  tb_datostareo.cfase = ?,
+                                                  tb_datostareo.cubicacion = ?,
+                                                  tb_datostareo.cregimen = ?,
+                                                  tb_datostareo.fingreso = ?,
+                                                  tb_datostareo.fsalida = ?,
+                                                  tb_datostareo.fretorno = ?,
+                                                  tb_datostareo.dgoce = ?,
+                                                  tb_datostareo.dlibre = ?,
+                                                  tb_datostareo.dcampo = ?,
+                                                  tb_datostareo.dreales = ?,
+                                                  tb_datostareo.cobservaciones = ?,
+                                                  tb_datostareo.cdescanso = ?,
+                                                  tb_datostareo.fcese = ?,
+                                                  tb_datostareo.cmotivocese = ?,
+                                                  tb_datostareo.nregimen = ?,
+                                                  tb_datostareo.nespecificacion = ?
+                                                  
+                                                  /* tb_datostareo.updatedBy = ?,
+                                                  tb_datostareo.fmodificacion = current_timestamp() */
+                        WHERE tb_datostareo.nddoc = ?";
+            
+            $statement = $pdo->prepare($sql);
+
+            $nddoc = isset($datos['documento']) ? $datos['documento'] : (isset($datos['documento_tercero']) ? $datos['documento_tercero'] : null);
+
+            
+            $statement -> execute(array($datos['encargado'],
+                                        $datos['condicion'],
+                                        $datos['personal'],
+                                        $datos['especialidad'],
+                                        $datos['manoobra'],
+                                        $datos['proyecto_actual'],
+                                        $datos['fase_actual'],
+                                        $datos['ubicacion'],
+                                        $datos['regimen_trabajo'],
+                                        $datos['ingreso_obra'],
+                                        $datos['salida_obra'],
+                                        $datos['retorno_programado'],
+                                        $datos['dias_goce'],
+                                        $datos['dias_libre'],
+                                        $datos['dias_campo'],
+                                        $datos['dias_reales'],
+                                        $datos['observaciones'],
+                                        $datos['motivo_descanso'],
+                                        $datos['fecha_cese'],
+                                        $datos['motivo_cese'],
+                                        $datos['regimen'],
+                                        $datos['especificacion_contrato'],
+                                        
+                                       /*  $datos['user'], */
+                                        $nddoc
+                                       ));
+
+            $results = $statement ->fetchAll();
+            $rowaffect = $statement->rowCount($sql);
+
+            if ($rowaffect > 0) {
+                return true;
+            }
+
+            return $resultado;
+
+        }  catch (PDOException $th) {
+            echo "Error: " . $th->getMessage;
+            return false;
+        }
+    }
+
 
     function grabarTareo($pdo,$datos){
         try {
@@ -779,10 +942,10 @@
         }
     
         if ($datos['existeTerceroTareoData'] == 0) {
-            $datoTareo = grabarDatosTareo($pdo, $datos);
+            $datoTareo = grabarDatosTareoTerceros($pdo, $datos);
             $mensajeTareo = "Datos de tareo guardados correctamente";
         } else {
-            $datoTareo = actualizarDatosTareo($pdo, $datos);
+            $datoTareo = actualizarDatosTareoTercero($pdo, $datos);
             $mensajeTareo = "Datos de tareo actualizados correctamente";
         }
     

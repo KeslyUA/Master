@@ -357,7 +357,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 motivo_descanso.value = data.datosTareo[0]['cdescanso'];
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = data.datosTareo[0]['cmotivocese'];
-                turnodia.value = data.datosTareo[0]['turnodia'];
+               /*  turnodia.value = data.datosTareo[0]['turnodia'];  */
                 regimen.value       = data.datosTareo[0]['nregimen']; 
                 especificacion_contrato.value = data.datosTareo[0]['nespecificacion'];
                 document.getElementById("existeTerceroTareoData").value = "1";
@@ -385,7 +385,7 @@ export const buscarDatosColaboradorTercero = (dni) =>{
                 especificacion_contrato.value = -1;
                 //fecha_cese.value = data.datosTareo[0]['fcese'];
                 motivo_cese.value = '';
-                turnodia.value='';
+                /* turnodia.value='';  */
                 document.getElementById("existeTerceroTareoData").value = 0;
             }
             let valor,index = 1,activos = 0,descanso = 0,medico = 0,color_fondo;

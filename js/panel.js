@@ -1054,7 +1054,7 @@ function calcularFechas() {
     document.getElementById("salida_obra").value = `${anioSalida}-${mesSalida}-${diaSalida}`;
 
     let retornoProgramado = new Date(salidaObra); 
-    retornoProgramado.setDate(retornoProgramado.getDate() + diasGoce + transitoIngreso + transitoSalida + 1);
+    retornoProgramado.setDate(retornoProgramado.getDate() + diasGoce + transitoIngreso + transitoSalida + 2);
     if (transito === 1) {
         retornoProgramado.setDate(retornoProgramado.getDate() - 1);
     }
@@ -1067,9 +1067,65 @@ function calcularFechas() {
     
 
     document.getElementById("dias_reales").value = diasGoce;
-    guardarDatos(); 
+    guardarDatos();
+    actualizarDiasCampo(); 
+    /* actualizarRetornoProgramado(); */
+    /* calcularRetorno(); */
 }
-//para guardar ultimo dato de matriz
+
+function actualizarDiasCampo() {
+    const ingresoStr = document.getElementById("ingreso_obra").value;
+    const salidaObraStr = document.getElementById("salida_obra").value;
+    const select = document.getElementById("regimen_trabajo");
+    const selectgoce = select.options[select.selectedIndex];
+    const transito = parseInt(selectgoce.dataset.transito) || 0;
+
+    const ingreso = new Date(ingresoStr);
+    const salidaObra = new Date(salidaObraStr);
+
+    
+    const diferenciaTiempo = salidaObra - ingreso;
+    const diferenciaDias = Math.floor(diferenciaTiempo / (1000 * 60 * 60 * 24));
+
+    
+    const diasCampoCalculados = diferenciaDias - transito+1;
+
+    
+    document.getElementById("dias_campo").value = diasCampoCalculados;
+
+    actualizarRetornoProgramado();
+}
+
+
+document.getElementById("salida_obra").addEventListener("change", function () {
+    actualizarDiasCampo();
+});
+
+function actualizarRetornoProgramado() {
+    const salidaObraStr = document.getElementById("salida_obra").value;
+    const diasGoce = parseInt(document.getElementById("dias_goce").value) || 0;
+    const transitoIngreso = parseInt(document.getElementById("transito_ingreso").value) || 0;
+    const transitoSalida = parseInt(document.getElementById("transito_salida").value) || 0;
+    const select = document.getElementById("regimen_trabajo");
+    const selectgoce = select.options[select.selectedIndex];
+    const transito = parseInt(selectgoce.dataset.transito) || 0;
+
+    const salidaObra = new Date(salidaObraStr);
+
+    let retornoProgramado = new Date(salidaObra);
+    retornoProgramado.setDate(retornoProgramado.getDate() + diasGoce + transitoIngreso + transitoSalida + 2);
+    if (transito === 1) {
+        retornoProgramado.setDate(retornoProgramado.getDate() - 1);
+    }
+
+    const anioRetorno = retornoProgramado.getFullYear();
+    const mesRetorno = (retornoProgramado.getMonth() + 1).toString().padStart(2, '0');
+    const diaRetorno = retornoProgramado.getDate().toString().padStart(2, '0');
+
+    // Actualizar el campo retorno_programado
+    document.getElementById("retorno_programado").value = `${anioRetorno}-${mesRetorno}-${diaRetorno}`;
+}
+
 function guardarDatos() {
     const regimenTrabajo = document.getElementById("regimen_trabajo").value;
     const ingresoObra = document.getElementById("ingreso_obra").value;
@@ -2687,9 +2743,51 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
         });
         return resultado;
     }
-
+    
 }
+/* function filtrocesado(){
+    const motivoCese = document.getElementById("motivo_cese").value;
+    if(motivoCese){
+        for (let i = 0; i < dataByFase.length; i++) {
+            
+            
+            const item = dataByFase[i];
 
+            worksheet.getCell(fila, 1).value = indexItem
+            worksheet.getCell(fila, 2).value = i+1;
+            worksheet.getCell(fila, 3).value = item.cut
+            worksheet.getCell(fila, 4).value = item.documento
+            worksheet.getCell(fila, 5).value = item.nombres
+            worksheet.getCell(fila, 6).value = item.procedencia
+            let fechaIngreso = new Date(item.ingreso)
+            fechaIngreso.setDate(fechaIngreso.getDate()+1)
+            worksheet.getCell(fila, 7).value = !isNaN(fechaIngreso) ? fechaIngreso.toLocaleDateString('es-PE',{
+                timeZone: 'America/Lima',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }) : ''
+            worksheet.getCell(fila, 8).value = item.tipoPersonal.substr(0,1)
+            let fechaIngresoObra = new Date(item.ingresoObra)
+            fechaIngresoObra.setDate(fechaIngresoObra.getDate()+1)
+            worksheet.getCell(fila, 9).value = !isNaN(fechaIngresoObra) ? fechaIngresoObra.toLocaleDateString('es-PE', {
+                timeZone: 'America/Lima',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }) : ''
+            worksheet.getCell(fila, 10).value = item.diasCampo
+
+            worksheet.getCell(fila, 12).value = item.fase
+            worksheet.getCell(fila, 13).value = item.proyecto
+            worksheet.getCell(fila, 14).value = item.ubicacion
+            worksheet.getCell(fila, 11).value = item.cargo
+            worksheet.getCell(fila, 55).value = item.turnodia
+        }   
+
+    }
+}
+ */
 function toTitleCase(str) {
     return str
         .toLowerCase()  // Convertimos todo el texto a minúsculas
