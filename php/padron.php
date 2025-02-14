@@ -25,7 +25,7 @@
             <div class="cuerpo" style="height: 100px;" >
                 <div class="cuatro_columnas">
                     <label for="select_proyectos">Proyecto :</label>
-                    <select name="select_proyectos" id="select_proyectos" class="select" multiple style="max-width: 300px; min-height: 70px;" >
+                    <select name="select_proyectos" id="select_proyectos" class="select" >
                         <option value="-1">Seleccionar</option>
                     </select>
                 </div>

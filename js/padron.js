@@ -27,6 +27,13 @@ export const buscarProyectos = (select) =>{
     }
 } 
 
+/* document.getElementById('fecha_proceso').addEventListener('change', function (e) {
+    const fechaSeleccionada = e.target.value; 
+    const selectedOptions = Array.from(document.getElementById('select_proyectos').selectedOptions).map(opt => opt.value);
+
+    
+    listarPadronByFecha(selectedOptions, fechaSeleccionada);
+});  */
 
 export const listarPadron = (cc) => {
     let formData = new FormData();
@@ -97,7 +104,7 @@ export const listarPadronByFecha = (cc, fecha) => {
     const cuerpo = document.getElementById("tablaPersonalBody");
     let fila = 1;
 
-    cuerpo.innerHTML = "";
+     cuerpo.innerHTML = ""; 
     let estadosTareo
     getTareosByFecha(cc,fecha).then(data => {
         estadosTareo = data;
@@ -109,9 +116,7 @@ export const listarPadronByFecha = (cc, fecha) => {
         })
         .then(response => response.json())
         .then(data => {
-            /* data.datos.map(d => {
-
-            }) */
+            
            data.datos = data.datos.map(item => {
                 const user = estadosTareo.find(u => u.nrodoc == item.dni);
                 if(user){
@@ -133,12 +138,87 @@ export const listarPadronByFecha = (cc, fecha) => {
                 </tr>`;
 
                 cuerpo.insertRow(-1).outerHTML = row;
+                /* cuerpo.insertAdjacentHTML('beforeend', row); */ 
+
            })
         })
     } catch (error) {
         console.log(error.message);
     }
 }
+/* 
+export const listarPadronByFecha = async (cc, fecha) => {
+    let formData = new FormData();
+    formData.append("funcion", "listarPadron");
+    formData.append("costos", cc);
+
+    const cuerpo = document.getElementById("tablaPersonalBody");
+    let fila = 1;
+
+    cuerpo.innerHTML = ""; // Limpiar la tabla antes de insertar datos
+
+    try {
+        // Esperar la carga de los estados de tareo antes de continuar
+        let estadosTareo = await getTareosByFecha(cc, fecha);
+
+        // Hacer la petición a la API y esperar la respuesta
+        let response = await fetch('../inc/busquedas.inc.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        let data = await response.json();
+
+        // Mapear y agregar estados desde estadosTareo
+        data.datos = data.datos.map(item => {
+            const user = estadosTareo.find(u => u.nrodoc == item.dni);
+            return user
+                ? { ...item, estado: user.estado, fmodificacion: user.fmodificacion, fingreso: user.fingreso }
+                : { ...item, estado: 'A' };
+        });
+
+        // Filtrar datos por fecha seleccionada
+        const filteredData = data.datos.filter(d => new Date(d.ingreso) <= new Date(fecha));
+
+        // Insertar filas en la tabla
+        filteredData.forEach(element => {
+            let row = `
+                <tr>
+                    <td>${fila++}</td>
+                    <td class="padding20left">${element.paterno + ' ' + element.materno + ' ' + element.nombres}</td>
+                    <td class="texto_centro">${element.dni}</td>
+                    <td class="texto_centro">${element.proyecto}</td>
+                    <td class="texto_centro">${element.sucursal}</td>
+                    <td><input type="text" value="${element.estado}" class="texto_centro"></td>
+                    <td class="texto_centro">${element.fmodificacion ? element.fmodificacion : ''}</td>
+                    <td><input type="text" class="texto_centro" value="${element.fingreso ? element.fingreso : ''}"></td>
+                </tr>`;
+
+            cuerpo.insertAdjacentHTML('beforeend', row);
+        });
+
+    } catch (error) {
+        console.log("Error al obtener los datos:", error.message);
+    }
+}; */
+
+// Evento para capturar cambios en la fecha de proceso
+/* document.getElementById('fecha_proceso').addEventListener('change', function (e) {
+    const fechaSeleccionada = e.target.value;
+    const selectedOptions = Array.from(document.getElementById('select_proyectos').selectedOptions).map(opt => opt.value);
+
+    listarPadronByFecha(selectedOptions, fechaSeleccionada);
+}); */
+
+
+/* 
+document.getElementById('fecha_proceso').addEventListener('change', function (e) {
+    const fechaSeleccionada = e.target.value; 
+    const selectedOptions = Array.from(document.getElementById('select_proyectos').selectedOptions).map(opt => opt.value);
+
+    
+    listarPadronByFecha(selectedOptions, fechaSeleccionada);
+});  */
 
 export const getTareo = () => {
     let formData = new FormData();

@@ -997,12 +997,13 @@ document.addEventListener('click', async (e) => {
 
 document.addEventListener('change', async (e) => {
     if (e.target.matches(".select") && e.target.id === "select_proyectos") {
-        let selectedOptions = Array.from(new Set(Array.from(e.target.selectedOptions).map(opt => opt.value)));
-         Array.from(e.target.options).forEach(option => {
-            if (selectedOptions.includes(option.value)) {
-                option.disabled = true; 
+        let select = e.target;
+        let selectedOptions = Array.from(new Set(Array.from(select.selectedOptions).map(opt => opt.value)));
+        Array.from(select.options).forEach(option => {
+            if (selectedOptions.includes(option.value) && option.value !== "-1") {
+                option.disabled = true;
             }
-        }); 
+        });
         listarPadron(selectedOptions);
 
     } if (e.target.matches(".select") && e.target.id === "select_proyectos_terceros") {
@@ -1029,7 +1030,14 @@ document.addEventListener('change', async (e) => {
             document.getElementById("fecha_text").textContent = 'Fecha de Proceso: ' + e.target.value;
         }
     } 
-})
+});
+/* document.addEventListener('click', function (e) {
+    if (!e.target.matches(".select") || e.target.id !== "select_proyectos") {
+        
+        return;
+    }
+}); */
+
 let datos = [];
 
 function calcularFechas() {
@@ -2055,7 +2063,7 @@ const  obtenerDatosPadron = () => {
         })
 }
 
-const obtenerReportePadron = async () => {
+async function obtenerReportePadron () {
     Swal.fire({
         title: "Generando el reporte",
         html: "Se están cargando los datos del reporte, por favor, espere",
@@ -2094,6 +2102,7 @@ const obtenerReportePadron = async () => {
             dato['proyecto'] = fila[i].cells[3].innerHTML;
             dato['ubicacion'] = fila[i].cells[4].innerHTML.trim();
             dato['cargo'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.cargo;
+           /*  dato['cesado'] =datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.cesado; */
             dato['tareos'] = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']).flatMap(item => item.estados.split(','));
             let tareosDatos = datosReporte.tareos.filter(item => item.nrodoc == dato['documento']);
 
@@ -2147,6 +2156,7 @@ const obtenerReportePadron = async () => {
             dato['procedencia'] = datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].cod_pais == 144 ? datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.origen['dpto'] :datosReporte.colaboradoresProyecto.find(item => item.dni == dato['documento'])?.dataColab.datos[0].pais;
             dato['diasCampo'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.diasCampo
             dato['turnodia'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.turno
+            dato['fechacese'] = datosReporte.datosTareo.find(item => item.nddoc == dato['documento'])?.fcese
             DATOS.push(dato);
         }
 
@@ -2636,6 +2646,71 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
             }
         })
     }
+     fila++
+    
+   //cesados
+   console.log(datos);
+   
+   const cesados=datos.filter(d=>d.fechacese && d.fechacese !== "0000-00-00")
+   console.log(cesados)
+    worksheet.getCell(`A${fila}`).value = 'cesados febrero 2025'
+    for (let i = 0; i < cesados.length; i++){
+        worksheet.getCell(fila,1).value=i
+        worksheet.getCell(fila,2).value=i
+        worksheet.getCell(fila,3).value=cesados[i].cut
+        worksheet.getCell(fila,4).value=cesados[i].documento
+        worksheet.getCell(fila,5).value=cesados[i].nombres
+        worksheet.getCell(fila,6).value=cesados[i].procedencia
+        worksheet.getCell(fila,7).value=cesados[i].ingreso
+        worksheet.getCell(fila,8).value=cesados[i].tipoPersonal
+        worksheet.getCell(fila,9).value=cesados[i].ingresoObra
+        worksheet.getCell(fila,10).value=cesados[i].diasCampo
+        worksheet.getCell(fila,11).value=cesados[i].cargo
+        worksheet.getCell(fila,12).value=cesados[i].fase
+        worksheet.getCell(fila,13).value=cesados[i].proyecto
+        worksheet.getCell(fila,14).value=cesados[i].ubicacion
+        worksheet.getCell(fila,55).value=cesados[i].turnodia
+
+        // Llenar celdas para los días (A, D, F, M, V, P, total)
+        worksheet.getCell(`AT${fila}`).value = cesados[i].dias.A || 0;
+        worksheet.getCell(`AU${fila}`).value = cesados[i].dias.D || 0;
+        worksheet.getCell(`AV${fila}`).value = cesados[i].dias.F || 0;
+        worksheet.getCell(`AW${fila}`).value = cesados[i].dias.M || 0;
+        worksheet.getCell(`AX${fila}`).value = cesados[i].dias.V || 0;
+        worksheet.getCell(`AY${fila}`).value = cesados[i].dias.P || 0;
+        worksheet.getCell(`AZ${fila}`).value = cesados[i].dias.total || 0;
+
+         // Llenar celdas para régimen y mano de obra
+         worksheet.getCell(`BA${fila}`).value = cesados[i].regimen || '';
+         worksheet.getCell(`BB${fila}`).value = toTitleCase(cesados[i].manoObra) || '';
+        //llenar estados
+         for (const dia in cesados[i].estadosDia) {
+            const estado = cesados[i].estadosDia[dia];
+            const color = bgColorStatesMap.get(estado)?.color
+            const columna = 14 + parseInt(dia); // Ajustar columna según el día
+            worksheet.getCell(fila, columna).value = estado;
+            worksheet.getCell(fila, columna). style = {
+                fill : {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: color },
+                    bgColor: { argb: color }
+                },
+                alignment : {
+                    horizontal: 'center',
+                    vertical: 'middle'
+                },
+                border: {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                }
+            }
+        }
+    }
+
+    //otra cosa
     /* for (const ubicacion in countByUbicacion){
         worksheet.getCell(fila, 14).value = ubicacion
         worksheet.getCell(fila, 14).style = {

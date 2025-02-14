@@ -539,7 +539,7 @@
             }
 
             $datosT = [];
-            $sqlData = "SELECT t.nddoc, MAX(t.fingreso) AS fingreso, DATEDIFF(NOW(), MAX(t.fingreso)) + 1 AS diasCampo, MAX(t.turno) 
+            $sqlData = "SELECT t.nddoc,t.fcese, MAX(t.fingreso) AS fingreso, DATEDIFF(NOW(), MAX(t.fingreso)) + 1 AS diasCampo, MAX(t.turno) 
             AS turno, MAX(personal.cdescripcion) AS tipoPersonal, MAX(regimen.cdescripcion) AS regimen, MAX(manoobra.cdescripcion)
              AS mano_obra FROM tb_datostareo t LEFT JOIN tb_parametros regimen ON regimen.idreg = t.nregimen AND regimen.nclase = 03
               LEFT JOIN tb_parametros manoobra ON manoobra.idreg = t.nmanoobra AND manoobra.nclase = 01 LEFT JOIN tb_parametros personal 

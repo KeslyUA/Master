@@ -197,7 +197,7 @@
         $fecha = strftime('%A %e de %B de %Y');
         $motivoSeleccionado = isset($_POST["motivo_descanso"]) ? $_POST["motivo_descanso"] : "-1";
         function marcarSiSeleccionado($valor, $motivoSeleccionado) {
-            return $valor == $motivoSeleccionado ? "X" : "";
+            return $valor == $motivoSeleccionado ? "          X" : "";
         }
 
         $pdf = new FPDF();
