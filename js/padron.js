@@ -1,9 +1,18 @@
+let opcionesDeshabilitadas = new Set();
+let proyectosSeleccionados = new Set();
+
 export const buscarProyectos = (select) =>{
     let nro_doc = localStorage.getItem("documento"),
     formData = new FormData();
 
     formData.append("funcion","proyectosUsuarios");
     formData.append("dni",nro_doc);
+
+    let opcionesSeleccionadas = new Set(
+        Array.from(select.options)
+            .filter(opt => opt.disabled)
+            .map(opt => opt.value)
+    );
 
     select.innerHTML = `<option value='-1'>Seleccionar</option>`;
 
@@ -19,7 +28,25 @@ export const buscarProyectos = (select) =>{
                 option.value = element.ccodigo;
                 option.innerHTML = element.cdescripcion;
 
+                if (opcionesSeleccionadas.has(element.ccodigo)) {
+                    option.classList.add("selected-option"); 
+                    option.setAttribute("disabled", "true"); 
+                    opcionesDeshabilitadas.add(element.ccodigo);
+                }
+
                 select.appendChild(option);
+           })
+
+           select.addEventListener("change", function () {
+            let selectedValue = this.value;
+            
+            if (selectedValue !== "-1") {
+                if (proyectosSeleccionados.has(selectedValue)) {
+                    proyectosSeleccionados.delete(selectedValue);
+                } else {
+                    proyectosSeleccionados.add(selectedValue);
+                }
+            }
            })
         })
     } catch (error) {
@@ -38,13 +65,14 @@ export const buscarProyectos = (select) =>{
 export const listarPadron = (cc) => {
     let formData = new FormData();
     formData.append("funcion","listarPadron");
-    formData.append("costos",cc);
+    /* formData.append("costos",cc); */
+    formData.append("costos", [...proyectosSeleccionados].join(","));
     formData.append("tercero", document.getElementById("tablaPersonal").getAttribute("tercero"))
 
     const cuerpo = document.getElementById("tablaPersonalBody");
     let fila = 1;
 
-    /* cuerpo.innerHTML = "";  */
+    
     let estadosTareo
     getTareoMaxFecha(cc).then(data => {
         estadosTareo = data;
@@ -60,9 +88,7 @@ export const listarPadron = (cc) => {
         })
         .then(response => response.json())
         .then(data => {
-            /* data.datos.map(d => {
-
-            }) */
+            
            data.datos = data.datos.map(item => {
                 const user = estadosTareo.find(u => u.nrodoc == item.dni);
                 if(user){
@@ -86,7 +112,7 @@ export const listarPadron = (cc) => {
                     <td><input type="text" class="texto_centro" value="${element.fingreso != null ? element.fingreso : ''}"></td>
                 </tr>`;
 
-                /* cuerpo.insertRow(-1).outerHTML = row; */
+               
                 cuerpo.insertAdjacentHTML('beforeend',row);
             
            })
@@ -95,6 +121,8 @@ export const listarPadron = (cc) => {
         console.log(error.message);
     }
 }
+
+
 
 export const listarPadronByFecha = (cc, fecha) => {
     let formData = new FormData();

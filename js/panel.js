@@ -994,14 +994,22 @@ document.addEventListener('click', async (e) => {
         }
     }
 })
-
+let opcionesDeshabilitadas = new Set();
 document.addEventListener('change', async (e) => {
     if (e.target.matches(".select") && e.target.id === "select_proyectos") {
         let select = e.target;
         let selectedOptions = Array.from(new Set(Array.from(select.selectedOptions).map(opt => opt.value)));
+
+        selectedOptions.forEach(value => {
+            if (value !== "-1") {
+                opcionesDeshabilitadas.add(value); // Guardar opción seleccionada
+            }
+        });
+
         Array.from(select.options).forEach(option => {
             if (selectedOptions.includes(option.value) && option.value !== "-1") {
-                option.disabled = true;
+                option.classList.add("selected-option");
+                option.setAttribute("disabled", "true"); 
             }
         });
         listarPadron(selectedOptions);
@@ -1030,6 +1038,12 @@ document.addEventListener('change', async (e) => {
             document.getElementById("fecha_text").textContent = 'Fecha de Proceso: ' + e.target.value;
         }
     } 
+});
+document.addEventListener('DOMContentLoaded', () => {
+    let select = document.getElementById("select_proyectos");
+    if (select) {
+        buscarProyectos(select);
+    }
 });
 /* document.addEventListener('click', function (e) {
     if (!e.target.matches(".select") || e.target.id !== "select_proyectos") {
@@ -1075,7 +1089,7 @@ function calcularFechas() {
     
 
     document.getElementById("dias_reales").value = diasGoce;
-    guardarDatos();
+   /*  guardarDatos(); */
     actualizarDiasCampo(); 
     /* actualizarRetornoProgramado(); */
     /* calcularRetorno(); */
@@ -1134,7 +1148,7 @@ function actualizarRetornoProgramado() {
     document.getElementById("retorno_programado").value = `${anioRetorno}-${mesRetorno}-${diaRetorno}`;
 }
 
-function guardarDatos() {
+/* function guardarDatos() {
     const regimenTrabajo = document.getElementById("regimen_trabajo").value;
     const ingresoObra = document.getElementById("ingreso_obra").value;
     const salidaObra = document.getElementById("salida_obra").value;
@@ -1149,15 +1163,10 @@ function guardarDatos() {
     datos[0] = ultimoDato;
 
     console.log(datos); 
-}
+} */
 window.addEventListener('DOMContentLoaded', calcularFechas);
 
-const enlaceHojaSalida = document.getElementById("hojaSalida");
 
-enlaceHojaSalida.addEventListener("click", function(event) {
-    event.preventDefault(); 
-    guardarDatos(); 
-});
 
 document.getElementById("ingreso_obra").addEventListener("change", calcularFechas);
 document.getElementById("dias_campo").addEventListener("change", calcularFechas);
@@ -1176,6 +1185,15 @@ document.getElementById("regimen_trabajo").addEventListener("change", function()
     document.getElementById("dias_campo").value = ""; 
     document.getElementById("ingreso_obra").value = ""; 
 });
+
+/* 
+const enlaceHojaSalida = document.getElementById("hojaSalida");
+
+enlaceHojaSalida.addEventListener("click", function(event) {
+    event.preventDefault(); 
+    guardarDatos(); 
+}); */
+
 
 function reporteMatriz() {
     let formData = new FormData();
@@ -2646,8 +2664,8 @@ async function PlantillaTareoExcel(padron, fechaProceso) {
             }
         })
     }
-     fila++
-    
+     fila +=8
+     
    //cesados
    console.log(datos);
    
@@ -2947,7 +2965,7 @@ const generarReportePadron = async () => {
     Swal.close();
 }
 
-const datosTareoPersonal = () => {
+function datosTareoPersonal () {
     let fila = document.querySelector("#tablaPersonalBody").getElementsByTagName("tr"),
         nreg = fila.length;
 
@@ -3126,7 +3144,7 @@ const buscarProyectosyFases = () =>{
     }
 }
 
-const hojaSalida = (proyecto) => {
+function hojaSalida  (proyecto) {
     try {
 
         if (documento.value == "") throw new Error("Escribe el nro. de documento");

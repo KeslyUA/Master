@@ -22,8 +22,8 @@
                 <input type="hidden" name="existeTercero" id="existeTercero" form="data_matriz">
                 <input type="hidden" name="existeTerceroTareoData" id="existeTerceroTareoData" form="data_matriz">
                 <div class="dos_columnas">
-                    <label for="documento_tercero">D.Identidad :</label>
-                    <input type="text" name="documento_tercero" id="documento_tercero" form="data_matriz">
+                    <label for="documento">D.Identidad :</label>
+                    <input type="text" name="documento" id="documento" form="data_matriz">
                 </div>
                 <div class="dos_columnas">
                     <label for="paterno">Ap.Paterno:</label>

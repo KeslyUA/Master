@@ -14,7 +14,7 @@
                 <span>DATOS PERSONALES DEL TRABAJADOR</span>
                 <div class="btnOpciones">   
                     <a href="#" id="grabarDatos"><i class="fas fa-save botones"></i><p>Grabar</p></a>
-                    <a href="#" id="hojaSalfida"><i class="far fa-file-pdf botones"></i><p>Hoja Salida</p></a>
+                    <a href="#" id="hojaSalida"><i class="far fa-file-pdf botones"></i><p>Hoja Salida</p></a>
                     <a href="#" id="reporteDiario"><i class="fas fa-file-excel botones"></i><p>Reporte Diario</p></a>
                 </div>
             </div>
